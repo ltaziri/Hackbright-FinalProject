@@ -36,7 +36,6 @@ def handle_sign_in_form():
 
     if existing_user:
         if password == existing_user.password:
-            flash("Logged In.")
             session["user_id"] = existing_user.user_id
             return redirect("/users/%s" % str(existing_user.user_id)) # log in
         else:
@@ -78,7 +77,16 @@ def new_user_sign_up():
     return redirect('/')
 
    
+@app.route('/users/<int:user_id>')
+def show_user_home(user_id):    
+    """User's homepage after loging in"""
 
+    user = User.query.get(user_id)
+
+    groups = UserGroup.query.filter_by(user_id=user_id).all()
+
+
+    return render_template("user_home.html", user=user, groups=groups)
 
 
 if __name__ == "__main__":

@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block content %}
+
+    <h2>Welcome {{ user.first_name }} </h2>
+
+    <p> Your craft groups:</p>
+    <ul>
+      {% for group in groups %}
+          <li>
+              <a href="/group/{{ groups.group_id }}">
+                {{ groups.group_image }}
+                <img src="{{ groups.group_name }}">
+              </a>
+          </li>
+      {% endfor %}
+    </ul>
+
+    <h3> <a href == "/create_group">Create a new group</a> </h3>
+
+{% endblock %}
