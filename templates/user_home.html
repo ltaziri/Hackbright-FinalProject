@@ -7,14 +7,14 @@
     <ul>
       {% for group in groups %}
           <li>
-              <a href="/group/{{ groups.group_id }}">
-                {{ groups.group_image }}
-                <img src="{{ groups.group_name }}">
+              <a href="/group_home/{{ group.group_id }}">
+                {{ group.group_name }}
+                <!-- <img src="{{ group.group_name }}"> -->
               </a>
           </li>
       {% endfor %}
     </ul>
 
-    <h3> <a href="/create_group/{{ user.user_id }}">Create a new group</a> </h3>
+    <h3> <a href="/group_form/{{ user.user_id }}">Create a new group</a> </h3>
 
 {% endblock %}

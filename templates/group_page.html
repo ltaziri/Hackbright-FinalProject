@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block content %}
+
+    <h2>Welcome to the {{ group.group_name}} page </h2>
+
+    <ul>
+      <li>this will magically become a group photo! {{ group.group_image}} </li>
+      <li>this will magically become a pattern photo! {{ group.pattern_image}} </li>
+      <li> this will <a href="{{ group.pattern_link }}">link</a> to the pattern </li>
+    </ul>
+
+    <h3> The comments will go here</h3>
+
+    <h3>Users in this group are:</h3>
+    <ul>
+      {% for group_user in group_users %}
+          <li>
+              {{ group_user.first_name }} {{ group_user.last_name }}
+          </li>
+      {% endfor %}
+    </ul>
+
+    <a href ="/users/{{user}}"> Return to user homepage </a>
+
+
+
+{% endblock %}

@@ -83,7 +83,7 @@ def show_user_home(user_id):
 
     user = User.query.get(user_id)
 
-    groups = UserGroup.query.filter_by(user_id=user_id).all()
+    groups = user.groups
 
 
     return render_template("user_home.html", user=user, groups=groups)
@@ -98,16 +98,47 @@ def show_group_form(user_id):
     return render_template("group_form.html", user=user)
 
 
-@app.route('/create_group/<int:user_id>')
+@app.route('/create_group/<int:user_id>', methods=['POST'])
 def create_group(user_id):
     """Handle submission of new group form"""
 
     user = User.query.get(user_id)
+    group_name = request.form.get("group_name")
+    group_image= request.form.get("group_image")
+    pattern_image = request.form.get("pattern_image")
+    pattern_link = request.form.get("pattern_link")
 
-    return render_template("group_page.html", user=user)
+    group = Group(group_name=group_name, 
+                  group_image=group_image, 
+                  pattern_image=pattern_image, 
+                  pattern_link=pattern_link)
 
-    # return render_template("group_form.html", user=user)
+    db.session.add(group)
+    db.session.commit()
+    
+    user_group= UserGroup(group_id=group.group_id,
+                          user_id=user_id)
 
+    db.session.add(user_group)
+    db.session.commit()
+
+    return redirect("/group_home/%d" % (group.group_id))
+
+
+@app.route('/group_home/<int:group_id>')
+def show_group_page(group_id):
+    """Show group's homepage"""
+
+    group = Group.query.get(group_id)
+
+    group_users = group.users
+
+    user = session["user_id"]
+
+    return render_template("group_page.html", 
+                            group=group, 
+                            group_users=group_users, 
+                            user=user)
 
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the point
