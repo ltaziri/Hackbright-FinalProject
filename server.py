@@ -89,6 +89,26 @@ def show_user_home(user_id):
     return render_template("user_home.html", user=user, groups=groups)
 
 
+@app.route('/group_form/<int:user_id>')
+def show_group_form(user_id):
+    """Create a new group form"""
+
+    user = User.query.get(user_id)
+
+    return render_template("group_form.html", user=user)
+
+
+@app.route('/create_group/<int:user_id>')
+def create_group(user_id):
+    """Handle submission of new group form"""
+
+    user = User.query.get(user_id)
+
+    return render_template("group_page.html", user=user)
+
+    # return render_template("group_form.html", user=user)
+
+
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the point
     # that we invoke the DebugToolbarExtension

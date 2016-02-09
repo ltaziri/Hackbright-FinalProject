@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h2>Sign Up!</h2>
+
+<form action="/create_group/{{ user.user_id }}" method="POST">
+
+    <input type="text" name="group_name" placeholder="group name"><br>
+    <input type="text" name="group_image" placeholder="url to group image"><br>
+    <input type="text" name="pattern_image" placeholder="url to group image"><br>
+    <input type="text" name="pattern_image" placeholder="url to pattern"><br>
+
+    <input type="submit" value="Create Your Group">
+</form>
+
+{% endblock %}

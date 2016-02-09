@@ -14,15 +14,35 @@ class User(db.Model):
     __tablename__ = "users"
 
     user_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    email = db.Column(db.String(64), nullable=False)
+    email = db.Column(db.String(64), nullable=False, unique=True)
     password = db.Column(db.String(64), nullable=False)
     first_name = db.Column(db.String(64), nullable=False)
     last_name = db.Column(db.String(64), nullable=False)
-    
+
+    groups = db.relationship("Group", 
+                             secondary='usergroups', 
+                             backref=db.backref("users", order_by=user_id))
+
     def __repr__(self):
         """Provide user information when printed."""
 
         return "<User: %s %s Email: %s>" %(self.first_name, self.last_name, self.email)
+
+
+class UserGroup(db.Model):
+    """Association table for linking users and groups"""
+
+    __tablename__ = "usergroups"
+
+    usergroup_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    group_id = db.Column(db.Integer, db.ForeignKey('groups.group_id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
+
+    
+    def __repr__(self):
+        """Provide usergroup information when printed."""
+
+        return "<Group name: %s User name: %s>" %(self.group_name, self.user_name)
 
 
 class Group(db.Model):
@@ -34,33 +54,15 @@ class Group(db.Model):
     group_name = db.Column(db.String(64), nullable=False)
     group_image = db.Column(db.String(255), nullable=False) # need to add default image
     pattern_image = db.Column(db.String(255), nullable=True)
-    pattern_image = db.Column(db.String(255), nullable=True)    
+    pattern_link = db.Column(db.String(255), nullable=True)    
     comment_id = db.Column(db.Integer, db.ForeignKey('comments.comment_id'), nullable=True)
 
-    comment = db.relationship("Comment", backref=db.backref("groups", order_by=group_id))
+    comments = db.relationship("Comment", backref=db.backref("groups", order_by=group_id))
 
     def __repr__(self):
         """Provide group information when printed."""
 
         return "<Group Id: %s Group name: %s>" %(self.group_id, self.group_name)
-
-
-class UserGroup(db.Model):
-    """Association table for linking users and groups"""
-
-    __tablename__ = "usergroups"
-
-    usergroup_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    group_id = db.Column(db.Integer, db.ForeignKey('groups.group_id'), nullable=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=True)
-
-    group = db.relationship("Group", backref=db.backref("usergroups", order_by=usergroup_id))
-    user = db.relationship("User", backref=db.backref("usergroups", order_by=usergroup_id))
-
-    def __repr__(self):
-        """Provide usergroup information when printed."""
-
-        return "<Group name: %s User name: %s>" %(self.group_name, self.user_name)
 
 
 class Comment(db.Model):
