@@ -44,14 +44,42 @@ def handle_sign_in_form():
             return redirect("/")
     else:
         flash("You are not signed up yet, please sign up.")
-        return redirect('/sign_up')
+        return redirect('/sign_up_form')
 
 
-@app.route('/sign_up')
+@app.route('/sign_up_form')
 def show_sign_up_form():    
     """Show sign up form"""
 
     return render_template("sign_up_form.html")
+
+
+@app.route('/sign_up', methods=['POST'])
+def new_user_sign_up():    
+    """Handle sign up form submission"""
+
+    email = request.form.get("email")
+    password = request.form.get("password")
+    first_name = request.form.get("first_name")
+    last_name = request.form.get("last_name")
+
+    
+    new_user = User.query.filter_by(email=email).first()
+
+    if new_user:
+        flash("email already exists, please sign in")
+        return redirect("/")
+    else:
+        user = User(email=email, password=password, first_name=first_name, last_name=last_name)
+        db.session.add(user)
+        db.session.commit()
+        flash("You are successfully signed up! Please sign in.")
+
+    return redirect('/')
+
+   
+
+
 
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the point
