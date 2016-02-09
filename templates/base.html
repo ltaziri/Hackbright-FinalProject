@@ -1,0 +1,21 @@
+<!doctype html>
+<html>
+<head>
+  <title>Virtual Craft Group HB Project</title>
+</head>
+
+<body>
+  <hr>
+  <a href="/">Home</a>
+
+  {% block content %} put your content here {% endblock %}
+
+<hr>
+  <ul>
+    {% for message in get_flashed_messages() %}
+        <li>{{ message }}</li>
+    {% endfor %}
+  </ul> 
+
+</body>
+</html>

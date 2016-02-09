@@ -52,7 +52,7 @@ class UserGroup(db.Model):
 
     usergroup_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     group_id = db.Column(db.Integer, db.ForeignKey('groups.group_id'), nullable=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.group_id'), nullable=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=True)
 
     group = db.relationship("Group", backref=db.backref("usergroups", order_by=usergroup_id))
     user = db.relationship("User", backref=db.backref("usergroups", order_by=usergroup_id))
@@ -110,7 +110,8 @@ def connect_to_db(app):
     """Connect the database to our Flask app."""
 
     # Configure to use our PstgreSQL database
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/ratings'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/virtcraft'
+    app.config['SQLALCHEMY_ECHO'] = True
     db.app = app
     db.init_app(app)
 
