@@ -15,13 +15,16 @@ def load_users():
 
     for row in open("seed_data/users.txt"):
         row = row.rstrip()
-        user_id, email, password, first_name, last_name = row.split("|")
+        user_id, email, password, first_name, last_name, user_photo, user_descrip = row.split("|")
 
         user = User(user_id=user_id,
                     email=email,
                     password=password,
                     first_name=first_name,
-                    last_name=last_name)
+                    last_name=last_name,
+                    user_photo=user_photo,
+                    user_descrip=user_descrip
+                    )
 
         db.session.add(user)
 
@@ -37,13 +40,16 @@ def load_groups():
 
     for row in open("seed_data/groups.txt"):
         row = row.rstrip()
-        group_id, group_name, group_image, pattern_image, pattern_link = row.split("|")
+        group_id, group_name, group_descrip, group_image, pattern_image, pattern_link, pattern_name = row.split("|")
 
         group = Group(group_id=group_id,
                       group_name=group_name,
+                      group_descrip=group_descrip,
                       group_image=group_image, 
                       pattern_image=pattern_image, 
-                      pattern_link=pattern_link)
+                      pattern_link=pattern_link,
+                      pattern_name=pattern_name
+                      )
 
         db.session.add(group)
 

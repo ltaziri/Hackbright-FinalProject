@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block content %}
+
+    <h2>{{ user.first_name }} {{ user.last_name }} </h2>
+    
+    <img src="{{ user.user_photo}}" width="200">
+
+    <p> {{ user.user_descrip }}</p>
+
+    <a href="/user_profile_form/{{ user.user_id }}">Update your profile</a>
+
+    <h3> <a href="/users/{{ user.user_id }}">Return to dashboard</a> </h3>
+
+{% endblock %}

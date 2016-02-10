@@ -18,6 +18,8 @@ class User(db.Model):
     password = db.Column(db.String(64), nullable=False)
     first_name = db.Column(db.String(64), nullable=False)
     last_name = db.Column(db.String(64), nullable=False)
+    user_photo = db.Column(db.String(255), nullable=False)
+    user_descrip = db.Column(db.String(255), nullable=True)
 
     groups = db.relationship("Group", 
                              secondary='usergroups', 
@@ -52,9 +54,11 @@ class Group(db.Model):
 
     group_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     group_name = db.Column(db.String(64), nullable=False)
+    group_descrip = db.Column(db.String(255), nullable=True)
     group_image = db.Column(db.String(255), nullable=False) # need to add default image
     pattern_image = db.Column(db.String(255), nullable=True)
-    pattern_link = db.Column(db.String(255), nullable=True)   
+    pattern_link = db.Column(db.String(255), nullable=True)
+    pattern_name = db.Column(db.String(255), nullable=True)
 
     def __repr__(self):
         """Provide group information when printed."""

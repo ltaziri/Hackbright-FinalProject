@@ -3,11 +3,16 @@
 
     <h2>Welcome to the {{ group.group_name}} page </h2>
 
-    <img src= "{{ group.group_image}}">
 
-    <h3> This month we are working on Rad Pattern </h3>
+    <img src= "{{ group.group_image}}" width="500">
 
-    <img src= "{{ group.pattern_image}}">
+    {% if group.group_descrip %}
+        <p>{{ cgroup.group_descrip }}</p>
+    {% endif %} 
+
+    <h3> This month we are working on {{ group.pattern_name }} Pattern </h3>
+
+    <img src= "{{ group.pattern_image}}" width="400">
 
     <h3>Click <a href="{{ group.pattern_link }}">here</a> for the full pattern</h3>
 
@@ -15,16 +20,18 @@
     <h3> Comments:</h3>
     <a href="/comment_form/{{ group.group_id }}"> add a comment </a>
 
-     <ul>
-      {% for comment in comments %}
-          <li>
-              {{ comment.timestamp }}
-              {{ comment.user.first_name }}
-              {{ comment.text }} 
-              {{ comment.image }}
-          </li>
-      {% endfor %}
-    </ul>
+    
+    {% for comment in comments %}
+        <p>
+            <i>{{ comment.comment_timestamp.strftime("%m/%d/%y %X") }}
+            {{ comment.user.first_name }}</i><br>
+            {{ comment.comment_text }} <br>
+            {% if comment.comment_image %}
+              <img src="{{ comment.comment_image }}" width="300">
+            {% endif %}       
+        </p>
+    {% endfor %}
+  
 
     <h3>Users in this group are:</h3>
     <ul>

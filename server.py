@@ -104,6 +104,42 @@ def show_user_home(user_id):
 
     return render_template("user_home.html", user=user, groups=groups)
 
+@app.route('/user_profile/<int:user_id>')
+def show_user_profile(user_id): 
+    """Show users profile page"""
+
+    user = User.query.get(user_id)
+
+    return render_template("user_profile.html", user=user)
+
+
+@app.route('/user_profile_form/<int:user_id>')
+def show_user_profile_form(user_id): 
+    """Show users profile form so they can update information"""
+
+    user = User.query.get(user_id)
+
+    return render_template("user_profile_form.html", user=user)
+
+
+@app.route('/user_profile_update/<int:user_id>',methods=['POST'])
+def user_profile_update(user_id): 
+    """Handle user profile form to update users profile"""
+
+    user = User.query.get(user_id)
+    user_photo = request.form.get("user_photo")
+    user_descrip = request.form.get("user_descrip")
+
+    if user_photo:
+        user.user_photo = user_photo
+        db.session.commit()
+
+    if user_descrip:
+        user.user_descrip = user_descrip
+        db.session.commit()
+
+    return redirect("/user_profile/%d" % user_id)
+
 
 @app.route('/group_form/<int:user_id>')
 def show_group_form(user_id):
@@ -151,10 +187,14 @@ def show_group_page(group_id):
 
     user = session["user_id"]
 
+    comments =  Comment.query.filter_by(group_id=group_id)
+
+
     return render_template("group_page.html", 
                             group=group, 
                             group_users=group_users, 
-                            user=user)
+                            user=user,
+                            comments=comments)
 
 
 @app.route('/comment_form/<int:group_id>')
@@ -166,7 +206,7 @@ def show_comment_form(group_id):
     return render_template("comment_form.html", group=group)
 
 
-@app.route('/comment_add/<int:group_id>')
+@app.route('/comment_add/<int:group_id>', methods=['POST'])
 def add_comment(group_id):
     """Handle comment form submissions"""
 
@@ -178,13 +218,13 @@ def add_comment(group_id):
     comment = Comment(comment_text=comment_text, 
                       comment_image=comment_image, 
                       comment_timestamp=datetime.now(),
-                      user_id=sessions["user_id"],
+                      user_id=session["user_id"],
                       group_id=group_id)
 
     db.session.add(comment)
     db.session.commit()
 
-    return redirect("/group_page/%d" % (group_id))
+    return redirect("/group_home/%d" % (group_id))
 
 
 
