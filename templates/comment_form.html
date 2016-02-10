@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h2>Add a comment to the {{ group.group_name }} group</h2>
+
+<form action="/comment_add/{{group.group_id}}" method="POST">
+
+    <input type="text" name="comment_text" placeholder="comment"><br>
+    <input type="text" name="comment_image" placeholder="add a picture!"><br>
+    
+    <input type="submit" value="Add your comment">
+</form>
+
+{% endblock %}

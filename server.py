@@ -7,6 +7,8 @@ from flask_debugtoolbar import DebugToolbarExtension
 
 from model import User, Group, UserGroup, Comment, Invite, connect_to_db, db
 
+from datetime import datetime
+
 
 app = Flask(__name__)
 
@@ -22,7 +24,11 @@ app.jinja_env.undefined = StrictUndefined
 def index():
     """Homepage"""
 
-    return render_template("homepage.html")
+    if session.get("user_id"):
+        return redirect("/users/"+str(session["user_id"]))
+
+    else:
+        return render_template("homepage.html")
 
 
 @app.route('/sign_in', methods=['POST'])
@@ -44,6 +50,16 @@ def handle_sign_in_form():
     else:
         flash("You are not signed up yet, please sign up.")
         return redirect('/sign_up_form')
+
+
+@app.route('/log_out')
+def log_out():
+    """Log user out"""
+
+    del session['user_id']
+    flash("You have been logged out.")
+
+    return redirect("/")
 
 
 @app.route('/sign_up_form')
@@ -139,6 +155,39 @@ def show_group_page(group_id):
                             group=group, 
                             group_users=group_users, 
                             user=user)
+
+
+@app.route('/comment_form/<int:group_id>')
+def show_comment_form(group_id):
+    """Show form for adding a comment"""
+
+    group = Group.query.get(group_id)
+
+    return render_template("comment_form.html", group=group)
+
+
+@app.route('/comment_add/<int:group_id>')
+def add_comment(group_id):
+    """Handle comment form submissions"""
+
+    group = Group.query.get(group_id)
+
+    comment_text = request.form.get("comment_text")
+    comment_image= request.form.get("comment_image")
+
+    comment = Comment(comment_text=comment_text, 
+                      comment_image=comment_image, 
+                      comment_timestamp=datetime.now(),
+                      user_id=sessions["user_id"],
+                      group_id=group_id)
+
+    db.session.add(comment)
+    db.session.commit()
+
+    return redirect("/group_page/%d" % (group_id))
+
+
+
 
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the point

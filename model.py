@@ -54,15 +54,13 @@ class Group(db.Model):
     group_name = db.Column(db.String(64), nullable=False)
     group_image = db.Column(db.String(255), nullable=False) # need to add default image
     pattern_image = db.Column(db.String(255), nullable=True)
-    pattern_link = db.Column(db.String(255), nullable=True)    
-    comment_id = db.Column(db.Integer, db.ForeignKey('comments.comment_id'), nullable=True)
-
-    comments = db.relationship("Comment", backref=db.backref("groups", order_by=group_id))
+    pattern_link = db.Column(db.String(255), nullable=True)   
 
     def __repr__(self):
         """Provide group information when printed."""
 
         return "<Group Id: %s Group name: %s>" %(self.group_id, self.group_name)
+
 
 
 class Comment(db.Model):
@@ -74,8 +72,10 @@ class Comment(db.Model):
     comment_text = db.Column(db.String(255), nullable=False)
     comment_image = db.Column(db.String(255), nullable=True) 
     comment_timestamp = db.Column(db.DateTime, nullable=False)   
-    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
-     
+    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False) 
+    group_id = db.Column(db.Integer, db.ForeignKey('groups.group_id'), nullable=False)
+
+    group = db.relationship("Group", backref=db.backref("comments", order_by=comment_id))     
     user = db.relationship("User", backref=db.backref("comments", order_by=comment_id))
 
     def __repr__(self):
