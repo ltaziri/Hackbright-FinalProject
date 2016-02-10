@@ -227,6 +227,12 @@ def add_comment(group_id):
     return redirect("/group_home/%d" % (group_id))
 
 
+@app.route('/user_public_profile/<int:user_id>')
+def show_other_user_profile(user_id):
+
+    user = User.query.get(user_id)
+
+    return render_template("user_public_profile.html", user=user)
 
 
 if __name__ == "__main__":

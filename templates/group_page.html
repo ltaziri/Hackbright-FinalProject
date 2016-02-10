@@ -23,8 +23,9 @@
     
     {% for comment in comments %}
         <p>
-            <i>{{ comment.comment_timestamp.strftime("%m/%d/%y %X") }}
-            {{ comment.user.first_name }}</i><br>
+            <img src="{{ comment.user.user_photo }}" width="50">
+            <b>{{ comment.user.first_name }}</b><br>
+            <i>{{ comment.comment_timestamp.strftime("%m/%d/%y %X") }}</i><br>
             {{ comment.comment_text }} <br>
             {% if comment.comment_image %}
               <img src="{{ comment.comment_image }}" width="300">
@@ -34,10 +35,13 @@
   
 
     <h3>Users in this group are:</h3>
+    <!-- I would like these to open in javascript! -->
     <ul>
       {% for group_user in group_users %}
           <li>
+              <a href="/user_public_profile/{{ group_user.user_id }}">
               {{ group_user.first_name }} {{ group_user.last_name }}
+              </a>
           </li>
       {% endfor %}
     </ul>
