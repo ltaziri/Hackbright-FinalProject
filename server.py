@@ -9,6 +9,8 @@ from model import User, Group, UserGroup, Comment, Invite, connect_to_db, db
 
 from datetime import datetime
 
+import sendgrid
+
 
 app = Flask(__name__)
 
