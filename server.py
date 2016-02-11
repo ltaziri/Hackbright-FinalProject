@@ -1,16 +1,13 @@
 
 
 from jinja2 import StrictUndefined
-
 from flask import Flask, render_template, redirect, request, flash, session
 from flask_debugtoolbar import DebugToolbarExtension
-
 from model import User, Group, UserGroup, Comment, Invite, connect_to_db, db
-
 from datetime import datetime
-
 import sendgrid
-
+from email_test import send_email
+import sendgrid
 
 app = Flask(__name__)
 
@@ -31,6 +28,14 @@ def index():
 
     else:
         return render_template("homepage.html")
+
+@app.route('/<int:group_id>')
+def index(group_id):
+    """Homepage"""
+
+    group = Group.query.get(group_id)
+
+    return render_template("homepage.html")
 
 
 @app.route('/sign_in', methods=['POST'])
@@ -231,10 +236,49 @@ def add_comment(group_id):
 
 @app.route('/user_public_profile/<int:user_id>')
 def show_other_user_profile(user_id):
+    """Show public profile info for other users"""
 
     user = User.query.get(user_id)
 
     return render_template("user_public_profile.html", user=user)
+
+
+@app.route('/invite_form/<int:group_id>')
+def show_invite_form(group_id):
+    """Show group invite form"""
+
+    group = Group.query.get(group_id)
+
+    return render_template("invite_form.html", group=group)
+
+
+@app.route('/send_invite/<int:group_id>', methods=['POST'])
+def send_invitation(group_id):
+    """Send email invitation, store invite in databse"""
+
+    group = Group.query.get(group_id)
+    user=User.query.get(session["user_id"])
+
+    invite_name = request.form.get("name")
+
+    invite_email = request.form.get("email")
+    invite_text= request.form.get("text")
+
+
+    send_email(invite_email, invite_name, user.first_name, group.group_name, invite_text, group_id)
+
+    invite = Invite(invite_email=invite_email, 
+                    invite_text=invite_text, 
+                    invite_timestamp=datetime.now(),
+                    group_id=group_id,
+                    user_id=session["user_id"],
+                    )
+
+    db.session.add(invite)
+    db.session.commit()
+    flash("Invitation sent!")
+
+    return redirect("/group_home/%d" % (group_id))
 
 
 if __name__ == "__main__":
