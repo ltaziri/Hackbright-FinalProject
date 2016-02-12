@@ -29,13 +29,14 @@ def index():
     else:
         return render_template("homepage.html")
 
-@app.route('/<int:group_id>')
-def index(group_id):
-    """Homepage"""
 
-    group = Group.query.get(group_id)
+@app.route('/<invite_id>')
+def invite_index(invite_id):
+    """Redirect to landing page when accepting and invite"""
 
-    return render_template("homepage.html")
+    session["invite_id"] = invite_id
+
+    return redirect("/")
 
 
 @app.route('/sign_in', methods=['POST'])
@@ -50,7 +51,17 @@ def handle_sign_in_form():
     if existing_user:
         if password == existing_user.password:
             session["user_id"] = existing_user.user_id
-            return redirect("/users/%s" % str(existing_user.user_id)) # log in
+            # if session.get["invite_id"]:
+            #     invite = Invite.query.get(session["invite_id"]) 
+            #     invite.invite_confirm = True
+            #     user_group = UserGroup(
+            #                            group_id=invite.group_id,
+            #                            user_id=existing_user.user_id
+            #                            )
+            #     db.session.add(user_group)
+            #     db.session.commit()
+            #     del session['invite_id']
+            return redirect("/users/%s" % str(existing_user.user_id))
         else:
             flash("Invalid password.")
             return redirect("/")
@@ -95,6 +106,16 @@ def new_user_sign_up():
         user = User(email=email, password=password, first_name=first_name, last_name=last_name)
         db.session.add(user)
         db.session.commit()
+        # if session.get["invite_id"]:
+        #     invite = Invite.query.get(session["invite_id"]) 
+        #     invite.invite_confirm = True
+        #     user_group = UserGroup(
+        #                            group_id=invite.group_id,
+        #                            user_id=user.user_id
+        #                            )
+        #     db.session.add(user_group)
+        #     db.session.commit()
+        #     del session['invite_id']
         flash("You are successfully signed up! Please sign in.")
 
     return redirect('/')
@@ -108,6 +129,7 @@ def show_user_home(user_id):
 
     groups = user.groups
 
+    print session
 
     return render_template("user_home.html", user=user, groups=groups)
 
@@ -265,8 +287,6 @@ def send_invitation(group_id):
     invite_text= request.form.get("text")
 
 
-    send_email(invite_email, invite_name, user.first_name, group.group_name, invite_text, group_id)
-
     invite = Invite(invite_email=invite_email, 
                     invite_text=invite_text, 
                     invite_timestamp=datetime.now(),
@@ -276,6 +296,9 @@ def send_invitation(group_id):
 
     db.session.add(invite)
     db.session.commit()
+
+    send_email(invite_email, invite_name, user.first_name, group.group_name, invite_text, invite.invite_id)
+
     flash("Invitation sent!")
 
     return redirect("/group_home/%d" % (group_id))

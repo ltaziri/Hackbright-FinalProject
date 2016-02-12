@@ -2,7 +2,7 @@ import sendgrid
 
 # sg = sendgrid.SendGridClient('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')
 
-def send_email(invite_email, invite_name, user_name, group_name, invite_text, group_id):
+def send_email(invite_email, invite_name, user_name, group_name, invite_text, invite_id):
     sg = sendgrid.SendGridClient('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')
 
     
@@ -18,7 +18,7 @@ def send_email(invite_email, invite_name, user_name, group_name, invite_text, gr
                                                                   user_name, 
                                                                   group_name, 
                                                                   invite_text, 
-                                                                  group_id ))
+                                                                  invite_id ))
 
     message.set_from("admin@virtcraft.com")
     

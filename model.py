@@ -97,6 +97,7 @@ class Invite(db.Model):
     invite_email = db.Column(db.String(255), nullable=False)
     invite_text = db.Column(db.String(255), nullable=False) 
     invite_timestamp = db.Column(db.DateTime, nullable=False)
+    invite_confirm = db.Column(db.Boolean, nullable=False, default=False)
     group_id = db.Column(db.Integer, db.ForeignKey('groups.group_id'), nullable=False)   
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
 

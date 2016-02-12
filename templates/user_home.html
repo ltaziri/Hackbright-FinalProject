@@ -1,21 +1,27 @@
 {% extends 'base.html' %}
 {% block content %}
 
-    <h2>Welcome {{ user.first_name }} </h2>
-    <a href="/user_profile/{{ user.user_id }}">Update/View Your profile</a> 
+<section>
+  <h2>Welcome {{ user.first_name }} </h2>
+  <a href="/user_profile/{{ user.user_id }}">Update/View Your profile</a> 
+</section>
 
-    <p> Your craft groups:</p>
-    <ul>
-      {% for group in groups %}
-          <li>
-              <a href="/group_home/{{ group.group_id }}">
-                {{ group.group_name }}
-                <!-- <img src="{{ group.group_name }}"> -->
-              </a>
-          </li>
-      {% endfor %}
-    </ul>
+<hr>
 
-    <h3> <a href="/group_form/{{ user.user_id }}">Create a new group</a> </h3>
+<section>
+  <p> Your craft groups:</p>
+  <ul>
+    {% for group in groups %}
+        <li>
+            <a href="/group_home/{{ group.group_id }}">
+              {{ group.group_name }}
+              <!-- <img src="{{ group.group_name }}"> -->
+            </a>
+        </li>
+    {% endfor %}
+  </ul>
+</section>
+
+<h3> <a href="/group_form/{{ user.user_id }}">Create a new group</a> </h3>
 
 {% endblock %}
