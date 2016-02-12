@@ -1,26 +1,27 @@
 {% extends 'base.html' %}
 {% block content %}
 
+<section>
     <h2>Welcome to the {{ group.group_name}} page </h2>
-
-
     <img src= "{{ group.group_image}}" width="500">
 
     {% if group.group_descrip %}
         <p>{{ cgroup.group_descrip }}</p>
     {% endif %} 
-
+</section>
+<hr>
+<section>
     <h3> This month we are working on {{ group.pattern_name }} Pattern </h3>
 
     <img src= "{{ group.pattern_image}}" width="400">
 
     <h3>Click <a href="{{ group.pattern_link }}">here</a> for the full pattern</h3>
-
-    
+</section>
+<hr>
+<section>
     <h3> Comments:</h3>
     <a href="/comment_form/{{ group.group_id }}"> add a comment </a>
 
-    
     {% for comment in comments %}
         <p>
             <img src="{{ comment.user.user_photo }}" width="50">
@@ -32,8 +33,9 @@
             {% endif %}       
         </p>
     {% endfor %}
-  
-
+</section>
+<hr>
+<section>
     <h3>Users in this group are:</h3>
     <!-- I would like these to open in javascript! -->
     <ul>
@@ -47,8 +49,9 @@
     </ul>
 
     <h3><a href ="/invite_form/{{ group.group_id }}"> Invite people to join your group! </a></h3><br>
-
-    <a href ="/users/{{user}}" target="_blank"> Return to user homepage </a>
+</section>
+<hr>
+<a href ="/users/{{user}}" target="_blank"> Return to user homepage </a>
 
 
 

@@ -51,16 +51,16 @@ def handle_sign_in_form():
     if existing_user:
         if password == existing_user.password:
             session["user_id"] = existing_user.user_id
-            # if session.get["invite_id"]:
-            #     invite = Invite.query.get(session["invite_id"]) 
-            #     invite.invite_confirm = True
-            #     user_group = UserGroup(
-            #                            group_id=invite.group_id,
-            #                            user_id=existing_user.user_id
-            #                            )
-            #     db.session.add(user_group)
-            #     db.session.commit()
-            #     del session['invite_id']
+            if session.get("invite_id"):
+                invite = Invite.query.get(session["invite_id"]) 
+                invite.invite_confirm = True
+                user_group = UserGroup(
+                                       group_id=invite.group_id,
+                                       user_id=existing_user.user_id
+                                       )
+                db.session.add(user_group)
+                db.session.commit()
+                del session['invite_id']
             return redirect("/users/%s" % str(existing_user.user_id))
         else:
             flash("Invalid password.")
@@ -106,19 +106,19 @@ def new_user_sign_up():
         user = User(email=email, password=password, first_name=first_name, last_name=last_name)
         db.session.add(user)
         db.session.commit()
-        # if session.get["invite_id"]:
-        #     invite = Invite.query.get(session["invite_id"]) 
-        #     invite.invite_confirm = True
-        #     user_group = UserGroup(
-        #                            group_id=invite.group_id,
-        #                            user_id=user.user_id
-        #                            )
-        #     db.session.add(user_group)
-        #     db.session.commit()
-        #     del session['invite_id']
+        if session.get("invite_id"):
+            invite = Invite.query.get(session["invite_id"]) 
+            invite.invite_confirm = True
+            user_group = UserGroup(
+                                   group_id=invite.group_id,
+                                   user_id=user.user_id
+                                   )
+            db.session.add(user_group)
+            db.session.commit()
+            del session['invite_id']
         flash("You are successfully signed up! Please sign in.")
 
-    return redirect('/')
+    return redirect('/users/%d' % (user.user_id))
 
    
 @app.route('/users/<int:user_id>')
