@@ -52,14 +52,15 @@ def handle_sign_in_form():
         if password == existing_user.password:
             session["user_id"] = existing_user.user_id
             if session.get("invite_id"):
-                invite = Invite.query.get(session["invite_id"]) 
-                invite.invite_confirm = True
-                user_group = UserGroup(
-                                       group_id=invite.group_id,
-                                       user_id=existing_user.user_id
-                                       )
-                db.session.add(user_group)
-                db.session.commit()
+                invite = Invite.query.get(session["invite_id"])
+                if invite.invite_confirm == False and email == invite.invite_email: 
+                    invite.invite_confirm = True
+                    user_group = UserGroup(
+                                           group_id=invite.group_id,
+                                           user_id=existing_user.user_id
+                                           )
+                    db.session.add(user_group)
+                    db.session.commit()
                 del session['invite_id']
             return redirect("/users/%s" % str(existing_user.user_id))
         else:
@@ -75,7 +76,7 @@ def log_out():
     """Log user out"""
 
     del session['user_id']
-    flash("You have been logged out.")
+
 
     return redirect("/")
 
@@ -98,25 +99,36 @@ def new_user_sign_up():
 
     
     new_user = User.query.filter_by(email=email).first()
+    default_photo = "images/balloonicorn.jpg"
 
     if new_user:
         flash("email already exists, please sign in")
         return redirect("/")
     else:
-        user = User(email=email, password=password, first_name=first_name, last_name=last_name)
+        user = User(
+                    email=email, 
+                    password=password, 
+                    first_name=first_name, 
+                    last_name=last_name, 
+                    user_photo=default_photo
+                    )
         db.session.add(user)
         db.session.commit()
+        session["user_id"] = user.user_id
+
         if session.get("invite_id"):
-            invite = Invite.query.get(session["invite_id"]) 
-            invite.invite_confirm = True
-            user_group = UserGroup(
-                                   group_id=invite.group_id,
-                                   user_id=user.user_id
-                                   )
-            db.session.add(user_group)
-            db.session.commit()
+            invite = Invite.query.get(session["invite_id"])
+            if email == invite.invite_email:  
+                invite.invite_confirm = True
+                user_group = UserGroup(
+                                       group_id=invite.group_id,
+                                       user_id=user.user_id
+                                       )
+                db.session.add(user_group)
+                db.session.commit()
             del session['invite_id']
-        flash("You are successfully signed up! Please sign in.")
+
+        flash("You are successfully signed up!")
 
     return redirect('/users/%d' % (user.user_id))
 
@@ -132,6 +144,7 @@ def show_user_home(user_id):
     print session
 
     return render_template("user_home.html", user=user, groups=groups)
+
 
 @app.route('/user_profile/<int:user_id>')
 def show_user_profile(user_id): 
@@ -297,7 +310,7 @@ def send_invitation(group_id):
     db.session.add(invite)
     db.session.commit()
 
-    send_email(invite_email, invite_name, user.first_name, group.group_name, invite_text, invite.invite_id)
+    # send_email(invite_email, invite_name, user.first_name, group.group_name, invite_text, invite.invite_id)
 
     flash("Invitation sent!")
 
