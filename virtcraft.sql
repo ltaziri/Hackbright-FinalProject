@@ -113,7 +113,7 @@ CREATE TABLE invites (
     invite_email character varying(255) NOT NULL,
     invite_text character varying(255) NOT NULL,
     invite_timestamp timestamp without time zone NOT NULL,
-    invite_confirm boolean NOT NULL DEFAULT FALSE,
+    invite_confirm boolean NOT NULL,
     group_id integer NOT NULL,
     user_id integer NOT NULL
 );
@@ -254,9 +254,6 @@ ALTER TABLE ONLY users ALTER COLUMN user_id SET DEFAULT nextval('users_user_id_s
 --
 
 COPY comments (comment_id, comment_text, comment_image, comment_timestamp, user_id, group_id) FROM stdin;
-1	I love knitting with dog hair!	https://assets.rbl.ms/156392/980x.jpg	2016-02-10 12:09:25.017629	1	1
-2	All hail ubermelon!		2016-02-10 12:10:24.596318	1	2
-3	Me too!!!!!		2016-02-10 12:11:33.474651	5	1
 \.
 
 
@@ -264,7 +261,7 @@ COPY comments (comment_id, comment_text, comment_image, comment_timestamp, user_
 -- Name: comments_comment_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ltaziri
 --
 
-SELECT pg_catalog.setval('comments_comment_id_seq', 3, true);
+SELECT pg_catalog.setval('comments_comment_id_seq', 1, false);
 
 
 --
@@ -275,6 +272,7 @@ COPY groups (group_id, group_name, group_descrip, group_image, pattern_image, pa
 1	Dogs Who Knit		http://3.lushome.com/wp-content/uploads/2013/08/pet-design-ideas-knits-clothes-hat-sweaters-4.jpg	http://ecx.images-amazon.com/images/I/51bY21VdKkL._SX258_BO1,204,203,200_.jpg	http://www.amazon.com/Knitting-With-Dog-Hair-Sweater/dp/0312152906	Knit with Dog Hair
 2	Ubermelon Knitters		http://thumbs.dreamstime.com/z/funny-young-pretty-female-helmet-fresh-melon-22528517.jpg	https://img0.etsystatic.com/042/0/6907023/il_570xN.648189754_ameg.jpg	https://www.etsy.com/listing/202036252/water-melon-beanie-hand-knit-hat-women	Watermelon Hat
 3	Crazy Dog Lady Sewing Challenge		https://farm8.staticflickr.com/7648/16876119351_15c7ca5007_z.jpg	http://cdn3.craftsy.com/blog/wp-content/uploads/2014/07/full_6402_23311_SammyBagDogSling_2.jpg	http://www.craftsy.com/blog/2014/08/patterns-to-sew-for-dogs/	Dog Carrier
+5	Woodworkers Unite!	\N	/img/group.img	/img/pattern.img	http://www.ana-white.com/2013/06/plans/wood-cooler-birds-and-soap	\N
 \.
 
 
@@ -282,7 +280,7 @@ COPY groups (group_id, group_name, group_descrip, group_image, pattern_image, pa
 -- Name: groups_group_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ltaziri
 --
 
-SELECT pg_catalog.setval('groups_group_id_seq', 4, true);
+SELECT pg_catalog.setval('groups_group_id_seq', 5, true);
 
 
 --
@@ -290,7 +288,9 @@ SELECT pg_catalog.setval('groups_group_id_seq', 4, true);
 --
 
 COPY invites (invite_id, invite_email, invite_text, invite_timestamp, invite_confirm, group_id, user_id) FROM stdin;
-2	ltaziri@gmail.com	Hey! I'd love for you to join my rad group!	2016-02-11 14:35:36.889184	FALSE   1	1
+1	ltaziri@gmail.com	Hey! I have no friends, come hang out with me. 	2016-02-11 21:42:03.198669	t	1	1
+2	megan@hbmail.com	testing	2016-02-11 22:07:00.504253	t	3	1
+3	kaylie@hbmail.com	kaylie	2016-02-11 22:10:04.975704	f	1	6
 \.
 
 
@@ -298,7 +298,7 @@ COPY invites (invite_id, invite_email, invite_text, invite_timestamp, invite_con
 -- Name: invites_invite_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ltaziri
 --
 
-SELECT pg_catalog.setval('invites_invite_id_seq', 7, true);
+SELECT pg_catalog.setval('invites_invite_id_seq', 3, true);
 
 
 --
@@ -327,6 +327,10 @@ COPY usergroups (usergroup_id, group_id, user_id) FROM stdin;
 19	1	7
 20	1	19
 21	1	6
+23	5	1
+24	1	37
+25	1	9
+26	3	25
 \.
 
 
@@ -334,7 +338,7 @@ COPY usergroups (usergroup_id, group_id, user_id) FROM stdin;
 -- Name: usergroups_usergroup_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ltaziri
 --
 
-SELECT pg_catalog.setval('usergroups_usergroup_id_seq', 1, false);
+SELECT pg_catalog.setval('usergroups_usergroup_id_seq', 26, true);
 
 
 --
@@ -342,6 +346,7 @@ SELECT pg_catalog.setval('usergroups_usergroup_id_seq', 1, false);
 --
 
 COPY users (user_id, email, password, first_name, last_name, user_photo, user_descrip) FROM stdin;
+1	leilani@hbmail.com	test	Leilani	Taziri	http://thumbs.dreamstime.com/z/sewing-crafting-woman-crafter-machine-50670444.jpg	
 2	katie@hbmail.com	test	Katie	Atkinson	http://thumbs.dreamstime.com/z/mujer-de-costura-50670313.jpg	
 3	annie@hbmail.com	test	Annie	He	http://thumbs.dreamstime.com/z/craft-woman-crafter-scissors-glue-gun-50670500.jpg	
 4	alena@hbmail.com	test	Alena	Kruchkova	http://thumbs.dreamstime.com/z/sewing-crafting-woman-crafter-machine-50670444.jpg	
@@ -376,7 +381,9 @@ COPY users (user_id, email, password, first_name, last_name, user_photo, user_de
 33	allian@hbmail.com	test	Allian	Roman	http://thumbs.dreamstime.com/z/craft-woman-crafter-scissors-glue-gun-50670500.jpg	
 34	florence@hbmail.com	test	Florence	Loi	http://thumbs.dreamstime.com/z/sewing-crafting-woman-crafter-machine-50670444.jpg	
 35	kristin@hbmail.com	test	Kristin	Parke	http://thumbs.dreamstime.com/z/mujer-de-costura-50670313.jpg	
-1	leilani@hbmail.com	test	Leilani	Taziri	http://thumbs.dreamstime.com/z/sewing-crafting-woman-crafter-machine-50670444.jpg	My name is Leilani and I love to knit!!!!!!!!!!!!!!
+37	balloonicorn@hbmail.com	test	baloonicorn	melon	images/balloonicorn.jpg	\N
+38	melon@hbmail.com	test	water	melon	images/balloonicorn.jpg	\N
+39	crazydog@hbmail.com	test	crazy	dog	images/balloonicorn.jpg	\N
 \.
 
 
@@ -384,7 +391,7 @@ COPY users (user_id, email, password, first_name, last_name, user_photo, user_de
 -- Name: users_user_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ltaziri
 --
 
-SELECT pg_catalog.setval('users_user_id_seq', 36, true);
+SELECT pg_catalog.setval('users_user_id_seq', 39, true);
 
 
 --

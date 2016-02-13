@@ -6,8 +6,9 @@
     <img src= "{{ group.group_image}}" width="500">
 
     {% if group.group_descrip %}
-        <p>{{ cgroup.group_descrip }}</p>
+        <p>{{ group.group_descrip }}</p>
     {% endif %} 
+
 </section>
 <hr>
 <section>
@@ -19,20 +20,63 @@
 </section>
 <hr>
 <section>
+    <div>
     <h3> Comments:</h3>
-    <a href="/comment_form/{{ group.group_id }}"> add a comment </a>
+    <!-- <a href="/comment_form/{{ group.group_id }}"> add a comment </a> -->
+    <p> Add a comment </p>
+        <form id="comment_form" action="/comment_add.json" method="POST">
+            <input type="hidden" name="group_id" id="group_id" value="{{group.group_id}}">
+            <input type="text" name="comment_text" id="comment_text" placeholder="comment"><br>
+            <input type="text" name="comment_image" id="comment_image" placeholder="add a picture!"><br>
+            
+            <button class="btn btn-primary" type="submit">Add your comment</button>
+        </form>
+    </div>
+    <div id="new_comment"></div>
 
     {% for comment in comments %}
-        <p>
-            <img src="{{ comment.user.user_photo }}" width="50">
-            <b>{{ comment.user.first_name }}</b><br>
-            <i>{{ comment.comment_timestamp.strftime("%m/%d/%y %X") }}</i><br>
-            {{ comment.comment_text }} <br>
-            {% if comment.comment_image %}
-              <img src="{{ comment.comment_image }}" width="300">
-            {% endif %}       
-        </p>
+    <div>
+        <img src="{{ comment.user.user_photo }}" width="50">
+        <b>{{ comment.user.first_name }}</b><br>
+        <i>{{ comment.comment_timestamp.strftime("%m/%d/%y %X") }}</i><br>
+        {{ comment.comment_text }} <br>
+        {% if comment.comment_image %}
+          <img src="{{ comment.comment_image }}" width="300">
+        {% endif %}       
+    </div>
     {% endfor %}
+
+<script src="http://code.jquery.com/jquery.js"></script>
+<script>
+"use strict";
+
+function showComment(results) {
+  console.dir(results);
+  $("#new_comment").html(
+      results.comment_user_photo, comment.user.user_name, comment.comment_timestamp, 
+          comment.comment_text    
+        );
+}
+
+
+function addNewComment(evt) {
+    evt.preventDefault();
+
+    var formInputs = {
+        "group_id":group_id,
+        "comment_text": $("#comment_text").val(),
+        "comment_image": $("#comment_image").val()
+    };
+
+    $.post("/comment_add.json",formInputs, showComment);
+}
+
+$("#comment_form").on('submit', addNewComment);
+
+</script>
+
+
+
 </section>
 <hr>
 <section>

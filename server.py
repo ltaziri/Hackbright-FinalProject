@@ -1,7 +1,7 @@
 
 
 from jinja2 import StrictUndefined
-from flask import Flask, render_template, redirect, request, flash, session
+from flask import Flask, render_template, redirect, request, flash, session, jsonify
 from flask_debugtoolbar import DebugToolbarExtension
 from model import User, Group, UserGroup, Comment, Invite, connect_to_db, db
 from datetime import datetime
@@ -239,24 +239,26 @@ def show_group_page(group_id):
                             comments=comments)
 
 
-@app.route('/comment_form/<int:group_id>')
-def show_comment_form(group_id):
-    """Show form for adding a comment"""
+# @app.route('/comment_form/<int:group_id>')
+# def show_comment_form(group_id):
+#     """Show form for adding a comment"""
 
-    group = Group.query.get(group_id)
+#     group = Group.query.get(group_id)
 
-    return render_template("comment_form.html", group=group)
+#     return render_template("comment_form.html", group=group)
 
 
-@app.route('/comment_add/<int:group_id>', methods=['POST'])
-def add_comment(group_id):
+@app.route('/comment_add.json', methods=['POST'])
+def add_comment():
     """Handle comment form submissions"""
 
-    group = Group.query.get(group_id)
-
+    
+    group_id = request.form.get("group_id")
     comment_text = request.form.get("comment_text")
     comment_image= request.form.get("comment_image")
 
+    # group = Group.query.get(group_id)
+    
     comment = Comment(comment_text=comment_text, 
                       comment_image=comment_image, 
                       comment_timestamp=datetime.now(),
@@ -266,7 +268,12 @@ def add_comment(group_id):
     db.session.add(comment)
     db.session.commit()
 
-    return redirect("/group_home/%d" % (group_id))
+    return jsonify({'comment_user_photo': comment.user.user_photo,
+                    'comment_user_name': comment.user.first_name,
+                    'comment_timestamp':comment.comment_timestamp,
+                    'comment_text': comment.comment_text,
+                    'comment_image': comment.comment_image})
+    # redirect("/group_home/%d" % (group_id))
 
 
 @app.route('/user_public_profile/<int:user_id>')
