@@ -268,11 +268,15 @@ def add_comment():
     db.session.add(comment)
     db.session.commit()
 
-    return jsonify({'comment_user_photo': comment.user.user_photo,
+    format_timestamp = comment.comment_timestamp.strftime('%m/%d/%y %X')
+
+    comment_dict = {'comment_user_photo': comment.user.user_photo,
                     'comment_user_name': comment.user.first_name,
-                    'comment_timestamp':comment.comment_timestamp,
+                    'comment_timestamp':format_timestamp,
                     'comment_text': comment.comment_text,
-                    'comment_image': comment.comment_image})
+                    'comment_image': comment.comment_image }
+
+    return jsonify(comment_dict)
     # redirect("/group_home/%d" % (group_id))
 
 
