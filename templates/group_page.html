@@ -46,9 +46,7 @@
     </div>
     {% endfor %}
 
-   
 
-<script src="http://code.jquery.com/jquery.js"></script>
 <script>
 "use strict";
 
@@ -64,7 +62,6 @@ function showComment(results) {
   }
 
   
-// results.comment_image 
   $("#new_comment").html(htmlStr);
 }
 
@@ -92,18 +89,49 @@ $("#comment_form").on('submit', addNewComment);
 <section>
     <h3>Users in this group are:</h3>
     <!-- I would like these to open in javascript! -->
-    <ul>
+    <!-- <ul> -->
       {% for group_user in group_users %}
+          <button class="show_user">{{ group_user.first_name }} {{ group_user.last_name }}</button>
+
+          <div class="pop-up">       
+          <h2>{{ group_user.first_name }} {{ group_user.last_name }}</h2>
+          <img src="{{ group_user.user_photo }}" width="200">
+          <p> {{ group_user.user_descrip }}</p>
+          <button>close</button>
+          </div>
+
+      {% endfor %}
+
+      <!-- {% for group_user in group_users %}
           <li>
               <a href="/user_public_profile/{{ group_user.user_id }}">
               {{ group_user.first_name }} {{ group_user.last_name }}
               </a>
           </li>
-      {% endfor %}
-    </ul>
+      {% endfor %} -->
+    <!-- </ul> -->
 
     <h3><a href ="/invite_form/{{ group.group_id }}"> Invite people to join your group! </a></h3><br>
 </section>
+<script>
+      function showUserInfo(evt) {
+          var mouseX = evt.pageX;
+          var mouseY = evt.pageY;
+          $('div.pop-up').show()
+          .css('left', mouseX)
+          .css('top', mouseY);
+      }
+
+      function hideUserInfo(evt) {
+            $('div.pop-up').hide();
+      }
+
+      $(document).ready(function(){
+          $('.show_user').click(showUserInfo);
+          $('.pop-up').click(hideUserInfo);
+      });
+            
+</script>
 <hr>
 <a href ="/users/{{user}}" target="_blank"> Return to user homepage </a>
 

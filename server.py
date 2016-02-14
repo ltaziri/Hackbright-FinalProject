@@ -3,6 +3,7 @@
 from jinja2 import StrictUndefined
 from flask import Flask, render_template, redirect, request, flash, session, jsonify
 from flask_debugtoolbar import DebugToolbarExtension
+from flask.ext.uploads import UploadSet, configure_uploads, IMAGES
 from model import User, Group, UserGroup, Comment, Invite, connect_to_db, db
 from datetime import datetime
 import sendgrid
@@ -18,6 +19,9 @@ app.secret_key = "ABC"
 # This is horrible. Fix this so that, instead, it raises an error.
 app.jinja_env.undefined = StrictUndefined
 
+photos = UploadSet('photos', IMAGES)
+app.config['UPLOADED_PHOTOS_DEST'] = 'static/images'
+configure_uploads(app, photos)
 
 @app.route('/')
 def index():
@@ -96,12 +100,23 @@ def new_user_sign_up():
     password = request.form.get("password")
     first_name = request.form.get("first_name")
     last_name = request.form.get("last_name")
-
     
-    new_user = User.query.filter_by(email=email).first()
-    default_photo = "images/balloonicorn.jpg"
+    # use Flask-Uploads to add file path for uploaded photo or add path
+    # to default image that was selected on radio button.  
+    if request.form.get("user_photo") == " ":
+        filename = photos.save(request.files['photo'])
+        user_photo = str(photos.path(filename))
+    else:
+        user_photo = request.form.get("user_photo")
+    
+    # check if someone is already signed up for an account with that email
+    # if not create a new user in users table. Check if that person came to 
+    # the website via and invite link, if so add an entry to the association
+    # usergroup table so the user joins the group.
 
-    if new_user:
+    existing_user = User.query.filter_by(email=email).first()
+    
+    if existing_user:
         flash("email already exists, please sign in")
         return redirect("/")
     else:
@@ -110,13 +125,14 @@ def new_user_sign_up():
                     password=password, 
                     first_name=first_name, 
                     last_name=last_name, 
-                    user_photo=default_photo
+                    user_photo=user_photo
                     )
         db.session.add(user)
         db.session.commit()
         session["user_id"] = user.user_id
 
         if session.get("invite_id"):
+            print session
             invite = Invite.query.get(session["invite_id"])
             if email == invite.invite_email:  
                 invite.invite_confirm = True
@@ -280,13 +296,13 @@ def add_comment():
     # redirect("/group_home/%d" % (group_id))
 
 
-@app.route('/user_public_profile/<int:user_id>')
-def show_other_user_profile(user_id):
-    """Show public profile info for other users"""
+# @app.route('/user_public_profile/<int:user_id>')
+# def show_other_user_profile(user_id):
+#     """Show public profile info for other users"""
 
-    user = User.query.get(user_id)
+#     user = User.query.get(user_id)
 
-    return render_template("user_public_profile.html", user=user)
+#     return render_template("user_public_profile.html", user=user)
 
 
 @app.route('/invite_form/<int:group_id>')
