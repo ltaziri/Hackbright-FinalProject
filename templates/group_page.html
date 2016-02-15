@@ -2,8 +2,12 @@
 {% block content %}
 
 <section>
-    <h2>Welcome to the {{ group.group_name}} page </h2>
-    <img src= "{{ group.group_image}}" width="500">
+    <h2>Welcome to the {{ group.group_name}}</h2>
+
+    {% if group.group_image %}
+        <img src= "/{{ group.group_image }}" width="500">
+    {% endif %} 
+    
 
     {% if group.group_descrip %}
         <p>{{ group.group_descrip }}</p>
@@ -12,11 +16,16 @@
 </section>
 <hr>
 <section>
-    <h3> This month we are working on {{ group.pattern_name }} Pattern </h3>
+    <h3> This month we are working on {{ group.pattern_name }}</h3>
 
-    <img src= "{{ group.pattern_image}}" width="400">
-
-    <h3>Click <a href="{{ group.pattern_link }}">here</a> for the full pattern</h3>
+    <p>
+    {% if group.pattern_pdf %}
+    Click<a href="/{{ group.pattern_pdf}}" target="blank"> here </a> to download the pattern.<br> 
+    {% endif %}
+    {% if group.pattern_link %}
+    Click <a href="{{ group.pattern_link }}" target="blank">here</a> to go to the pattern source.
+    {% endif %}
+    </p>
 </section>
 <hr>
 <section>
@@ -24,24 +33,27 @@
     <h3> Comments:</h3>
     <!-- <a href="/comment_form/{{ group.group_id }}"> add a comment </a> -->
         <form id="comment_form" action="/comment_add.json" method="POST">
+            Add a comment:
             <input type="hidden" name="group_id" id="group_id" value="{{group.group_id}}">
-            <input type="text" name="comment_text" id="comment_text" placeholder="comment"><br>
-            Add a picture!<input type="file" accept="image/*" id="comment_image"><br>
+            <br>
+            <input type="text" name="comment_text" id="comment_text" placeholder="comment">
+            &nbsp;Add a picture! <input type="file" accept="image/*" id="comment_image"><br>
             
             <button class="btn btn-primary" type="submit">Add your comment</button>
         </form>
+        <br>
     </div>
 
     <div id="new_comment"></div>
 
     {% for comment in comments|sort(attribute="comment_id", reverse = True) %}
     <div>
-        <img src="{{ comment.user.user_photo }}" width="50">
+        <img src="/{{ comment.user.user_photo }}" width="50">
         <b>{{ comment.user.first_name }}</b><br>
         <i>{{ comment.comment_timestamp.strftime("%m/%d/%y %X") }}</i><br>
         {{ comment.comment_text }} <br>
         {% if comment.comment_image %}
-          <img src="{{ comment.comment_image }}" width="300">
+          <img src="/{{ comment.comment_image }}" width="300">
         {% endif %}       
     </div>
     {% endfor %}
@@ -53,16 +65,16 @@
 function showComment(results) {
   console.dir(results);
   var htmlStr = "";
-  htmlStr += "<img src='" + results.comment_user_photo + "' width='50'>";
+  htmlStr += "<img src='/" + results.comment_user_photo + "' width='50'>";
   htmlStr += "<b>"+ results.comment_user_name + "</b><br>"
   htmlStr += "<i>" + results.comment_timestamp + "</i><br>"
   htmlStr += results.comment_text + "<br>"
   if(results.comment_image !== "") {
-    htmlStr += "<img src='" + results.comment_image + "' width='300'>";
+    htmlStr += "<img src='/" + results.comment_image + "' width='300'>";
   }
 
   
-  $("#new_comment").html(htmlStr);
+  $("#new_comment").prepend(htmlStr);
 }
 
 
@@ -88,28 +100,19 @@ $("#comment_form").on('submit', addNewComment);
 <hr>
 <section>
     <h3>Users in this group are:</h3>
-    <!-- I would like these to open in javascript! -->
-    <!-- <ul> -->
+    
       {% for group_user in group_users %}
           <button class="show_user">{{ group_user.first_name }} {{ group_user.last_name }}</button>
 
           <div class="pop-up">       
           <h2>{{ group_user.first_name }} {{ group_user.last_name }}</h2>
-          <img src="{{ group_user.user_photo }}" width="200">
+          <img src="/{{ group_user.user_photo }}" width="200">
           <p> {{ group_user.user_descrip }}</p>
           <button>close</button>
           </div>
 
       {% endfor %}
 
-      <!-- {% for group_user in group_users %}
-          <li>
-              <a href="/user_public_profile/{{ group_user.user_id }}">
-              {{ group_user.first_name }} {{ group_user.last_name }}
-              </a>
-          </li>
-      {% endfor %} -->
-    <!-- </ul> -->
 
     <h3><a href ="/invite_form/{{ group.group_id }}"> Invite people to join your group! </a></h3><br>
 </section>

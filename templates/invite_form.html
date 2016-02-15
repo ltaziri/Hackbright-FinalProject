@@ -5,10 +5,14 @@
 
 <form action="/send_invite/{{ group.group_id }}" method="POST">
 
-    <input type="text" name="email" placeholder="friend's email"><br>
-    <input type="text" name="name" placeholder="friend's name"><br>
-    <input type="text" name="text" placeholder="include a note"><br>
-
+    <h3>Your friend's email:</h3>
+    <input type="text" name="email" placeholder="email">
+    <h3>Friend's name:</h3>
+    <input type="text" name="name" placeholder="name">
+    <h3>Include a note(optional):</h3>
+    <input type="text" name="text" placeholder="note">
+    <br>
+    <br>
     <input type="submit" value="send invite">
 </form>
 

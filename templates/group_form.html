@@ -1,16 +1,49 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<h2>Sign Up!</h2>
+<h2>Create a Group!</h2>
 
-<form action="/create_group/{{ user.user_id }}" method="POST">
-
+<form action="/create_group/{{ user.user_id }}" enctype="multipart/form-data" method="POST">
+    Group Name:</br>
     <input type="text" name="group_name" placeholder="group name"><br>
-    <input type="text" name="group_image" placeholder="url to group image"><br>
-    <input type="text" name="pattern_image" placeholder="url to pattern image"><br>
-    <input type="text" name="pattern_link" placeholder="url to pattern"><br>
+    <br>
+    Group Description (optional):<br>
+    <input type="text" name="group_descrip" placeholder="group description"><br>
+    <br>
+    Pattern Name (optional):<br>
+    <input type="text" name="pattern_name" placeholder="pattern name"><br>
+    <br>
+    Upload a PDF Pattern (optional): <br>
+    <input type="file" name="pattern_pdf"><br>
+    <br>
+    Link to Pattern(optional):<br>
+    <input type="url" name="pattern_link" placeholder="link to pattern"><br>
+    <br>
+    
+    Select an image for your group or upload your own: <br> 
+    <input type='radio' name="group_image" value="/static/images/knitting_group_default.jpg">
+    <img src="/static/images/knitting_group_default.jpg" width="200">
 
+    <input type='radio' name="group_image" value="/static/images/sewing_group_default.jpg">
+    <img src="/static/images/sewing_group_default.jpg" width="200">
+
+    <input type='radio' name="group_image" value="/static/images/craft_group_default.jpg">
+    <img src="/static/images/craft_group_default.jpg" width="200">
+
+    <input type='radio' name="group_image" value=" " id="group_radio">
+
+    <input id="group_img_upload" type="file" name="photo"><br>
+    <br>
+    
     <input type="submit" value="Create Your Group">
 </form>
 
+<script>
+
+
+$("#group_img_upload").click(function(){
+    $("#group_radio").prop("checked", true);
+});
+
+</script>
 {% endblock %}

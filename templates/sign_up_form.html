@@ -5,7 +5,7 @@
 
 <form enctype ="multipart/form-data" action="/sign_up" method="POST">
 
-    <input type="text" name="email" placeholder="email"><br>
+    <input type="email" name="email" placeholder="email"><br>
     <br>
     <input type="text" name="password" placeholder="password"><br>
     <br>
@@ -16,14 +16,14 @@
 
     <p>Choose a user photo or upload your own:</p>
 
-    <input type='radio' name="user_photo" value="static/images/glue_gun.jpg">
-    <img src="static/images/glue_gun.jpg" width="100">
+    <input type='radio' name="user_photo" value="/static/images/glue_gun.jpg">
+    <img src="/static/images/glue_gun.jpg" width="100">
 
-    <input type='radio' name="user_photo" value="static/images/crafter.jpg">
-    <img src="static/images/crafter.jpg" width="100">
+    <input type='radio' name="user_photo" value="/static/images/crafter.jpg">
+    <img src="/static/images/crafter.jpg" width="100">
 
-    <input type='radio' name="user_photo" value="static/images/sewing_machine.jpg">
-    <img src="static/images/sewing_machine.jpg" width="100">
+    <input type='radio' name="user_photo" value="/static/images/sewing_machine.jpg">
+    <img src="/static/images/sewing_machine.jpg" width="100">
 
     <input type='radio' name="user_photo" value=" " id="upload_radio">
 

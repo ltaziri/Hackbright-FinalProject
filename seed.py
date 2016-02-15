@@ -40,13 +40,13 @@ def load_groups():
 
     for row in open("seed_data/groups.txt"):
         row = row.rstrip()
-        group_id, group_name, group_descrip, group_image, pattern_image, pattern_link, pattern_name = row.split("|")
+        group_id, group_name, group_descrip, group_image, pattern_pdf, pattern_link, pattern_name = row.split("|")
 
         group = Group(group_id=group_id,
                       group_name=group_name,
                       group_descrip=group_descrip,
                       group_image=group_image, 
-                      pattern_image=pattern_image, 
+                      pattern_pdf=pattern_pdf, 
                       pattern_link=pattern_link,
                       pattern_name=pattern_name
                       )

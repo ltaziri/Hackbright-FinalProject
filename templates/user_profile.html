@@ -3,7 +3,7 @@
 
 <h2>{{ user.first_name }} {{ user.last_name }} </h2>
 
-<img src="{{ user.user_photo}}" width="200"><br>
+<img src="/{{ user.user_photo}}" width="200"><br>
 
 {% if user.user_descrip %}
 <p> {{ user.user_descrip }}</p>

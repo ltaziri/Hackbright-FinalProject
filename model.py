@@ -56,7 +56,7 @@ class Group(db.Model):
     group_name = db.Column(db.String(64), nullable=False)
     group_descrip = db.Column(db.String(255), nullable=True)
     group_image = db.Column(db.String(255), nullable=False) # need to add default image
-    pattern_image = db.Column(db.String(255), nullable=True)
+    pattern_pdf = db.Column(db.String(255), nullable=True)
     pattern_link = db.Column(db.String(255), nullable=True)
     pattern_name = db.Column(db.String(255), nullable=True)
 

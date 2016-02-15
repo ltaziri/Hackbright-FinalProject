@@ -3,12 +3,14 @@
 from jinja2 import StrictUndefined
 from flask import Flask, render_template, redirect, request, flash, session, jsonify
 from flask_debugtoolbar import DebugToolbarExtension
-from flask.ext.uploads import UploadSet, configure_uploads, IMAGES
+from flask.ext.uploads import UploadSet, configure_uploads, IMAGES, patch_request_class
 from model import User, Group, UserGroup, Comment, Invite, connect_to_db, db
 from datetime import datetime
 import sendgrid
 from email_test import send_email
 import sendgrid
+import os
+import sys
 
 app = Flask(__name__)
 
@@ -19,9 +21,16 @@ app.secret_key = "ABC"
 # This is horrible. Fix this so that, instead, it raises an error.
 app.jinja_env.undefined = StrictUndefined
 
-photos = UploadSet('photos', IMAGES)
+
 app.config['UPLOADED_PHOTOS_DEST'] = 'static/images'
-configure_uploads(app, photos)
+app.config['UPLOADED_MANUALS_ALLOW']= ('pdf', 'PDF')
+app.config['UPLOADED_MANUALS_DEST'] = 'static/pdfs'
+
+photos = UploadSet('photos', IMAGES)
+manuals = UploadSet('manuals')
+configure_uploads(app, (photos, manuals))
+
+patch_request_class(app)
 
 @app.route('/')
 def index():
@@ -38,7 +47,7 @@ def index():
 def invite_index(invite_id):
     """Redirect to landing page when accepting and invite"""
 
-    session["invite_id"] = invite_id
+    # session["invite_id"] = invite_id
 
     return redirect("/")
 
@@ -185,16 +194,15 @@ def user_profile_update(user_id):
     """Handle user profile form to update users profile"""
 
     user = User.query.get(user_id)
-    user_photo = request.form.get("user_photo")
-    user_descrip = request.form.get("user_descrip")
+    # new_user_photo = request.form.get("user_photo")
+    new_user_descrip = request.form.get("user_descrip")
 
-    if user_photo:
-        user.user_photo = user_photo
-        db.session.commit()
+    user_photo_filename = photos.save(request.files['user_photo'])
+    new_user_photo = str(photos.path(user_photo_filename))
 
-    if user_descrip:
-        user.user_descrip = user_descrip
-        db.session.commit()
+    user.user_photo = new_user_photo
+    user.user_descrip = new_user_descrip
+    db.session.commit()
 
     return redirect("/user_profile/%d" % user_id)
 
@@ -214,13 +222,26 @@ def create_group(user_id):
 
     user = User.query.get(user_id)
     group_name = request.form.get("group_name")
-    group_image= request.form.get("group_image")
-    pattern_image = request.form.get("pattern_image")
+    # group_image= request.form.get("group_image")
+    # pattern_image = request.form.get("pattern_image")
     pattern_link = request.form.get("pattern_link")
+
+    pdf_filename = manuals.save(request.files['pattern_pdf'])
+    pattern_pdf = str(manuals.path(pdf_filename))
+    
+    # use Flask-Uploads to add file path for uploaded photo or add path
+    # to default image that was selected on radio button.  
+    if request.form.get("group_image") == " ":
+        filename = photos.save(request.files['photo'])
+        group_image = str(photos.path(filename))
+        group_image = "/" + group_image
+    else:
+        group_image = request.form.get("group_image")
+
 
     group = Group(group_name=group_name, 
                   group_image=group_image, 
-                  pattern_image=pattern_image, 
+                  pattern_pdf=pattern_pdf, 
                   pattern_link=pattern_link)
 
     db.session.add(group)
@@ -255,14 +276,6 @@ def show_group_page(group_id):
                             comments=comments)
 
 
-# @app.route('/comment_form/<int:group_id>')
-# def show_comment_form(group_id):
-#     """Show form for adding a comment"""
-
-#     group = Group.query.get(group_id)
-
-#     return render_template("comment_form.html", group=group)
-
 
 @app.route('/comment_add.json', methods=['POST'])
 def add_comment():
@@ -293,16 +306,6 @@ def add_comment():
                     'comment_image': comment.comment_image }
 
     return jsonify(comment_dict)
-    # redirect("/group_home/%d" % (group_id))
-
-
-# @app.route('/user_public_profile/<int:user_id>')
-# def show_other_user_profile(user_id):
-#     """Show public profile info for other users"""
-
-#     user = User.query.get(user_id)
-
-#     return render_template("user_public_profile.html", user=user)
 
 
 @app.route('/invite_form/<int:group_id>')
@@ -337,7 +340,7 @@ def send_invitation(group_id):
     db.session.add(invite)
     db.session.commit()
 
-    # send_email(invite_email, invite_name, user.first_name, group.group_name, invite_text, invite.invite_id)
+    send_email(invite_email, invite_name, user.first_name, group.group_name, invite_text, invite.invite_id)
 
     flash("Invitation sent!")
 

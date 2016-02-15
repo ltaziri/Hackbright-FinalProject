@@ -3,9 +3,13 @@
 
 <h2>{{ user.first_name }} {{ user.last_name }} </h2>
 
-<form action="/user_profile_update/{{ user.user_id }}" method="POST">
-    <input type="text" name="user_photo" placeholder="add or update your photo"><br>
-    <input type="textarea" name="user_descrip" placeholder="tell us about yourself!"><br>
+<form action="/user_profile_update/{{ user.user_id }}" method="POST" enctype="multipart/form-data">
+    <h3>Update your photo:</h3>
+    <input type="file" name="user_photo">
+    <br>
+    <h3>Tell us about yourself:</h3>
+    <input type="textarea" name="user_descrip" placeholder="description"><br>
+    <br>
     <input type="submit" value="Update Your Profile">
 </form>
 

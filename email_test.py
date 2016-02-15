@@ -1,10 +1,13 @@
 import sendgrid
+import os
+import sys
 
-# sg = sendgrid.SendGridClient('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')
 
 def send_email(invite_email, invite_name, user_name, group_name, invite_text, invite_id):
-    sg = sendgrid.SendGridClient('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')
 
+    api_key = os.environ['SEND_GRID_API']
+    sg = sendgrid.SendGridClient(api_key)
+    
     
     message = sendgrid.Mail()
     message.add_to(invite_email)
