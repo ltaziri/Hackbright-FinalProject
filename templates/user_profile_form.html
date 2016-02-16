@@ -4,10 +4,16 @@
 <h2>{{ user.first_name }} {{ user.last_name }} </h2>
 
 <form action="/user_profile_update/{{ user.user_id }}" method="POST" enctype="multipart/form-data">
-    <h3>Update your photo:</h3>
+    <h3>Update your photo</h3>
+    Currently: <br> <img src="/{{ user.user_photo }}" width="200"><br>
+    <br>
+    <b>Update:</b> 
     <input type="file" name="user_photo">
     <br>
-    <h3>Tell us about yourself:</h3>
+    <h3>Tell us about yourself</h3>
+    Currently: <i>{{ user.user_descrip }}</i><br>
+    <br>
+    <b>Update:</b> 
     <input type="textarea" name="user_descrip" placeholder="description"><br>
     <br>
     <input type="submit" value="Update Your Profile">

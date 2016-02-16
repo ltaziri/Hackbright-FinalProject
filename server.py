@@ -3,7 +3,7 @@
 from jinja2 import StrictUndefined
 from flask import Flask, render_template, redirect, request, flash, session, jsonify
 from flask_debugtoolbar import DebugToolbarExtension
-from flask.ext.uploads import UploadSet, configure_uploads, IMAGES, patch_request_class
+from flask.ext.uploads import UploadSet, configure_uploads, IMAGES, DOCUMENTS, patch_request_class
 from model import User, Group, UserGroup, Comment, Invite, connect_to_db, db
 from datetime import datetime
 import sendgrid
@@ -22,13 +22,15 @@ app.secret_key = "ABC"
 app.jinja_env.undefined = StrictUndefined
 
 
+
 app.config['UPLOADED_PHOTOS_DEST'] = 'static/images'
-app.config['UPLOADED_MANUALS_ALLOW']= ('pdf', 'PDF')
+app.config['UPLOADED_MANUALS_ALLOW']= set(['pdf', 'PDF'])
 app.config['UPLOADED_MANUALS_DEST'] = 'static/pdfs'
 
 photos = UploadSet('photos', IMAGES)
 manuals = UploadSet('manuals')
 configure_uploads(app, (photos, manuals))
+
 
 patch_request_class(app)
 
@@ -194,15 +196,19 @@ def user_profile_update(user_id):
     """Handle user profile form to update users profile"""
 
     user = User.query.get(user_id)
-    # new_user_photo = request.form.get("user_photo")
+    new_user_photo = request.form.get("user_photo")
     new_user_descrip = request.form.get("user_descrip")
 
-    user_photo_filename = photos.save(request.files['user_photo'])
-    new_user_photo = str(photos.path(user_photo_filename))
+    print new_user_photo, new_user_descrip
 
-    user.user_photo = new_user_photo
-    user.user_descrip = new_user_descrip
-    db.session.commit()
+    if new_user_photo != " ":
+        user_photo_filename = photos.save(request.files['user_photo'])
+        new_user_photo = str(photos.path(user_photo_filename))
+        user.user_photo = new_user_photo
+        db.session.commit()
+    if new_user_descrip != "":
+        user.user_descrip = new_user_descrip
+        db.session.commit()
 
     return redirect("/user_profile/%d" % user_id)
 
@@ -234,7 +240,7 @@ def create_group(user_id):
     if request.form.get("group_image") == " ":
         filename = photos.save(request.files['photo'])
         group_image = str(photos.path(filename))
-        group_image = "/" + group_image
+
     else:
         group_image = request.form.get("group_image")
 
@@ -277,6 +283,56 @@ def show_group_page(group_id):
 
 
 
+@app.route('/group_profile_form/<int:group_id>')
+def show_group_profile_form(group_id): 
+    """Show users profile form so they can update information"""
+
+    group = Group.query.get(group_id)
+
+    return render_template("group_update_form.html", group=group)
+
+
+@app.route('/group_profile_update/<int:group_id>', methods=['POST'])
+def update_group_profile(group_id):
+    """Update group profile using inputs from group update form"""
+
+    group = Group.query.get(group_id)
+
+    new_group_name = request.form.get("group_name")
+    new_group_descrip = request.form.get("group_descrip")
+    new_group_image = request.form.get("group_image")
+    new_group_pattern_name = request.form.get("pattern_name")
+    new_group_pattern_pdf = request.form.get("pattern_pdf")
+    new_group_pattern_link = request.form.get("pattern_link")
+    
+
+    if new_group_name != "":
+        group.group_name = new_group_name
+        db.session.commit()
+    if new_group_descrip != "":
+        group.group_descrip = new_group_descrip
+        db.session.commit()
+    if photos.extension_allowed(new_group_image):
+        group_photo_filename = photos.save(request.files["group_image"])
+        new_group_image = str(photos.path(group_photo_filename))
+        group.group_image = new_group_image
+    if new_group_pattern_name != "":
+        group.group_pattern_name = new_group_pattern_name
+        db.session.commit()
+    if photos.extension_allowed(new_group_pattern_pdf):
+        pattern_pdf_filename = manuals.save(request.files['pattern_pdf'])
+        new_group_pattern_pdf = str(manuals.path(pattern_pdf_filename))
+        group.pattern_pdf = new_group_pattern_pdf
+        db.session.commit()
+    if new_group_pattern_link != "":
+        group.group_link = new_group_pattern_link
+        db.session.commit()
+        
+    return redirect("/group_home/%d" % (group.group_id))
+
+
+
+
 @app.route('/comment_add.json', methods=['POST'])
 def add_comment():
     """Handle comment form submissions"""
@@ -286,7 +342,6 @@ def add_comment():
     comment_text = request.form.get("comment_text")
     comment_image= request.form.get("comment_image")
 
-    # group = Group.query.get(group_id)
     
     comment = Comment(comment_text=comment_text, 
                       comment_image=comment_image, 

@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h2>Make updates to the {{ group.group_name }} group </h2>
+
+<form action="/group_profile_update/{{ group.group_id }}" method="POST" enctype="multipart/form-data">
+    
+    <h3>Group Name</h3>
+    Currently: <i>{{ group.group_name }}</i><br>
+    <br>
+    <b>Update:</b> 
+    <input type="text" name="group_name" placeholder="group name">
+    <br>
+
+    <h3>Group Description</h3>
+    {% if group.group_descrip %}
+    Currently: <i>{{ group.group_descrip }}</i><br>
+    <br>
+    {% endif %}
+    <b>Update:</b> 
+    <input type="text" name="group_descrip" placeholder="group description">
+    <br>
+
+    <h3>Group Photo</h3>
+    Currently: <br> <img src="/{{ group.group_image }}" width="200"><br>
+    <br>
+    <b>Update:</b> 
+    <input type="file" name="group_image">
+    <br>
+
+    <h3>Pattern Name:</h3>
+    {% if group.pattern_name %}
+    Currently: <i>{{ group.pattern_name }}</i><br>
+    <br>
+    {% endif %}
+    <b>Update:</b>
+    <input type="text" name="pattern_name" placeholder="pattern name">
+    
+    <h3>PDF Pattern: </h3>
+    {% if group.pattern_pdf %}
+    Currently: <a href="/{{ group.pattern_pdf }}" target="blank"> {{ group.pattern_pdf[12:] }} <a> <br>
+    <br>
+    {% endif %}
+    <b>Update:</b>
+    <input type="file" name="pattern_pdf">  
+
+    <h3>Pattern Link:</h3>
+    {% if group.pattern_link %}
+    Currently: <a href="{{ group.pattern_link }}" target="blank"> {{ group.pattern_link }} <a> <br>
+    <br>
+    {% endif %}
+    <b>Update:</b>
+    <input type="url" name="pattern_link" placeholder="link to pattern"><br>
+    
+    <br>
+    <input type="submit" value="Update Your Profile">
+</form>
+
+{% endblock %}

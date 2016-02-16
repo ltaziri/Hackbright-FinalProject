@@ -11,8 +11,9 @@
 
     {% if group.group_descrip %}
         <p>{{ group.group_descrip }}</p>
-    {% endif %} 
-
+    {% endif %}
+    <br> 
+    <a href="/group_profile_form/{{ group.group_id }}">Update the group information</a>
 </section>
 <hr>
 <section>
@@ -102,27 +103,29 @@ $("#comment_form").on('submit', addNewComment);
     <h3>Users in this group are:</h3>
     
       {% for group_user in group_users %}
-          <button class="show_user">{{ group_user.first_name }} {{ group_user.last_name }}</button>
-
+          
+          
           <div class="pop-up">       
-          <h2>{{ group_user.first_name }} {{ group_user.last_name }}</h2>
-          <img src="/{{ group_user.user_photo }}" width="200">
-          <p> {{ group_user.user_descrip }}</p>
-          <button>close</button>
+            <h2>{{ group_user.first_name }} {{ group_user.last_name }}</h2>
+            <img src="/{{ group_user.user_photo }}" width="200">
+            <p> {{ group_user.user_descrip }}</p>
+            <button>close</button>
           </div>
 
+          <button class="show_user">{{ group_user.first_name }} {{ group_user.last_name }}</button>
       {% endfor %}
-
 
     <h3><a href ="/invite_form/{{ group.group_id }}"> Invite people to join your group! </a></h3><br>
 </section>
+
 <script>
       function showUserInfo(evt) {
           var mouseX = evt.pageX;
           var mouseY = evt.pageY;
-          $('div.pop-up').show()
+          $(this).prev('div.pop-up').show()
           .css('left', mouseX)
           .css('top', mouseY);
+          console.log($('.show_user').prev())
       }
 
       function hideUserInfo(evt) {
@@ -133,6 +136,7 @@ $("#comment_form").on('submit', addNewComment);
           $('.show_user').click(showUserInfo);
           $('.pop-up').click(hideUserInfo);
       });
+
             
 </script>
 <hr>
