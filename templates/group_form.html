@@ -3,7 +3,7 @@
 
 <h2>Create a Group!</h2>
 
-<form action="/create_group/{{ user.user_id }}" enctype="multipart/form-data" method="POST">
+<form action="/create_group/{{ user.user_id }}" id="new_group_form" enctype="multipart/form-data" method="POST">
     Group Name:</br>
     <input type="text" name="group_name" placeholder="group name"><br>
     <br>
@@ -14,7 +14,7 @@
     <input type="text" name="pattern_name" placeholder="pattern name"><br>
     <br>
     Upload a PDF Pattern (optional): <br>
-    <input type="file" name="pattern_pdf"><br>
+    <input type="file" name="pattern_pdf" id="pattern_pdf"><br>
     <br>
     Link to Pattern(optional):<br>
     <input type="url" name="pattern_link" placeholder="link to pattern"><br>
@@ -39,6 +39,13 @@
 </form>
 
 <script>
+
+$('#new_group_form').on('submit', function(evt){
+    var validatePDF= $('#pattern_pdf').val().length;
+    if(validatePDF < 1) {
+        $('input#pattern_pdf').remove();
+    }
+});
 
 
 $("#group_img_upload").click(function(){

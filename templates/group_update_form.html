@@ -3,7 +3,7 @@
 
 <h2>Make updates to the {{ group.group_name }} group </h2>
 
-<form action="/group_profile_update/{{ group.group_id }}" method="POST" enctype="multipart/form-data">
+<form action="/group_profile_update/{{ group.group_id }}" id="update_group_submit" method="POST" enctype="multipart/form-data">
     
     <h3>Group Name</h3>
     Currently: <i>{{ group.group_name }}</i><br>
@@ -25,7 +25,7 @@
     Currently: <br> <img src="/{{ group.group_image }}" width="200"><br>
     <br>
     <b>Update:</b> 
-    <input type="file" name="group_image">
+    <input type="file" name="group_img" id="update_group_photo">
     <br>
 
     <h3>Pattern Name:</h3>
@@ -42,7 +42,7 @@
     <br>
     {% endif %}
     <b>Update:</b>
-    <input type="file" name="pattern_pdf">  
+    <input type="file" name="pattern_pdf" id="update_pattern_pdf">  
 
     <h3>Pattern Link:</h3>
     {% if group.pattern_link %}
@@ -56,4 +56,18 @@
     <input type="submit" value="Update Your Profile">
 </form>
 
+<script>
+
+$('#update_group_submit').on('submit', function(evt){
+    var validatePhoto= $('#update_group_photo').val().length;
+    if(validatePhoto < 1) {
+        $('input#update_group_photo').remove();
+    }
+    var validatePdf = $('#update_pattern_pdf').val().length;
+    if(validatePdf < 1) {
+        $('input#update_pattern_pdf').remove();
+    }
+});
+
+</script>
 {% endblock %}

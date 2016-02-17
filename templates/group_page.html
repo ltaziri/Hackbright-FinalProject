@@ -21,10 +21,10 @@
 
     <p>
     {% if group.pattern_pdf %}
-    Click<a href="/{{ group.pattern_pdf}}" target="blank"> here </a> to download the pattern.<br> 
+      Click<a href="/{{ group.pattern_pdf}}" target="blank"> here </a> to download the pattern.<br> 
     {% endif %}
     {% if group.pattern_link %}
-    Click <a href="{{ group.pattern_link }}" target="blank">here</a> to go to the pattern source.
+      Click <a href="{{ group.pattern_link }}" target="blank">here</a> to go to the pattern source.
     {% endif %}
     </p>
 </section>
@@ -32,7 +32,7 @@
 <section>
     <div>
     <h3> Comments:</h3>
-    <!-- <a href="/comment_form/{{ group.group_id }}"> add a comment </a> -->
+   
         <form id="comment_form" action="/comment_add.json" method="POST">
             Add a comment:
             <input type="hidden" name="group_id" id="group_id" value="{{group.group_id}}">
@@ -70,7 +70,7 @@ function showComment(results) {
   htmlStr += "<b>"+ results.comment_user_name + "</b><br>"
   htmlStr += "<i>" + results.comment_timestamp + "</i><br>"
   htmlStr += results.comment_text + "<br>"
-  if(results.comment_image !== "") {
+  if(results.comment_image) {
     htmlStr += "<img src='/" + results.comment_image + "' width='300'>";
   }
 
@@ -82,16 +82,31 @@ function showComment(results) {
 function addNewComment(evt) {
     evt.preventDefault();
 
-    var formInputs = {
-        "group_id":$("#group_id").val(),
-        "comment_text": $("#comment_text").val(),
-        "comment_image": $("#comment_image").val()
-    };
+    var formData = new FormData($(this)[0]);
 
-    $.post("/comment_add.json",formInputs, showComment);
+    // var formInputs;
+
+    // var commentImgExist = $('#comment_image').val().length;
+
+    // if(commentImgExist < 1) {
+    //     formInputs = {
+    //     "group_id":$("#group_id").val(),
+    //     "comment_text": $("#comment_text").val(),
+    //     };
+    // }
+    // else {
+    //     formInputs = {
+    //         "group_id":$("#group_id").val(),
+    //         "comment_text": $("#comment_text").val(),
+    //         "comment_image": $("#comment_image").val()
+    //     };    
+    // }
+    console.log(formData);
+    $.post("/comment_add.json",formData, showComment);
 }
 
 $("#comment_form").on('submit', addNewComment);
+
 
 </script>
 

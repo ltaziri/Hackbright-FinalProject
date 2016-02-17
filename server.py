@@ -3,7 +3,7 @@
 from jinja2 import StrictUndefined
 from flask import Flask, render_template, redirect, request, flash, session, jsonify
 from flask_debugtoolbar import DebugToolbarExtension
-from flask.ext.uploads import UploadSet, configure_uploads, IMAGES, DOCUMENTS, patch_request_class
+from flask.ext.uploads import UploadSet, configure_uploads, IMAGES, patch_request_class
 from model import User, Group, UserGroup, Comment, Invite, connect_to_db, db
 from datetime import datetime
 import sendgrid
@@ -21,14 +21,15 @@ app.secret_key = "ABC"
 # This is horrible. Fix this so that, instead, it raises an error.
 app.jinja_env.undefined = StrictUndefined
 
-
+photos = UploadSet('photos', IMAGES)
+manuals = UploadSet('manuals')
 
 app.config['UPLOADED_PHOTOS_DEST'] = 'static/images'
+app.config['UPLOADED_PHOTOS_ALLOW'] = set(['jpg', 'JPG'])
 app.config['UPLOADED_MANUALS_ALLOW']= set(['pdf', 'PDF'])
 app.config['UPLOADED_MANUALS_DEST'] = 'static/pdfs'
 
-photos = UploadSet('photos', IMAGES)
-manuals = UploadSet('manuals')
+
 configure_uploads(app, (photos, manuals))
 
 
@@ -196,12 +197,11 @@ def user_profile_update(user_id):
     """Handle user profile form to update users profile"""
 
     user = User.query.get(user_id)
-    new_user_photo = request.form.get("user_photo")
+    # new_user_photo = request.form.get("user_photo")
     new_user_descrip = request.form.get("user_descrip")
 
-    print new_user_photo, new_user_descrip
 
-    if new_user_photo != " ":
+    if 'user_photo' in request.files:
         user_photo_filename = photos.save(request.files['user_photo'])
         new_user_photo = str(photos.path(user_photo_filename))
         user.user_photo = new_user_photo
@@ -227,13 +227,13 @@ def create_group(user_id):
     """Handle submission of new group form"""
 
     user = User.query.get(user_id)
+
     group_name = request.form.get("group_name")
-    # group_image= request.form.get("group_image")
-    # pattern_image = request.form.get("pattern_image")
     pattern_link = request.form.get("pattern_link")
 
-    pdf_filename = manuals.save(request.files['pattern_pdf'])
-    pattern_pdf = str(manuals.path(pdf_filename))
+    if "pattern_pdf" in request.files:
+        pdf_filename = manuals.save(request.files['pattern_pdf'])
+        pattern_pdf = str(manuals.path(pdf_filename))
     
     # use Flask-Uploads to add file path for uploaded photo or add path
     # to default image that was selected on radio button.  
@@ -300,9 +300,7 @@ def update_group_profile(group_id):
 
     new_group_name = request.form.get("group_name")
     new_group_descrip = request.form.get("group_descrip")
-    new_group_image = request.form.get("group_image")
     new_group_pattern_name = request.form.get("pattern_name")
-    new_group_pattern_pdf = request.form.get("pattern_pdf")
     new_group_pattern_link = request.form.get("pattern_link")
     
 
@@ -312,25 +310,24 @@ def update_group_profile(group_id):
     if new_group_descrip != "":
         group.group_descrip = new_group_descrip
         db.session.commit()
-    if photos.extension_allowed(new_group_image):
-        group_photo_filename = photos.save(request.files["group_image"])
+    if "group_img" in request.files:
+        group_photo_filename = photos.save(request.files["group_img"])
         new_group_image = str(photos.path(group_photo_filename))
         group.group_image = new_group_image
-    if new_group_pattern_name != "":
-        group.group_pattern_name = new_group_pattern_name
         db.session.commit()
-    if photos.extension_allowed(new_group_pattern_pdf):
+    if new_group_pattern_name != "":
+        group.pattern_name = new_group_pattern_name
+        db.session.commit()
+    if "pattern_pdf" in request.files:
         pattern_pdf_filename = manuals.save(request.files['pattern_pdf'])
         new_group_pattern_pdf = str(manuals.path(pattern_pdf_filename))
         group.pattern_pdf = new_group_pattern_pdf
         db.session.commit()
     if new_group_pattern_link != "":
-        group.group_link = new_group_pattern_link
+        group.pattern_link = new_group_pattern_link
         db.session.commit()
         
     return redirect("/group_home/%d" % (group.group_id))
-
-
 
 
 @app.route('/comment_add.json', methods=['POST'])
@@ -340,25 +337,37 @@ def add_comment():
     
     group_id = request.form.get("group_id")
     comment_text = request.form.get("comment_text")
-    comment_image= request.form.get("comment_image")
 
-    
-    comment = Comment(comment_text=comment_text, 
+    if "comment_image" in request.files:
+        comment_img_filename = photos.save(request.files['comment_image'])
+        comment_image = str(photos.path(comment_img_filename))
+
+        comment = Comment(comment_text=comment_text, 
                       comment_image=comment_image, 
                       comment_timestamp=datetime.now(),
                       user_id=session["user_id"],
                       group_id=group_id)
 
-    db.session.add(comment)
-    db.session.commit()
+        db.session.add(comment)
+        db.session.commit()
+    else:
+        comment = Comment(comment_text=comment_text, 
+                      comment_timestamp=datetime.now(),
+                      user_id=session["user_id"],
+                      group_id=group_id)
+
+        db.session.add(comment)
+        db.session.commit()
 
     format_timestamp = comment.comment_timestamp.strftime('%m/%d/%y %X')
 
     comment_dict = {'comment_user_photo': comment.user.user_photo,
                     'comment_user_name': comment.user.first_name,
                     'comment_timestamp':format_timestamp,
-                    'comment_text': comment.comment_text,
-                    'comment_image': comment.comment_image }
+                    'comment_text': comment.comment_text }
+
+    if comment.comment_image:
+        comment_dict['comment_image'] = comment.comment_image
 
     return jsonify(comment_dict)
 
