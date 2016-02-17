@@ -3,7 +3,7 @@
 
 <h2>{{ user.first_name }} {{ user.last_name }} </h2>
 
-<form action="/user_profile_update/{{ user.user_id }}" method="POST" id="update_user_submit"enctype="multipart/form-data">
+<form action="/user_profile_update" method="POST" id="update_user_submit"enctype="multipart/form-data">
     <h3>Update your photo</h3>
     Currently: <br> <img src="/{{ user.user_photo }}" width="200"><br>
     <br>

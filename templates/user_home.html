@@ -3,7 +3,7 @@
 
 <section>
   <h2>Welcome {{ user.first_name }} </h2>
-  <a href="/user_profile/{{ user.user_id }}">Update/View Your profile</a> 
+  <a href="/user_profile">Update/View Your profile</a> 
 </section>
 
 <hr>
@@ -22,6 +22,6 @@
   </ul>
 </section>
 
-<h3> <a href="/group_form/{{ user.user_id }}">Create a new group</a> </h3>
+<h3> <a href="/group_form">Create a new group</a> </h3>
 
 {% endblock %}

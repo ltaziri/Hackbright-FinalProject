@@ -3,7 +3,7 @@
 
 <h2>Create a Group!</h2>
 
-<form action="/create_group/{{ user.user_id }}" id="new_group_form" enctype="multipart/form-data" method="POST">
+<form action="/create_group" id="new_group_form" enctype="multipart/form-data" method="POST">
     Group Name:</br>
     <input type="text" name="group_name" placeholder="group name"><br>
     <br>
@@ -21,14 +21,14 @@
     <br>
     
     Select an image for your group or upload your own: <br> 
-    <input type='radio' name="group_image" value="/static/images/knitting_group_default.jpg">
-    <img src="/static/images/knitting_group_default.jpg" width="200">
+    <input type='radio' name="group_image" value="static/images/knitting_group_default.jpg">
+    <img src="static/images/knitting_group_default.jpg" width="200">
 
-    <input type='radio' name="group_image" value="/static/images/sewing_group_default.jpg">
-    <img src="/static/images/sewing_group_default.jpg" width="200">
+    <input type='radio' name="group_image" value="static/images/sewing_group_default.jpg">
+    <img src="static/images/sewing_group_default.jpg" width="200">
 
-    <input type='radio' name="group_image" value="/static/images/craft_group_default.jpg">
-    <img src="/static/images/craft_group_default.jpg" width="200">
+    <input type='radio' name="group_image" value="static/images/craft_group_default.jpg">
+    <img src="static/images/craft_group_default.jpg" width="200">
 
     <input type='radio' name="group_image" value=" " id="group_radio">
 

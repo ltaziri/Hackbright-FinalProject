@@ -40,7 +40,7 @@ def index():
     """Homepage"""
 
     if session.get("user_id"):
-        return redirect("/users/"+str(session["user_id"]))
+        return redirect("/user")
 
     else:
         return render_template("homepage.html")
@@ -50,7 +50,7 @@ def index():
 def invite_index(invite_id):
     """Redirect to landing page when accepting and invite"""
 
-    # session["invite_id"] = invite_id
+    session["invite_id"] = invite_id
 
     return redirect("/")
 
@@ -158,14 +158,11 @@ def new_user_sign_up():
 
         flash("You are successfully signed up!")
 
-    return redirect('/users/%d' % (user.user_id))
+    return redirect('/user')
 
-   
-@app.route('/users/<int:user_id>')
-def show_user_home(user_id):    
-    """User's homepage after loging in"""
-
-    user = User.query.get(user_id)
+@app.route('/user')
+def show_user_home():   
+    user = User.query.get(session["user_id"])
 
     groups = user.groups
 
@@ -174,30 +171,31 @@ def show_user_home(user_id):
     return render_template("user_home.html", user=user, groups=groups)
 
 
-@app.route('/user_profile/<int:user_id>')
-def show_user_profile(user_id): 
+
+@app.route('/user_profile')
+def show_user_profile(): 
     """Show users profile page"""
 
-    user = User.query.get(user_id)
+    user = User.query.get(session["user_id"])
 
     return render_template("user_profile.html", user=user)
 
 
-@app.route('/user_profile_form/<int:user_id>')
-def show_user_profile_form(user_id): 
+@app.route('/user_profile_form')
+def show_user_profile_form(): 
     """Show users profile form so they can update information"""
 
-    user = User.query.get(user_id)
+    user = User.query.get(session["user_id"])
 
     return render_template("user_profile_form.html", user=user)
 
 
-@app.route('/user_profile_update/<int:user_id>',methods=['POST'])
-def user_profile_update(user_id): 
+@app.route('/user_profile_update',methods=['POST'])
+def user_profile_update(): 
     """Handle user profile form to update users profile"""
 
-    user = User.query.get(user_id)
-    # new_user_photo = request.form.get("user_photo")
+    user = User.query.get(session["user_id"])
+
     new_user_descrip = request.form.get("user_descrip")
 
 
@@ -210,23 +208,23 @@ def user_profile_update(user_id):
         user.user_descrip = new_user_descrip
         db.session.commit()
 
-    return redirect("/user_profile/%d" % user_id)
+    return redirect("/user_profile")
 
 
-@app.route('/group_form/<int:user_id>')
-def show_group_form(user_id):
+@app.route('/group_form')
+def show_group_form():
     """Create a new group form"""
 
-    user = User.query.get(user_id)
+    user = User.query.get(session["user_id"])
 
     return render_template("group_form.html", user=user)
 
 
-@app.route('/create_group/<int:user_id>', methods=['POST'])
-def create_group(user_id):
+@app.route('/create_group', methods=['POST'])
+def create_group():
     """Handle submission of new group form"""
 
-    user = User.query.get(user_id)
+    user = User.query.get(session["user_id"])
 
     group_name = request.form.get("group_name")
     pattern_link = request.form.get("pattern_link")
@@ -234,7 +232,8 @@ def create_group(user_id):
     if "pattern_pdf" in request.files:
         pdf_filename = manuals.save(request.files['pattern_pdf'])
         pattern_pdf = str(manuals.path(pdf_filename))
-    
+    else:
+        pattern_pdf = None
     # use Flask-Uploads to add file path for uploaded photo or add path
     # to default image that was selected on radio button.  
     if request.form.get("group_image") == " ":
@@ -254,7 +253,7 @@ def create_group(user_id):
     db.session.commit()
     
     user_group= UserGroup(group_id=group.group_id,
-                          user_id=user_id)
+                          user_id=user.user_id)
 
     db.session.add(user_group)
     db.session.commit()
@@ -334,11 +333,13 @@ def update_group_profile(group_id):
 def add_comment():
     """Handle comment form submissions"""
 
-    
+
     group_id = request.form.get("group_id")
     comment_text = request.form.get("comment_text")
 
-    if "comment_image" in request.files:
+    # comment_image = request.form.get("comment_image")
+    
+    if 'comment_image' in request.files:
         comment_img_filename = photos.save(request.files['comment_image'])
         comment_image = str(photos.path(comment_img_filename))
 
@@ -364,10 +365,11 @@ def add_comment():
     comment_dict = {'comment_user_photo': comment.user.user_photo,
                     'comment_user_name': comment.user.first_name,
                     'comment_timestamp':format_timestamp,
-                    'comment_text': comment.comment_text }
+                    'comment_text': comment.comment_text,
+                    'comment_image': comment.comment_image }
 
-    if comment.comment_image:
-        comment_dict['comment_image'] = comment.comment_image
+    # if comment.comment_image:
+    #     comment_dict['comment_image'] = comment.comment_image
 
     return jsonify(comment_dict)
 

@@ -33,12 +33,12 @@
     <div>
     <h3> Comments:</h3>
    
-        <form id="comment_form" action="/comment_add.json" method="POST">
+        <form id="comment_form" action="/comment_add.json" method="POST" enctype="multipart/form-data">
             Add a comment:
             <input type="hidden" name="group_id" id="group_id" value="{{group.group_id}}">
             <br>
             <input type="text" name="comment_text" id="comment_text" placeholder="comment">
-            &nbsp;Add a picture! <input type="file" accept="image/*" id="comment_image"><br>
+            &nbsp;Add a picture! <input type="file" id="comment_image"><br>
             
             <button class="btn btn-primary" type="submit">Add your comment</button>
         </form>
@@ -63,7 +63,50 @@
 <script>
 "use strict";
 
-function showComment(results) {
+
+// $(function() {
+//   $("#comment_form").click(function(event){
+  
+//   event.preventDefault();
+  
+//   var formData = new FormData($('#comment_form')[0]);
+  
+//   $.ajax({
+//     url: '/comment_add.json',
+//     type: 'POST',
+//     data: formData,
+//     async: false,
+//     cache: false,
+//     contentType: false,
+//     processData: false,
+//     success: showComment,
+//     });
+//   });
+// });
+
+
+$(document).ready(function() {
+
+  $("#comment_form").submit(function(event){
+  
+  event.preventDefault();
+  
+  var formData = new FormData($('form#comment_form')[0]);
+  
+  $.ajax({
+    url: '/comment_add.json',
+    type: 'POST',
+    data: formData,
+    async: false,
+    cache: false,
+    contentType: false,
+    processData: false,
+    success: showComment,
+    });
+  });
+});
+
+  function showComment(results) {
   console.dir(results);
   var htmlStr = "";
   htmlStr += "<img src='/" + results.comment_user_photo + "' width='50'>";
@@ -74,15 +117,10 @@ function showComment(results) {
     htmlStr += "<img src='/" + results.comment_image + "' width='300'>";
   }
 
-  
   $("#new_comment").prepend(htmlStr);
+  $("#comment_text").val('');
+  $("#comment_image").val('');
 }
-
-
-function addNewComment(evt) {
-    evt.preventDefault();
-
-    var formData = new FormData($(this)[0]);
 
     // var formInputs;
 
@@ -100,12 +138,12 @@ function addNewComment(evt) {
     //         "comment_text": $("#comment_text").val(),
     //         "comment_image": $("#comment_image").val()
     //     };    
-    // }
-    console.log(formData);
-    $.post("/comment_add.json",formData, showComment);
-}
+//     // }
+//     console.log(formData);
+//     $.post("/comment_add.json",formData, showComment);
+// }
 
-$("#comment_form").on('submit', addNewComment);
+// $("#comment_form").on('submit', addNewComment);
 
 
 </script>
