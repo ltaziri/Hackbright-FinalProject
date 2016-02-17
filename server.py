@@ -342,23 +342,18 @@ def add_comment():
     if 'comment_image' in request.files:
         comment_img_filename = photos.save(request.files['comment_image'])
         comment_image = str(photos.path(comment_img_filename))
+    else:
+        comment_image = None
 
-        comment = Comment(comment_text=comment_text, 
+        
+    comment = Comment(comment_text=comment_text, 
                       comment_image=comment_image, 
                       comment_timestamp=datetime.now(),
                       user_id=session["user_id"],
                       group_id=group_id)
 
-        db.session.add(comment)
-        db.session.commit()
-    else:
-        comment = Comment(comment_text=comment_text, 
-                      comment_timestamp=datetime.now(),
-                      user_id=session["user_id"],
-                      group_id=group_id)
-
-        db.session.add(comment)
-        db.session.commit()
+    db.session.add(comment)
+    db.session.commit()    
 
     format_timestamp = comment.comment_timestamp.strftime('%m/%d/%y %X')
 
