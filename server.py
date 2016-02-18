@@ -17,8 +17,6 @@ app = Flask(__name__)
 # Required to use Flask sessions and the debug toolbar
 app.secret_key = "ABC"
 
-# Normally, if you use an undefined variable in Jinja2, it fails silently.
-# This is horrible. Fix this so that, instead, it raises an error.
 app.jinja_env.undefined = StrictUndefined
 
 photos = UploadSet('photos', IMAGES)
@@ -46,9 +44,9 @@ def index():
         return render_template("homepage.html")
 
 
-@app.route('/<invite_id>')
+@app.route('/invite/<invite_id>')
 def invite_index(invite_id):
-    """Redirect to landing page when accepting and invite"""
+    """Redirect to landing page when accepting an invite"""
 
     session["invite_id"] = invite_id
 
@@ -78,7 +76,7 @@ def handle_sign_in_form():
                     db.session.add(user_group)
                     db.session.commit()
                 del session['invite_id']
-            return redirect("/users/%s" % str(existing_user.user_id))
+            return redirect("/user")
         else:
             flash("Invalid password.")
             return redirect("/")
@@ -92,7 +90,6 @@ def log_out():
     """Log user out"""
 
     del session['user_id']
-
 
     return redirect("/")
 
@@ -160,16 +157,16 @@ def new_user_sign_up():
 
     return redirect('/user')
 
+
 @app.route('/user')
-def show_user_home():   
+def show_user_home(): 
+    """Show user's homepage""" 
+
     user = User.query.get(session["user_id"])
 
     groups = user.groups
 
-    print session
-
     return render_template("user_home.html", user=user, groups=groups)
-
 
 
 @app.route('/user_profile')
@@ -192,7 +189,7 @@ def show_user_profile_form():
 
 @app.route('/user_profile_update',methods=['POST'])
 def user_profile_update(): 
-    """Handle user profile form to update users profile"""
+    """Handle user profile form to update user's profile"""
 
     user = User.query.get(session["user_id"])
 
@@ -273,22 +270,36 @@ def show_group_page(group_id):
 
     comments =  Comment.query.filter_by(group_id=group_id)
 
+    groups_ids = []
+    for group_user in group_users:
+        groups_ids.append(group_user.user_id)
 
-    return render_template("group_page.html", 
-                            group=group, 
-                            group_users=group_users, 
-                            user=user,
-                            comments=comments)
-
+    if session["user_id"] in groups_ids:
+        return render_template("group_page.html", 
+                        group=group, 
+                        group_users=group_users, 
+                        user=user,
+                        comments=comments)
+    else:
+        return redirect("/user")
 
 
 @app.route('/group_profile_form/<int:group_id>')
 def show_group_profile_form(group_id): 
-    """Show users profile form so they can update information"""
+    """Show group's profile form so they can update information"""
 
     group = Group.query.get(group_id)
 
-    return render_template("group_update_form.html", group=group)
+    group_users = group.users
+
+    groups_ids = []
+    for group_user in group_users:
+        groups_ids.append(group_user.user_id)
+
+    if session["user_id"] in groups_ids:
+        return render_template("group_update_form.html", group=group)
+    else:
+        return redirect("/user")
 
 
 @app.route('/group_profile_update/<int:group_id>', methods=['POST'])
@@ -333,18 +344,15 @@ def update_group_profile(group_id):
 def add_comment():
     """Handle comment form submissions"""
 
-
     group_id = request.form.get("group_id")
     comment_text = request.form.get("comment_text")
-
-    # comment_image = request.form.get("comment_image")
     
-    if 'comment_image' in request.files:
+    if 'comment_image' in request.files and request.files['comment_image'].filename:
         comment_img_filename = photos.save(request.files['comment_image'])
         comment_image = str(photos.path(comment_img_filename))
     else:
         comment_image = None
-
+    print comment_image
         
     comment = Comment(comment_text=comment_text, 
                       comment_image=comment_image, 
@@ -363,9 +371,6 @@ def add_comment():
                     'comment_text': comment.comment_text,
                     'comment_image': comment.comment_image }
 
-    # if comment.comment_image:
-    #     comment_dict['comment_image'] = comment.comment_image
-
     return jsonify(comment_dict)
 
 
@@ -375,7 +380,16 @@ def show_invite_form(group_id):
 
     group = Group.query.get(group_id)
 
-    return render_template("invite_form.html", group=group)
+    group_users = group.users
+
+    groups_ids = []
+    for group_user in group_users:
+        groups_ids.append(group_user.user_id)
+
+    if session["user_id"] in groups_ids:
+        return render_template("invite_form.html", group=group)
+    else:
+        return redirect("/user")
 
 
 @app.route('/send_invite/<int:group_id>', methods=['POST'])

@@ -63,34 +63,20 @@
 <script>
 "use strict";
 
-
-// $(function() {
-//   $("#comment_form").click(function(event){
-  
-//   event.preventDefault();
-  
-//   var formData = new FormData($('#comment_form')[0]);
-  
-//   $.ajax({
-//     url: '/comment_add.json',
-//     type: 'POST',
-//     data: formData,
-//     async: false,
-//     cache: false,
-//     contentType: false,
-//     processData: false,
-//     success: showComment,
-//     });
-//   });
-// });
-
-
 $("#comment_form").submit(function(event){
   
   event.preventDefault();
   
+  // var validateImage= $('#comment_image').val().length;
+  //   if(validateImage < 1) {
+  //       $('input#comment_image').remove();
+  //   }
+
+
   var formData = new FormData($('form#comment_form')[0]);
-  
+  console.log(formData);
+  // debugger;
+
   $.ajax({
     url: '/comment_add.json',
     type: 'POST',
@@ -101,6 +87,7 @@ $("#comment_form").submit(function(event){
     processData: false,
     success: showComment,
     });
+  console.dir(formData);
   });
 
 
@@ -120,30 +107,6 @@ $("#comment_form").submit(function(event){
   $("#comment_image").val('');
 }
 
-    // var formInputs;
-
-    // var commentImgExist = $('#comment_image').val().length;
-
-    // if(commentImgExist < 1) {
-    //     formInputs = {
-    //     "group_id":$("#group_id").val(),
-    //     "comment_text": $("#comment_text").val(),
-    //     };
-    // }
-    // else {
-    //     formInputs = {
-    //         "group_id":$("#group_id").val(),
-    //         "comment_text": $("#comment_text").val(),
-    //         "comment_image": $("#comment_image").val()
-    //     };    
-//     // }
-//     console.log(formData);
-//     $.post("/comment_add.json",formData, showComment);
-// }
-
-// $("#comment_form").on('submit', addNewComment);
-
-
 </script>
 
 
@@ -154,8 +117,7 @@ $("#comment_form").submit(function(event){
     <h3>Users in this group are:</h3>
     
       {% for group_user in group_users %}
-          
-          
+                  
           <div class="pop-up">       
             <h2>{{ group_user.first_name }} {{ group_user.last_name }}</h2>
             <img src="/{{ group_user.user_photo }}" width="200">
@@ -191,7 +153,7 @@ $("#comment_form").submit(function(event){
             
 </script>
 <hr>
-<a href ="/users/{{user}}" target="_blank"> Return to user homepage </a>
+<a href ="/user"> Return to user homepage </a>
 
 
 
