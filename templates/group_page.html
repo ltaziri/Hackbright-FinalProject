@@ -67,15 +67,9 @@ $("#comment_form").submit(function(event){
   
   event.preventDefault();
   
-  // var validateImage= $('#comment_image').val().length;
-  //   if(validateImage < 1) {
-  //       $('input#comment_image').remove();
-  //   }
-
-
   var formData = new FormData($('form#comment_form')[0]);
   console.log(formData);
-  // debugger;
+  
 
   $.ajax({
     url: '/comment_add.json',
