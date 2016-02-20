@@ -40,15 +40,16 @@ def load_groups():
 
     for row in open("seed_data/groups.txt"):
         row = row.rstrip()
-        group_id, group_name, group_descrip, group_image, pattern_pdf, pattern_link, pattern_name = row.split("|")
+        group_id, group_name, group_descrip, group_image, admin_id = row.split("|")
 
         group = Group(group_id=group_id,
                       group_name=group_name,
                       group_descrip=group_descrip,
-                      group_image=group_image, 
-                      pattern_pdf=pattern_pdf, 
-                      pattern_link=pattern_link,
-                      pattern_name=pattern_name
+                      group_image=group_image,
+                      admin_id=admin_id
+                      # pattern_pdf=pattern_pdf, 
+                      # pattern_link=pattern_link,
+                      # pattern_name=pattern_name
                       )
 
         db.session.add(group)
@@ -128,4 +129,3 @@ if __name__ == "__main__":
     set_val_user_id()
     set_val_group_id()
     set_val_usergroup_id()
-

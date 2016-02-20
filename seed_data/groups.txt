@@ -1,3 +1,3 @@
-1|Kilgore Mitts for Everyone!|This months knit-along is the fun Kilgore Mitts pattern from Fancy Tiger. Can't wait to see what everyone makes!|static/images/knitting_group_default.jpg|static/pdfs/kilgore_mits.pdf|https://www.fancytigercrafts.com/patternpdfs/kilgore-mitts-pdf-pattern|Killgore Mitts
-2|Super Sewers||static/images/sewing_group_default.jpg|static/pdfs/3245_instructions.pdf|https://jalie.com/jalie3245-raglan-tee-racerback-tank-tunic-pattern|Jalie Raglan Tee/Tank/Tunic
-3|Cricut Crafters - Earrings||static/images/craft_group_default.jpg||http://cutesycrafts.com/2013/05/chipboard-earrings.html|Chipboard Earrings from Cutesy Crafter
+1|Kilgore Mitts for Everyone!|This months knit-along is the fun Kilgore Mitts pattern from Fancy Tiger. Can't wait to see what everyone makes!|static/images/knitting_group_default.jpg|1
+2|Super Sewers||static/images/sewing_group_default.jpg|1
+3|Cricut Crafters - Earrings||static/images/craft_group_default.jpg|1

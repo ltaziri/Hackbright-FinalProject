@@ -4,7 +4,7 @@ from jinja2 import StrictUndefined
 from flask import Flask, render_template, redirect, request, flash, session, jsonify
 from flask_debugtoolbar import DebugToolbarExtension
 from flask.ext.uploads import UploadSet, configure_uploads, IMAGES, patch_request_class
-from model import User, Group, UserGroup, Comment, Invite, connect_to_db, db
+from model import User, Group, UserGroup, Comment, Invite, Pattern, connect_to_db, db
 from datetime import datetime
 import sendgrid
 from email_test import send_email
@@ -224,15 +224,9 @@ def create_group():
     user = User.query.get(session["user_id"])
 
     group_name = request.form.get("group_name")
-    pattern_link = request.form.get("pattern_link")
 
-    if "pattern_pdf" in request.files:
-        pdf_filename = manuals.save(request.files['pattern_pdf'])
-        pattern_pdf = str(manuals.path(pdf_filename))
-    else:
-        pattern_pdf = None
-    # use Flask-Uploads to add file path for uploaded photo or add path
-    # to default image that was selected on radio button.  
+    group_descrip = request.form.get("group_descrip")
+    
     if request.form.get("group_image") == " ":
         filename = photos.save(request.files['photo'])
         group_image = str(photos.path(filename))
@@ -240,11 +234,10 @@ def create_group():
     else:
         group_image = request.form.get("group_image")
 
-
-    group = Group(group_name=group_name, 
-                  group_image=group_image, 
-                  pattern_pdf=pattern_pdf, 
-                  pattern_link=pattern_link)
+    group = Group(group_name=group_name,
+                  group_descrip=group_descrip, 
+                  group_image=group_image,  
+                  admin_id=user.user_id)
 
     db.session.add(group)
     db.session.commit()
@@ -254,6 +247,75 @@ def create_group():
 
     db.session.add(user_group)
     db.session.commit()
+
+    if request.form.get("pattern_name") or request.form.get("pattern_link") or  "pattern_pdf" in request.files:
+        base_pattern_name = request.form.get("pattern_name")
+        base_pattern_link = request.form.get("pattern_link")
+        if "pattern_pdf" in request.files:
+            pdf_filename = manuals.save(request.files['pattern_pdf'])
+            base_pattern_pdf = str(manuals.path(pdf_filename))
+        else:
+            base_pattern_pdf = None
+
+        pattern = Pattern(pattern_name = base_pattern_name,
+                          pattern_link = base_pattern_link,
+                          pattern_pdf = base_pattern_pdf,
+                          chosen = True,
+                          group_id = group.group_id)
+        db.session.add(pattern)
+        db.session.commit()
+
+    if request.form.get("pattern_name_a") or request.form.get("pattern_link_a") or  "pattern_pdf_a" in request.files:
+        pattern_name = request.form.get("pattern_name_a")
+        pattern_link = request.form.get("pattern_link_a")
+        if "pattern_pdf_a" in request.files:
+            pdf_filename = manuals.save(request.files['pattern_pdf_a'])
+            pattern_pdf = str(manuals.path(pdf_filename))
+        else:
+            pattern_pdf = None
+
+        pattern_one = Pattern(pattern_name = pattern_name,
+                          pattern_link = pattern_link,
+                          pattern_pdf = pattern_pdf,
+                          chosen = False,
+                          group_id = group.group_id)
+        db.session.add(pattern_one)
+        db.session.commit()
+
+    if request.form.get("pattern_name_b") or request.form.get("pattern_link_b") or  "pattern_pdf_b" in request.files:
+        pattern_name = request.form.get("pattern_name_b")
+        pattern_link = request.form.get("pattern_link_b")
+        if "pattern_pdf_b" in request.files:
+            pdf_filename = manuals.save(request.files['pattern_pdf_b'])
+            pattern_pdf = str(manuals.path(pdf_filename))
+        else:
+            pattern_pdf = None
+
+        pattern_two = Pattern(pattern_name = pattern_name,
+                          pattern_link = pattern_link,
+                          pattern_pdf = pattern_pdf,
+                          chosen = False,
+                          group_id = group.group_id) 
+        db.session.add(pattern_two)
+        db.session.commit()
+
+    if request.form.get("pattern_name_c") or request.form.get("pattern_link_c") or  "pattern_pdf_c" in request.files:
+        pattern_name = request.form.get("pattern_name_c")
+        pattern_link = request.form.get("pattern_link_c")
+        if "pattern_pdf_c" in request.files:
+            pdf_filename = manuals.save(request.files['pattern_pdf_c'])
+            pattern_pdf = str(manuals.path(pdf_filename))
+        else:
+            pattern_pdf = None
+
+        pattern_three = Pattern(pattern_name = pattern_name,
+                          pattern_link = pattern_link,
+                          pattern_pdf = pattern_pdf,
+                          chosen = False,
+                          group_id = group.group_id) 
+        db.session.add(pattern_three)
+        db.session.commit()
+  
 
     return redirect("/group_home/%d" % (group.group_id))
 

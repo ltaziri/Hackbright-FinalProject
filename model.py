@@ -1,3 +1,4 @@
+
 """Models and database functions for Leilani's project."""
 
 from flask_sqlalchemy import SQLAlchemy
@@ -56,10 +57,12 @@ class Group(db.Model):
     group_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     group_name = db.Column(db.String(64), nullable=False)
     group_descrip = db.Column(db.String(255), nullable=True)
-    group_image = db.Column(db.String(255), nullable=False) # need to add default image
-    pattern_pdf = db.Column(db.String(255), nullable=True)
-    pattern_link = db.Column(db.String(255), nullable=True)
-    pattern_name = db.Column(db.String(255), nullable=True)
+    group_image = db.Column(db.String(255), nullable=False)
+    admin_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
+    # pattern_pdf = db.Column(db.String(255), nullable=True)
+    # pattern_link = db.Column(db.String(255), nullable=True)
+    # pattern_name = db.Column(db.String(255), nullable=True)
+    admin = db.relationship("User", backref=db.backref("group", order_by=group_id))
 
     def __repr__(self):
         """Provide group information when printed."""
@@ -110,6 +113,25 @@ class Invite(db.Model):
 
         return "<Invite Id: %s From user: %s To: %s>" %(self.invite_id, self.user_id, self.invite_email)
 
+
+class Pattern(db.Model):
+    """"Pattern information for poll and ultimately group"""
+
+    __tablename__= "patterns"
+
+    pattern_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    pattern_name = db.Column(db.String(255), nullable=False)
+    pattern_link = db.Column(db.String(255), nullable=True) 
+    pattern_pdf = db.Column(db.DateTime, nullable=True)
+    chosen = db.Column(db.Boolean, nullable=True, default=False)
+    group_id = db.Column(db.Integer, db.ForeignKey('groups.group_id'), nullable=False)   
+    
+    group = db.relationship("Group", backref=db.backref("patterns", order_by=pattern_id))
+    
+    def __repr__(self):
+        """Provide invite information when printed."""
+
+        return "<Pattern Id: %s Pattern Name: %s>" %(self.pattern_id, self.pattern_name)
 
 ##############################################################################
 # Helper functions
@@ -208,7 +230,7 @@ class Invite(db.Model):
 
 
 
-def connect_to_db(app, db_uri="postgresql://localhost/virtcraft"):
+def connect_to_db(app, db_uri="postgresql:///virtcraft"):
     """Connect the database to our Flask app."""
 
     # Configure to use our PstgreSQL database

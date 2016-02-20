@@ -10,17 +10,62 @@
     Group Description (optional):<br>
     <input type="text" name="group_descrip" placeholder="group description"><br>
     <br>
-    Pattern Name (optional):<br>
-    <input type="text" name="pattern_name" placeholder="pattern name"><br>
-    <br>
-    Upload a PDF Pattern (optional): <br>
-    <input type="file" name="pattern_pdf" id="pattern_pdf"><br>
-    <br>
-    Link to Pattern(optional):<br>
-    <input type="url" name="pattern_link" placeholder="link to pattern"><br>
-    <br>
-    
-    Select an image for your group or upload your own: <br> 
+    <h3> What Pattern Will Your Group be Working on?</h3>
+        <div id="base_pattern">
+            Pattern Name (optional):<br>
+            <input type="text" name="pattern_name" id="pattern_name" placeholder="pattern name"><br>
+            <br>
+            Upload a PDF Pattern (optional): <br>
+            <input type="file" name="pattern_pdf" id="pattern_pdf" class="pattern_pdf"><br>
+            <br>
+            Link to Pattern(optional):<br>
+            <input type="url" name="pattern_link" id="pattern_link" placeholder="link to pattern"><br>
+            <br>
+        </div>    
+        Have some options and want the group to help you decide? We can create poll for you and your friends can help you decide!
+        <br>
+        Create a poll <input type="checkbox" id = "pattern_poll" name="pattern_poll" value="pattern_poll">
+        <br>
+        <br>
+        <div id="poll_div">
+            <div>
+                <b>Option 1</b></br>
+                First Pattern's Name:<br>
+                <input type="text" name="pattern_name_a" placeholder="pattern name"><br>
+                <br>
+                Upload a PDF Pattern(optional): <br>
+                <input type="file" name="pattern_pdf_a" class="pattern_pdf"><br>
+                <br>
+                Link to Pattern(optional):<br>
+                <input type="url" name="pattern_link_a" placeholder="link to pattern"><br>
+                <br>
+            </div>
+            <div>
+                <b>Option 2</b></br>
+                Second Pattern's Name:<br>
+                <input type="text" name="pattern_name_b" placeholder="pattern name"><br>
+                <br>
+                Upload a PDF Pattern(optional): <br>
+                <input type="file" name="pattern_pdf_b" class="pattern_pdf"><br>
+                <br>
+                Link to Pattern(optional):<br>
+                <input type="url" name="pattern_link_b" placeholder="link to pattern"><br>
+                <br>
+            </div>
+            <div>
+                <b>Option 3</b></br>
+                Third Pattern's Name:<br>
+                <input type="text" name="pattern_name_c" placeholder="pattern name"><br>
+                <br>
+                Upload a PDF Pattern(optional): <br>
+                <input type="file" name="pattern_pdf_c" class="pattern_pdf"><br>
+                <br>
+                Link to Pattern(optional):<br>
+                <input type="url" name="pattern_link_c" placeholder="link to pattern"><br>
+                <br>
+            </div>
+        </div>    
+    <h3>Select an image for your group or upload your own:</h3>
     <input type='radio' name="group_image" value="static/images/knitting_group_default.jpg">
     <img src="static/images/knitting_group_default.jpg" width="200">
 
@@ -41,9 +86,9 @@
 <script>
 
 $('#new_group_form').on('submit', function(evt){
-    var validatePDF= $('#pattern_pdf').val().length;
+    var validatePDF= $('.pattern_pdf').val().length;
     if(validatePDF < 1) {
-        $('input#pattern_pdf').remove();
+        $('input.pattern_pdf').remove();
     }
 });
 
@@ -51,6 +96,26 @@ $('#new_group_form').on('submit', function(evt){
 $("#group_img_upload").click(function(){
     $("#group_radio").prop("checked", true);
 });
+
+function showPoll(evt) {
+            $('div#poll_div').show();
+      }
+
+function hidePoll(evt) {
+            $('div#poll_div').hide();
+      }
+
+$(document).ready(function(){
+          $('#pattern_poll').click( function() {
+            if($('#pattern_poll').is(":checked")){
+                $('div#poll_div').show(800);
+                $("div#base_pattern").hide(800);
+            } else {
+                $('div#poll_div').hide(800);
+                $("div#base_pattern").show(800);
+            }
+          });
+      });      
 
 </script>
 {% endblock %}
