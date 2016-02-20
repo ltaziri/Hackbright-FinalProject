@@ -70,7 +70,6 @@ class Group(db.Model):
         return "<Group Id: %s Group name: %s>" %(self.group_id, self.group_name)
 
 
-
 class Comment(db.Model):
     """Comment information for each comment in a group"""
 
@@ -122,7 +121,7 @@ class Pattern(db.Model):
     pattern_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     pattern_name = db.Column(db.String(255), nullable=False)
     pattern_link = db.Column(db.String(255), nullable=True) 
-    pattern_pdf = db.Column(db.DateTime, nullable=True)
+    pattern_pdf = db.Column(db.String(255), nullable=True)
     chosen = db.Column(db.Boolean, nullable=True, default=False)
     group_id = db.Column(db.Integer, db.ForeignKey('groups.group_id'), nullable=False)   
     

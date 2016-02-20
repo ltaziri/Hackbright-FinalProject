@@ -16,7 +16,7 @@
             <input type="text" name="pattern_name" id="pattern_name" placeholder="pattern name"><br>
             <br>
             Upload a PDF Pattern (optional): <br>
-            <input type="file" name="pattern_pdf" id="pattern_pdf" class="pattern_pdf"><br>
+            <input type="file" name="pattern_pdf" id="pattern_pdf"><br>
             <br>
             Link to Pattern(optional):<br>
             <input type="url" name="pattern_link" id="pattern_link" placeholder="link to pattern"><br>
@@ -31,13 +31,13 @@
             <div>
                 <b>Option 1</b></br>
                 First Pattern's Name:<br>
-                <input type="text" name="pattern_name_a" placeholder="pattern name"><br>
+                <input type="text" name="pattern_name_a" id="pattern_name_a" placeholder="pattern name"><br>
                 <br>
                 Upload a PDF Pattern(optional): <br>
-                <input type="file" name="pattern_pdf_a" class="pattern_pdf"><br>
+                <input type="file" id="pattern_pdf_a" name="pattern_pdf_a"><br>
                 <br>
                 Link to Pattern(optional):<br>
-                <input type="url" name="pattern_link_a" placeholder="link to pattern"><br>
+                <input type="url" name="pattern_link_a" id="pattern_link_a" placeholder="link to pattern"><br>
                 <br>
             </div>
             <div>
@@ -46,7 +46,7 @@
                 <input type="text" name="pattern_name_b" placeholder="pattern name"><br>
                 <br>
                 Upload a PDF Pattern(optional): <br>
-                <input type="file" name="pattern_pdf_b" class="pattern_pdf"><br>
+                <input type="file" name="pattern_pdf_b" ><br>
                 <br>
                 Link to Pattern(optional):<br>
                 <input type="url" name="pattern_link_b" placeholder="link to pattern"><br>
@@ -58,7 +58,7 @@
                 <input type="text" name="pattern_name_c" placeholder="pattern name"><br>
                 <br>
                 Upload a PDF Pattern(optional): <br>
-                <input type="file" name="pattern_pdf_c" class="pattern_pdf"><br>
+                <input type="file" name="pattern_pdf_c" ><br>
                 <br>
                 Link to Pattern(optional):<br>
                 <input type="url" name="pattern_link_c" placeholder="link to pattern"><br>
@@ -85,37 +85,61 @@
 
 <script>
 
-$('#new_group_form').on('submit', function(evt){
-    var validatePDF= $('.pattern_pdf').val().length;
-    if(validatePDF < 1) {
-        $('input.pattern_pdf').remove();
-    }
-});
-
 
 $("#group_img_upload").click(function(){
     $("#group_radio").prop("checked", true);
 });
 
-function showPoll(evt) {
-            $('div#poll_div').show();
-      }
-
-function hidePoll(evt) {
-            $('div#poll_div').hide();
-      }
 
 $(document).ready(function(){
           $('#pattern_poll').click( function() {
             if($('#pattern_poll').is(":checked")){
                 $('div#poll_div').show(800);
                 $("div#base_pattern").hide(800);
+                $("input#pattern_name").prop("disabled", true);
+                $("input#pattern_link").prop("disabled", true);
+                $("input#pattern_pdf").prop("disabled", true);
             } else {
                 $('div#poll_div').hide(800);
                 $("div#base_pattern").show(800);
+                $("input#pattern_name").prop("disabled", false);
+                $("input#pattern_link").prop("disabled", false);
+                $("input#pattern_pdf").prop("disabled", false);
+                $("input#pattern_name_a").prop("disabled", true);
+                $("input#pattern_link_a").prop("disabled", true);
+                $("input#pattern_pdf_a").prop("disabled", true);
+                $("input#pattern_name_b").prop("disabled", true);
+                $("input#pattern_link_b").prop("disabled", true);
+                $("input#pattern_pdf_b").prop("disabled", true);
+                $("input#pattern_name_c").prop("disabled", true);
+                $("input#pattern_link_c").prop("disabled", true);
+                $("input#pattern_pdf_c").prop("disabled", true);
             }
           });
       });      
+
+$("#new_group_form").on('submit', function(evt){
+    var patternCount = 0
+    if ($('#pattern_name_a').val().length > 1 || 
+       $('#pattern_pdf_a').val().length > 1 ||
+       $('#pattern_link_a').val().length > 1) {
+        patternCount++
+    } else if ($('#pattern_name_b').val().length > 1 || 
+       $('#pattern_pdf_b').val().length > 1 ||
+       $('#pattern_link_b').val().length > 1) {
+        patternCount++
+    } else if ($('#pattern_name_c').val().length > 1 || 
+       $('#pattern_pdf_c').val().length > 1 ||
+       $('#pattern_link_c').val().length > 1) {
+        patternCount++
+    }
+    console.log(patternCount);
+
+    if (patternCount < 2) {
+        alert('You must submit more than one pattern to create a poll');
+        evt.preventDefault();
+    } 
+})
 
 </script>
 {% endblock %}

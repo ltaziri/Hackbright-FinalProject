@@ -13,20 +13,27 @@
         <p>{{ group.group_descrip }}</p>
     {% endif %}
     <br> 
+
+    {% if user == group.admin_id %}
     <a href="/group_profile_form/{{ group.group_id }}">Update the group information</a>
+    {% endif %}
 </section>
 <hr>
 <section>
-    <h3> This month we are working on {{ group.pattern_name }}</h3>
+    {% if patterns|length == 1 %}
+
+    <h3> This month we are working on {{ patterns[0].pattern_name }}</h3>
 
     <p>
-    {% if group.pattern_pdf %}
-      Click<a href="/{{ group.pattern_pdf}}" target="blank"> here </a> to download the pattern.<br> 
-    {% endif %}
-    {% if group.pattern_link %}
-      Click <a href="{{ group.pattern_link }}" target="blank">here</a> to go to the pattern source.
-    {% endif %}
+      {% if patterns[0].pattern_pdf %}
+        Click<a href="/{{ patterns[0].pattern_pdf }}" target="blank"> here </a> to download the pattern.<br> 
+      {% endif %}
+      {% if patterns[0].pattern_link %}
+        Click <a href="{{ patterns[0].pattern_link }}" target="blank">here</a> to go to the pattern source.
+      {% endif %}
     </p>
+
+    {% endif %}
 </section>
 <hr>
 <section>
@@ -132,7 +139,6 @@ $("#comment_form").submit(function(event){
           $(this).prev('div.pop-up').show()
           .css('left', mouseX)
           .css('top', mouseY);
-          console.log($('.show_user').prev())
       }
 
       function hideUserInfo(evt) {

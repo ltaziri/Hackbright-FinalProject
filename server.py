@@ -11,6 +11,7 @@ from email_test import send_email
 import sendgrid
 import os
 import sys
+from chart import chart_data
 
 app = Flask(__name__)
 
@@ -60,7 +61,7 @@ def handle_sign_in_form():
     email = request.form.get("email")
     password = request.form.get("password")
 
-    existing_user = User.query.filter_by(email=email).first()
+    existing_user = User.query.filter_by(email=email).one()
 
     if existing_user:
         if password == existing_user.password:
@@ -248,10 +249,14 @@ def create_group():
     db.session.add(user_group)
     db.session.commit()
 
-    if request.form.get("pattern_name") or request.form.get("pattern_link") or  "pattern_pdf" in request.files:
+    if (request.form.get("pattern_name") 
+        or request.form.get("pattern_link") 
+        or  "pattern_pdf" in request.files):
+
         base_pattern_name = request.form.get("pattern_name")
         base_pattern_link = request.form.get("pattern_link")
-        if "pattern_pdf" in request.files:
+
+        if "pattern_pdf" in request.files and request.files['pattern_pdf'].filename:
             pdf_filename = manuals.save(request.files['pattern_pdf'])
             base_pattern_pdf = str(manuals.path(pdf_filename))
         else:
@@ -265,10 +270,14 @@ def create_group():
         db.session.add(pattern)
         db.session.commit()
 
-    if request.form.get("pattern_name_a") or request.form.get("pattern_link_a") or  "pattern_pdf_a" in request.files:
+    if (request.form.get("pattern_name_a") 
+        or request.form.get("pattern_link_a") 
+        or  "pattern_pdf_a" in request.files):
+
         pattern_name = request.form.get("pattern_name_a")
         pattern_link = request.form.get("pattern_link_a")
-        if "pattern_pdf_a" in request.files:
+
+        if "pattern_pdf_a" in request.files and request.files['pattern_pdf_a'].filename:
             pdf_filename = manuals.save(request.files['pattern_pdf_a'])
             pattern_pdf = str(manuals.path(pdf_filename))
         else:
@@ -282,10 +291,14 @@ def create_group():
         db.session.add(pattern_one)
         db.session.commit()
 
-    if request.form.get("pattern_name_b") or request.form.get("pattern_link_b") or  "pattern_pdf_b" in request.files:
+    if (request.form.get("pattern_name_b") 
+        or request.form.get("pattern_link_b") 
+        or  "pattern_pdf_b" in request.files):
+
         pattern_name = request.form.get("pattern_name_b")
         pattern_link = request.form.get("pattern_link_b")
-        if "pattern_pdf_b" in request.files:
+
+        if "pattern_pdf_b" in request.files and request.files['pattern_pdf_b'].filename:
             pdf_filename = manuals.save(request.files['pattern_pdf_b'])
             pattern_pdf = str(manuals.path(pdf_filename))
         else:
@@ -299,10 +312,14 @@ def create_group():
         db.session.add(pattern_two)
         db.session.commit()
 
-    if request.form.get("pattern_name_c") or request.form.get("pattern_link_c") or  "pattern_pdf_c" in request.files:
+    if (request.form.get("pattern_name_c") 
+        or request.form.get("pattern_link_c") 
+        or  "pattern_pdf_c" in request.files):
+
         pattern_name = request.form.get("pattern_name_c")
         pattern_link = request.form.get("pattern_link_c")
-        if "pattern_pdf_c" in request.files:
+
+        if "pattern_pdf_c" in request.files and request.files['pattern_pdf_c'].filename:
             pdf_filename = manuals.save(request.files['pattern_pdf_c'])
             pattern_pdf = str(manuals.path(pdf_filename))
         else:
@@ -328,20 +345,36 @@ def show_group_page(group_id):
 
     group_users = group.users
 
-    user = session["user_id"]
-
-    comments =  Comment.query.filter_by(group_id=group_id)
-
     groups_ids = []
     for group_user in group_users:
         groups_ids.append(group_user.user_id)
 
     if session["user_id"] in groups_ids:
-        return render_template("group_page.html", 
+
+        user = session["user_id"]
+
+        comments =  Comment.query.filter_by(group_id=group_id)
+
+        patterns = Pattern.query.filter_by(group_id=group_id).all()
+
+        chosen_pattern = Pattern.query.filter(Pattern.group_id == group_id, Pattern.chosen == True).all()
+        
+
+        if chosen_pattern:
+            return render_template("group_page.html", 
                         group=group, 
                         group_users=group_users, 
                         user=user,
-                        comments=comments)
+                        comments=comments,
+                        patterns = chosen_pattern)
+        else:
+            return render_template("group_page.html", 
+                        group=group, 
+                        group_users=group_users, 
+                        user=user,
+                        comments=comments,
+                        patterns = patterns)
+
     else:
         return redirect("/user")
 
@@ -400,6 +433,20 @@ def update_group_profile(group_id):
         db.session.commit()
         
     return redirect("/group_home/%d" % (group.group_id))
+
+@app.route('/poll_chart')
+def show_pattern_poll():
+
+    return render_template('chart_test.html')
+
+
+@app.route('/poll.json')
+def send_pattern_poll_data():
+    """ send voting data to pattern poll"""
+
+    poll_data = chart_data('pattern1', 'pattern2', 'pattern3', 1, 5, 6)
+
+    return jsonify(poll_data) 
 
 
 @app.route('/comment_add.json', methods=['POST'])

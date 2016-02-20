@@ -10,16 +10,17 @@
 
 <section>
   <p> Your craft groups:</p>
-  <ul>
+  
     {% for group in groups %}
-        <li>
+        <div>
             <a href="/group_home/{{ group.group_id }}">
-              {{ group.group_name }}
-              <!-- <img src="{{ group.group_name }}"> -->
-            </a>
-        </li>
+            <img src="{{ group.group_image }}" width = "200"><br>
+            <b>{{ group.group_name }}</b>
+            <br>
+            <br>
+        </div>
     {% endfor %}
-  </ul>
+
 </section>
 
 <h3> <a href="/group_form">Create a new group</a> </h3>
