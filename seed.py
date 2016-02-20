@@ -2,6 +2,7 @@ from sqlalchemy import func
 from model import User
 from model import Group
 from model import UserGroup
+from model import Pattern
 
 from model import connect_to_db, db
 from server import app
@@ -76,6 +77,30 @@ def load_usergroups():
     db.session.commit()
 
 
+def load_patterns():
+    """Load patterns from patterns.txt into database."""
+
+    print "Patterns"
+
+    Pattern.query.delete()
+
+    for row in open("seed_data/patterns.txt"):
+        row = row.rstrip()
+        pattern_id, pattern_name, pattern_link, pattern_pdf, chosen, group_id = row.split("|")
+
+        pattern = Pattern(pattern_id=pattern_id,
+                          pattern_name=pattern_name,
+                          pattern_link=pattern_link,
+                          pattern_pdf=pattern_pdf,
+                          chosen=chosen,
+                          group_id=group_id
+                          )
+
+        db.session.add(pattern)
+
+    db.session.commit()
+
+
 def set_val_user_id():
     """Set value for the next user_id after seeding database"""
 
@@ -114,6 +139,18 @@ def set_val_usergroup_id():
     db.session.execute(query, {'new_id': max_id + 1})
     db.session.commit()
 
+def set_val_pattern_id():
+    """Set value for the next pattern_id after seeding database"""
+
+    # Get the Max pattern_id in the database
+    result = db.session.query(func.max(Pattern.pattern_id)).one()
+    max_id = int(result[0])
+
+    # Set the value for the next user_id to be max_id + 1
+    query = "SELECT setval('patterns_pattern_id_seq', :new_id)"
+    db.session.execute(query, {'new_id': max_id + 1})
+    db.session.commit()
+
 
 if __name__ == "__main__":
     connect_to_db(app)
@@ -125,7 +162,9 @@ if __name__ == "__main__":
     load_users()
     load_groups()
     load_usergroups()
+    load_patterns()
     
     set_val_user_id()
     set_val_group_id()
     set_val_usergroup_id()
+    set_val_pattern_id()

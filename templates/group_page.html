@@ -2,26 +2,16 @@
 {% block content %}
 
 <section>
-    <h2>Welcome to the {{ group.group_name}}</h2>
-
-    {% if group.group_image %}
-        <img src= "/{{ group.group_image }}" width="500">
-    {% endif %} 
-    
-
-    {% if group.group_descrip %}
-        <p>{{ group.group_descrip }}</p>
-    {% endif %}
-    <br> 
-
+  <h2>Welcome to the {{ group.group_name}}</h2>
     {% if user == group.admin_id %}
-    <a href="/group_profile_form/{{ group.group_id }}">Update the group information</a>
+      <a href="/group_profile_form/{{ group.group_id }}">Update the group information</a>
     {% endif %}
 </section>
-<hr>
-<section>
-    {% if patterns|length == 1 %}
 
+<hr>
+
+{% if patterns|length == 1 %}
+<section>
     <h3> This month we are working on {{ patterns[0].pattern_name }}</h3>
 
     <p>
@@ -31,11 +21,87 @@
       {% if patterns[0].pattern_link %}
         Click <a href="{{ patterns[0].pattern_link }}" target="blank">here</a> to go to the pattern source.
       {% endif %}
-    </p>
-
-    {% endif %}
+      {% if group.group_image %}
+        <img src= "/{{ group.group_image }}" width="500">
+      {% endif %} 
+    </p>  
 </section>
+{% endif %}
+
+{% if patterns|length > 1 %}
+<section>
+  <div id = "myChart" class = "pattern_poll">
+    <canvas id = "pattern_bar_graph" width="400" height="400"></canvas>
+    <div id = "barLegend" class="chart-legend"></div>
+  </div>
+</section>
+
 <hr>
+
+<section>
+  <h3>Your vote counts!</h3>
+  <p> Here are the choices for the group's pattern.</p>
+  <form id ="vote_form" action="/poll.json/<int:group_id>" method="POST">
+  {% for pattern in patterns %}
+      <div>
+      <b> {{ pattern.pattern_name }} </b>
+      <br>
+      {% if pattern.pattern_pdf %}
+        Click<a href="/{{ pattern.pattern_pdf }}" target="blank"> here </a> to get the pdf pattern.<br> 
+      {% endif %}
+      {% if pattern.pattern_link %}
+        Click <a href="{{ pattern.pattern_link }}" target="blank">here</a> to go to the pattern source.<br>
+      {% endif %}
+      <input type="radio" class ="pattern_select" name="pattern_select" value="{{ pattern.pattern_id }}">
+    </div><br>
+  {% endfor %}
+  <input type="hidden" name="group_id" id="pattern_group" value="{{group.group_id}}">
+  <button type="submit">Vote!</button>
+
+  </form>
+</section>
+{% endif %}
+<script>
+
+var options = { responsive: true, scaleShowGridLines : false, barValueSpacing : 1,
+              };
+var ctx_bar = $("#pattern_bar_graph").get(0).getContext("2d");
+$.get('/poll.json', function(data) {
+  var patternPoll = new Chart(ctx_bar).Bar(data, options);
+  $('#barLegend').html(patternPoll.generateLegend());
+});
+</script>
+
+<script>
+
+function handleVote(evt) {
+  evt.preventDefault();
+
+  var formInputs = {
+    "group_id": $('#pattern_group').val(),
+    "pattern_id":$('input[name=pattern_select]:checked', '#vote_form').val()
+  };
+  console.log(formInputs);
+  $.post('/poll.json', formInputs, function(result) {
+      alert(result);
+  });
+}
+
+$('#vote_form').on('submit', handleVote)
+
+</script>
+
+<section>   
+    {% if group.group_descrip %}
+    <hr>
+        <p>{{ group.group_descrip }}</p>
+    {% endif %}
+    <br> 
+
+</section>
+
+<hr>
+
 <section>
     <div>
     <h3> Comments:</h3>
@@ -47,7 +113,7 @@
             <input type="text" name="comment_text" id="comment_text" placeholder="comment">
             &nbsp;Add a picture! <input type="file" id="comment_image" name="comment_image"><br>
             
-            <button class="btn btn-primary" type="submit">Add your comment</button>
+            <button type="submit">Add your comment</button>
         </form>
         <br>
     </div>
@@ -75,8 +141,6 @@ $("#comment_form").submit(function(event){
   event.preventDefault();
   
   var formData = new FormData($('form#comment_form')[0]);
-  console.log(formData);
-  
 
   $.ajax({
     url: '/comment_add.json',
@@ -88,12 +152,10 @@ $("#comment_form").submit(function(event){
     processData: false,
     success: showComment,
     });
-  console.dir(formData);
   });
 
 
   function showComment(results) {
-  console.dir(results);
   var htmlStr = "";
   htmlStr += "<img src='/" + results.comment_user_photo + "' width='50'>";
   htmlStr += "<b>"+ results.comment_user_name + "</b><br>"

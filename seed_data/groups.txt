@@ -1,3 +1,3 @@
-1|Kilgore Mitts for Everyone!|This months knit-along is the fun Kilgore Mitts pattern from Fancy Tiger. Can't wait to see what everyone makes!|static/images/knitting_group_default.jpg|1
+1|Knitters to the rescue!|This month I have chosen three fun patterns for us to vote on.|static/images/knitting_group_default.jpg|1
 2|Super Sewers||static/images/sewing_group_default.jpg|1
 3|Cricut Crafters - Earrings||static/images/craft_group_default.jpg|1

@@ -122,7 +122,7 @@ class Pattern(db.Model):
     pattern_name = db.Column(db.String(255), nullable=False)
     pattern_link = db.Column(db.String(255), nullable=True) 
     pattern_pdf = db.Column(db.String(255), nullable=True)
-    chosen = db.Column(db.Boolean, nullable=True, default=False)
+    chosen = db.Column(db.Boolean, nullable=False, default=False)
     group_id = db.Column(db.Integer, db.ForeignKey('groups.group_id'), nullable=False)   
     
     group = db.relationship("Group", backref=db.backref("patterns", order_by=pattern_id))
@@ -131,6 +131,22 @@ class Pattern(db.Model):
         """Provide invite information when printed."""
 
         return "<Pattern Id: %s Pattern Name: %s>" %(self.pattern_id, self.pattern_name)
+
+
+class Vote(db.Model):
+    """Vote information for group patttern polls"""
+
+    __tablename__ = "votes"
+    __table_args__ = (db.UniqueConstraint('group_id', 'user_id'),)
+
+    group_id = db.Column(db.Integer, db.ForeignKey('groups.group_id'), primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), primary_key=True)
+    pattern_id = db.Column(db.Integer, db.ForeignKey('patterns.pattern_id'), nullable=False)
+
+    def __repr__(self):
+        """Provide invite information when printed."""
+
+        return "<Vote = Group Id: %d User Id: %d Pattern Id: %d>" % (self.group_id, self.user_id, self.pattern_id)
 
 ##############################################################################
 # Helper functions

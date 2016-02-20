@@ -4,7 +4,7 @@ from jinja2 import StrictUndefined
 from flask import Flask, render_template, redirect, request, flash, session, jsonify
 from flask_debugtoolbar import DebugToolbarExtension
 from flask.ext.uploads import UploadSet, configure_uploads, IMAGES, patch_request_class
-from model import User, Group, UserGroup, Comment, Invite, Pattern, connect_to_db, db
+from model import User, Group, UserGroup, Comment, Invite, Pattern, Vote, connect_to_db, db
 from datetime import datetime
 import sendgrid
 from email_test import send_email
@@ -440,13 +440,40 @@ def show_pattern_poll():
     return render_template('chart_test.html')
 
 
-@app.route('/poll.json')
-def send_pattern_poll_data():
-    """ send voting data to pattern poll"""
+@app.route('/poll.json', methods=['POST'])
+def get_pattern_poll_data():
+    """ get voting data from ajax, send back json """
 
-    poll_data = chart_data('pattern1', 'pattern2', 'pattern3', 1, 5, 6)
+    group_id = request.form.get("group_id")
+    pattern_id = request.form.get("pattern_id")
 
-    return jsonify(poll_data) 
+    vote = Vote(group_id = group_id,
+                user_id = session["user_id"],
+                pattern_id = pattern_id)
+
+    db.session.add(vote)
+    db.session.commit()
+
+    group_patterns = Pattern.query.filter(Pattern.group_id == group_id).all()
+    votes = Vote.query.filter(Vote.group_id == group_id)
+    pattern_vote = votes.query(pattern_id, db.func.count(pattern_id)).group_by(pattern_id).all()
+
+    print votes
+    print pattern_vote
+
+    poll_data = {
+    'labels':[group_patterns[0], group_patterns[1], group_patterns[2]],
+    'datasets':[
+                {'label': "Votes",
+                'fillColor': "rgba(220,220,220,0.5)",
+                'strokeColor': "rgba(220,220,220,0.8)",
+                'highlightFill': "rgba(220,220,220,0.75)",
+                'highlightStroke': "rgba(220,220,220,1)",
+                'data': [pattern_vote[0], pattern_vote[1], pattern_vote[2]]}
+                ]
+            }
+    print poll_data
+    return jsonify(poll_data)
 
 
 @app.route('/comment_add.json', methods=['POST'])
