@@ -143,6 +143,10 @@ class Vote(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), primary_key=True)
     pattern_id = db.Column(db.Integer, db.ForeignKey('patterns.pattern_id'), nullable=False)
 
+    group = db.relationship("Group", backref=db.backref("votes"))
+    user = db.relationship("User", backref=db.backref("votes"))
+    pattern = db.relationship("Pattern", backref=db.backref("votes"))
+
     def __repr__(self):
         """Provide invite information when printed."""
 

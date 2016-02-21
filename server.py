@@ -434,15 +434,9 @@ def update_group_profile(group_id):
         
     return redirect("/group_home/%d" % (group.group_id))
 
-@app.route('/poll_chart')
-def show_pattern_poll():
-
-    return render_template('chart_test.html')
-
-
-@app.route('/poll.json', methods=['POST'])
-def get_pattern_poll_data():
-    """ get voting data from ajax, send back json """
+@app.route('/update_poll.json', methods=['POST'])
+def update_vote():
+    """Update voting table based on form input"""
 
     group_id = request.form.get("group_id")
     pattern_id = request.form.get("pattern_id")
@@ -454,24 +448,61 @@ def get_pattern_poll_data():
     db.session.add(vote)
     db.session.commit()
 
-    group_patterns = Pattern.query.filter(Pattern.group_id == group_id).all()
-    votes = Vote.query.filter(Vote.group_id == group_id)
-    pattern_vote = votes.query(pattern_id, db.func.count(pattern_id)).group_by(pattern_id).all()
+    vote_update = {}
+    vote_update['label'] = vote.pattern.pattern_name
+    vote_update['data'] = 1
 
-    print votes
-    print pattern_vote
+    current_votes = Vote.query.filter(Vote.group_id == group_id).all()
 
-    poll_data = {
-    'labels':[group_patterns[0], group_patterns[1], group_patterns[2]],
-    'datasets':[
-                {'label': "Votes",
+    for current_vote in current_votes:
+        if current_vote.pattern_id == vote.pattern_id:
+            vote_update['data'] +=1
+
+    return jsonify(vote_update)
+
+
+@app.route('/poll.json/<int:group_id>')
+def get_pattern_poll_data(group_id):
+    """ get voting data and send back json """
+
+    # group_id = request.form.get("group_id")
+    # pattern_id = request.form.get("pattern_id")
+
+    # vote = Vote(group_id = group_id,
+    #             user_id = session["user_id"],
+    #             pattern_id = pattern_id)
+
+    # db.session.add(vote)
+    # db.session.commit()
+
+    votes = Vote.query.filter(Vote.group_id == group_id).all()
+    vote_data = {} 
+
+    for vote in votes:
+        if vote_data.get(vote.pattern.pattern_name, False) == False:
+            vote_data[vote.pattern.pattern_name] = 1
+        else:
+            vote_data[vote.pattern.pattern_name] +=1
+    
+    labels = []
+    data = []
+
+    for tup in vote_data.items():
+        labels.append(tup[0])
+        data.append(tup[1])
+
+    data_set = {'label': "Votes",
                 'fillColor': "rgba(220,220,220,0.5)",
                 'strokeColor': "rgba(220,220,220,0.8)",
                 'highlightFill': "rgba(220,220,220,0.75)",
-                'highlightStroke': "rgba(220,220,220,1)",
-                'data': [pattern_vote[0], pattern_vote[1], pattern_vote[2]]}
-                ]
-            }
+                'highlightStroke': "rgba(220,220,220,1)"}
+
+    data_set['data'] = data            
+
+    poll_data = {}
+    poll_data['labels'] = labels
+    poll_data['datasets'] = [data_set]
+
     print poll_data
     return jsonify(poll_data)
 
