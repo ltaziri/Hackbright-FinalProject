@@ -1,0 +1,3 @@
+1|Killgore Mitts|https://www.fancytigercrafts.com/patterns/fancy-tiger-crafts/kilgore-mitts|static/pdfs/kilgore_mits.pdf|false|1
+2|Exeter|http://www.ravelry.com/patterns/library/exeter-2|static/pdfs/Exeter5.pdf|false|1
+3|I Heart Cables|http://www.ravelry.com/patterns/library/i-heart-cables|static/pdfs/I_Heart_Cables.pdf|false|1

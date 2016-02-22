@@ -9,20 +9,20 @@
 <hr>
 
 <section>
-  <p> Your craft groups:</p>
-  
+  <h3> Your craft groups:</h3>
+        <div class="row clearfix">
     {% for group in groups %}
-        <div>
+        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
             <a href="/group_home/{{ group.group_id }}">
-            <img src="{{ group.group_image }}" width = "200"><br>
-            <b>{{ group.group_name }}</b>
-            <br>
-            <br>
+            <h3>{{ group.group_name }}</h3>
+            <img src="{{ group.group_image }}" width = "250"><br>
+            </a>
         </div>
     {% endfor %}
-
+        <div class="clearfix visible-md-block"></div>
+        </div>
 </section>
-
-<h3> <a href="/group_form">Create a new group</a> </h3>
+<hr>
+<a href="/group_form"> <button class="btn btn-default">Create a new group</button></a>
 
 {% endblock %}

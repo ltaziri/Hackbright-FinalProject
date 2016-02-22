@@ -2,49 +2,46 @@
 <html>
 <head>
   <title>Virtual Craft Group HB Project</title>
-  <style>
 
-  div.pop-up {
-              display: none;
-              position: absolute;
-              width: 280px;
-              border: 1px solid #1a1a1a;
-              background-color: #ffffff;
-            }
-
-  div#poll_div {
-              display: none;
-              background-color: #cbc9c9;
-  }
-
-  #myChart{
-  width: 800px;
-  }
-  </style>
-  <script src="http://code.jquery.com/jquery.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.js"></script>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
 
-  <!-- Optional theme -->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
-
-  <!-- Latest compiled and minified JavaScript -->
+  <link href="/static/main.css" rel="stylesheet">
+  
+  <script src="http://code.jquery.com/jquery.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.js"></script>
+    <!-- Latest compiled and minified JavaScript -->
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 </head>
 
 <body>
-  <nav>
-  <a href="/">Home</a><br>
-
-  <a href="/log_out">Log Out</a>
-  {% block content %} put your content here {% endblock %}
-  </nav>
-<hr>
-  <ul>
-    {% for message in get_flashed_messages() %}
-        <li>{{ message }}</li>
-    {% endfor %}
-  </ul> 
-<script src="http://code.jquery.com/jquery.js"></script>
+    <nav class="navbar navbar-inverse navbar-static-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">
+            <span class="glyphicon glyphicon-grain" aria-hidden="true"></span>
+            Home
+          </a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <a href="/log_out"><button type="button" class="btn btn-default navbar-btn navbar-right">Log Out</button></a>
+        </div>
+      </div>
+    </nav>
+  <div class = "container">  
+      {% block content %} put your content here {% endblock %}
+      
+    <hr>
+      <ul>
+        {% for message in get_flashed_messages() %}
+            <li>{{ message }}</li>
+        {% endfor %}
+      </ul> 
+  </div>
 </body>
 </html>
