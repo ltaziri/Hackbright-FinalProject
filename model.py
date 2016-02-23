@@ -69,6 +69,15 @@ class Group(db.Model):
 
         return "<Group Id: %s Group name: %s>" %(self.group_id, self.group_name)
 
+    def get_user_list(self):
+        """ Get list of user ids in the group"""
+
+        groups_ids = []
+        for user_id in self.users.user_id:
+            groups_ids.append(user_id)
+
+        return groups_ids
+
 
 class Comment(db.Model):
     """Comment information for each comment in a group"""

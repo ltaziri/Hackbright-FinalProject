@@ -9,6 +9,16 @@
 </section>
 
 <hr>
+{% if patterns|length == 0 %}
+<section>
+    <p>
+      {% if group.group_image %}
+        <img src= "/{{ group.group_image }}" width="500">
+      {% endif %} 
+    </p>  
+
+</section>
+{% endif %}
 
 {% if patterns|length == 1 %}
 <section>
@@ -37,7 +47,6 @@
 </section>
 
 <hr>
-
 <section>
   <h3>Your vote counts!</h3>
   <p> Here are the choices for the group's pattern.</p>
@@ -56,7 +65,7 @@
     </div><br>
   {% endfor %}
   <input type="hidden" name="group_id" id="pattern_group" value="{{group.group_id}}">
-  <button type="submit">Vote!</button>
+  <button id="vote_submit" type="submit">Vote!</button>
 
   </form>
 </section>
@@ -65,6 +74,7 @@
     
 <script type="text/javascript">
 var patternPoll
+var voteConfirmation = "<p>Thanks for voting! Your vote has been recorded</p>"
 $(document).ready(function(){
   
   var options = { 
@@ -78,6 +88,13 @@ $(document).ready(function(){
     patternPoll = new Chart(ctx_bar).Bar(data, options);
     $('#barLegend').html(patternPoll.generateLegend());
   });
+
+  
+  if ({{ user }} in {{ votes }}) {
+    $('.pattern_select').hide();
+    $('#vote_form').append(voteConfirmation);
+    $('#vote_submit').hide();
+  }
 })
 
 function handleVote(evt) {
@@ -206,7 +223,7 @@ $("#comment_form").submit(function(event){
             <button>close</button>
           </div>
 
-          <button class="show_user">{{ group_user.first_name }} {{ group_user.last_name }}</button>
+          <img src="/{{ group_user.user_photo }}" class="show_user img-thumbnail" width="150"  width="150">
       {% endfor %}
 
     <h3><a href ="/invite_form/{{ group.group_id }}"> Invite people to join your group! </a></h3><br>

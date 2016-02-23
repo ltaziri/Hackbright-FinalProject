@@ -5,13 +5,15 @@ from flask import Flask, render_template, redirect, request, flash, session, jso
 from flask_debugtoolbar import DebugToolbarExtension
 from flask.ext.uploads import UploadSet, configure_uploads, IMAGES, patch_request_class
 from model import User, Group, UserGroup, Comment, Invite, Pattern, Vote, connect_to_db, db
-from datetime import datetime
+from datetime import datetime, timedelta
 import sendgrid
 from email_test import send_email
 import sendgrid
 import os
 import sys
 from chart import chart_data
+from delorean import Delorean
+
 
 app = Flask(__name__)
 
@@ -61,7 +63,7 @@ def handle_sign_in_form():
     email = request.form.get("email")
     password = request.form.get("password")
 
-    existing_user = User.query.filter_by(email=email).one()
+    existing_user = User.query.filter_by(email=email).first()
 
     if existing_user:
         if password == existing_user.password:
@@ -341,17 +343,41 @@ def create_group():
 def show_group_page(group_id):
     """Show group's homepage"""
 
+    # in order to add the clockdown count:
+    # 1. add timestamp to Group model - optional
+    # 2. add day field to Group model - optional
+    # 3. add input to group form 
+    # 4. get from group from in route
+    # 5. pip install Delorean, add to requirements.
+    #     d = Delorean()
+    #     d2 = d + timedelta(hours = integer input from day field)
+    #     d3 = d2-d
+    #     d3.total_seconds()
+    #     this goes to js  clock.setTime() function.
+    #  add alert to admin user page/group page to approve pattern. pattern chosen field turn to true.
+
     group = Group.query.get(group_id)
 
     group_users = group.users
+
+    # groups_ids_class = group.get_user_list
+    # print "++++++++++++++++++++++++++++++ from class", groups_ids_class
 
     groups_ids = []
     for group_user in group_users:
         groups_ids.append(group_user.user_id)
 
+    # print "++++++++++++++++++++++++++++++ from server", groups_ids
     if session["user_id"] in groups_ids:
 
         user = session["user_id"]
+
+        voter_ids =[]
+        votes = Vote.query.filter_by(group_id = group_id).all()
+
+        voter_ids =[]
+        for voter in votes:
+            voter_ids.append(voter.user_id)
 
         comments =  Comment.query.filter_by(group_id=group_id)
 
@@ -373,7 +399,8 @@ def show_group_page(group_id):
                         group_users=group_users, 
                         user=user,
                         comments=comments,
-                        patterns = patterns)
+                        patterns = patterns,
+                        votes=voter_ids)
 
     else:
         return redirect("/user")
@@ -458,7 +485,6 @@ def update_vote():
         if current_vote.pattern_id == vote.pattern_id:
             vote_update['data'] +=1
 
-    print vote_update
     return jsonify(vote_update)
 
 
@@ -481,7 +507,7 @@ def get_pattern_poll_data(group_id):
         if vote_data.get(pattern.pattern_name, False) == False:
             vote_data[pattern.pattern_name] = 0
 
-    # print vote_data
+   
     labels = []
     data = []
 
@@ -501,7 +527,6 @@ def get_pattern_poll_data(group_id):
     poll_data['labels'] = labels
     poll_data['datasets'] = [data_set]
 
-    print poll_data
     return jsonify(poll_data)
 
 
