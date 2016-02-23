@@ -450,7 +450,7 @@ def update_vote():
 
     vote_update = {}
     vote_update['label'] = vote.pattern.pattern_name
-    vote_update['data'] = 1
+    vote_update['data'] = 0
 
     current_votes = Vote.query.filter(Vote.group_id == group_id).all()
 
@@ -458,6 +458,7 @@ def update_vote():
         if current_vote.pattern_id == vote.pattern_id:
             vote_update['data'] +=1
 
+    print vote_update
     return jsonify(vote_update)
 
 
@@ -465,15 +466,7 @@ def update_vote():
 def get_pattern_poll_data(group_id):
     """ get voting data and send back json """
 
-    # group_id = request.form.get("group_id")
-    # pattern_id = request.form.get("pattern_id")
-
-    # vote = Vote(group_id = group_id,
-    #             user_id = session["user_id"],
-    #             pattern_id = pattern_id)
-
-    # db.session.add(vote)
-    # db.session.commit()
+    group_patterns = Pattern.query.filter_by(group_id=group_id).all()
 
     votes = Vote.query.filter(Vote.group_id == group_id).all()
     vote_data = {} 
@@ -483,7 +476,12 @@ def get_pattern_poll_data(group_id):
             vote_data[vote.pattern.pattern_name] = 1
         else:
             vote_data[vote.pattern.pattern_name] +=1
-    
+
+    for pattern in group_patterns:
+        if vote_data.get(pattern.pattern_name, False) == False:
+            vote_data[pattern.pattern_name] = 0
+
+    # print vote_data
     labels = []
     data = []
 

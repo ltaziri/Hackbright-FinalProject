@@ -64,6 +64,7 @@
 {% block javascript %}
     
 <script type="text/javascript">
+var patternPoll
 $(document).ready(function(){
   
   var options = { 
@@ -74,7 +75,7 @@ $(document).ready(function(){
   var ctx_bar = $("#pattern_bar_graph").get(0).getContext("2d");
 
   $.get('/poll.json/{{ group.group_id }}', function(data) {
-    var patternPoll = new Chart(ctx_bar).Bar(data, options);
+    patternPoll = new Chart(ctx_bar).Bar(data, options);
     $('#barLegend').html(patternPoll.generateLegend());
   });
 })
@@ -87,12 +88,21 @@ function handleVote(evt) {
     "pattern_id":$('input[name=pattern_select]:checked', '#vote_form').val()
   };
 
-// need to figure out how to get the index of the pattern that was voted. This will got in the bars[]
-  $.post('/poll.json', formInputs, function(data) {
-    patternPoll.datasets[0].bars[2].value = data.data; 
-    patternPoll.update();
-  })
-}
+  $.post('/update_poll.json', formInputs, function(data) {
+    var dataLabels = patternPoll.datasets[0].bars;
+    
+
+    for (var i = 0; i < dataLabels.length; i++) {
+      if (data.label === dataLabels[i].label) {
+        console.log([data.data]);
+        console.log(data.label);
+        console.log(dataLabels[i].label)
+        patternPoll.datasets[0].bars[i].value = data.data; 
+        patternPoll.update();
+        } 
+      }
+    });
+  }
 
 $('#vote_form').on('submit', handleVote)
 
