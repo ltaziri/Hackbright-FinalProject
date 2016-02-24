@@ -45,6 +45,11 @@
     <div id = "barLegend" class="chart-legend"></div>
   </div>
 </section>
+<hr>
+<section>
+  <div class="clock" style="margin:2em;"></div>
+  <div class="message"></div>
+</section>
 
 <hr>
 <section>
@@ -95,6 +100,28 @@ $(document).ready(function(){
     $('#vote_form').append(voteConfirmation);
     $('#vote_submit').hide();
   }
+
+  $.get('/flip_clock.json/{{ group. group_id}}', function(data) {
+  console.log(data);
+  seconds_left = data.seconds;
+  
+
+  var clock;
+
+  clock = $('.clock').FlipClock({
+        clockFace: 'DailyCounter',
+        autoStart: false,
+        callbacks: {
+          stop: function() {
+            $('.message').html('Voting for this group has now ended. Thanks for voting!')
+          }
+        }
+    });
+    console.log(seconds_left);  
+    clock.setTime(seconds_left);
+    clock.setCountdown(true);
+    clock.start();
+    });
 })
 
 function handleVote(evt) {
