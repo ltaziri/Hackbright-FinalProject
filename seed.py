@@ -3,6 +3,7 @@ from model import User
 from model import Group
 from model import UserGroup
 from model import Pattern
+from datetime import datetime
 
 from model import connect_to_db, db
 from server import app
@@ -41,15 +42,15 @@ def load_groups():
 
     for row in open("seed_data/groups.txt"):
         row = row.rstrip()
-        group_id, group_name, group_descrip, group_image, admin_id = row.split("|")
+        group_id, group_name, group_descrip, group_image, admin_id, vote_timestamp, vote_days = row.split("|")
 
         group = Group(group_id=group_id,
                       group_name=group_name,
                       group_descrip=group_descrip,
                       group_image=group_image,
-                      admin_id=admin_id
-                      # pattern_pdf=pattern_pdf, 
-                      # pattern_link=pattern_link,
+                      admin_id=admin_id,
+                      vote_timestamp=vote_timestamp, 
+                      vote_days=vote_days
                       # pattern_name=pattern_name
                       )
 

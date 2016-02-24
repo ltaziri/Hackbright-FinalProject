@@ -46,10 +46,21 @@
                             We can create poll for you and your friends can help you decide!</h4>
                         <br>
                         <label>Create a poll</label>
-                        <input type="checkbox" id = "pattern_poll" name="pattern_poll" value="pattern_poll">
+                        <input type="checkbox" id="pattern_poll" name="pattern_poll" value="pattern_poll">
                     </div>
                 <br>
+
                 <div class="row clearfix" id="poll_div">
+                    <div class = "row">
+                        <div class ="col-xs-12 col-sm-12 col-lg-10">
+                        <div class ="form-group">
+                            <label>How many days to you want to give friend's to vote?</label>
+                            <input type="number" class="form-control" name="vote_days" id="num_days" placeholder="days">
+                        </div>
+                        </div>
+                    <!-- </div> -->
+                    </div>
+                    <div class = "row clearfix">
                     <div class ="col-xs-12 col-sm-12 col-lg-3 poll-setup">
                         <b>Option 1</b></br>
                         <div class ="form-group"> 
@@ -95,6 +106,7 @@
                             <input type="url" class="form-control" name="pattern_link_c" id="pattern_link_c" placeholder="link to pattern">
                         </div>
                     </div>
+                    </div>
                 </div>    
             <h3>Select an image for your group or upload your own:</h3>
             <div class = "row clearfix">
@@ -129,6 +141,7 @@ $("#group_img_upload").click(function(){
 
 
 $(document).ready(function(){
+        $('div#poll_div').hide();
         $('#pattern_poll').click( function() {
             if($('#pattern_poll').is(":checked")){
                 $('div#poll_div').show(800);
@@ -157,25 +170,33 @@ $(document).ready(function(){
 
 $("#new_group_form").on('submit', function(evt){
     var patternCount = 0
+    if (!$('#pattern_poll').is(":checked")) {
+        patternCount = patternCount + 2
+    } 
     if ($('#pattern_name_a').val().length > 1 || 
        $('#pattern_pdf_a').val().length > 1 ||
        $('#pattern_link_a').val().length > 1) {
-        patternCount++
-    } else if ($('#pattern_name_b').val().length > 1 || 
+        patternCount = patternCount + 1
+    } 
+    if ($('#pattern_name_b').val().length > 1 || 
        $('#pattern_pdf_b').val().length > 1 ||
        $('#pattern_link_b').val().length > 1) {
-        patternCount++
-    } else if ($('#pattern_name_c').val().length > 1 || 
+        patternCount = patternCount + 1
+    } 
+    if ($('#pattern_name_c').val().length > 1 || 
        $('#pattern_pdf_c').val().length > 1 ||
        $('#pattern_link_c').val().length > 1) {
-        patternCount++
+        patternCount = patternCount + 1
     }
     console.log(patternCount);
 
-    if (patternCount < 2 $$ $("#group_radio").prop("checked", true);) {
+    if (patternCount < 2 && $("#group_radio").prop("checked", true)) {
         alert('You must submit more than one pattern to create a poll');
         evt.preventDefault();
-    } 
+    } else if (num_days <1 ) {
+        alert('Please select how many days you wany your poll to be open');
+        evt.preventDefault();
+    }
 })
 
 </script>

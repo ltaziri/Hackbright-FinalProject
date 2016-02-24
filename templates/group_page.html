@@ -111,9 +111,6 @@ function handleVote(evt) {
 
     for (var i = 0; i < dataLabels.length; i++) {
       if (data.label === dataLabels[i].label) {
-        console.log([data.data]);
-        console.log(data.label);
-        console.log(dataLabels[i].label)
         patternPoll.datasets[0].bars[i].value = data.data; 
         patternPoll.update();
         } 
@@ -223,7 +220,8 @@ $("#comment_form").submit(function(event){
             <button>close</button>
           </div>
 
-          <img src="/{{ group_user.user_photo }}" class="show_user img-thumbnail" width="150"  width="150">
+          <img src="/{{ group_user.user_photo }}" class="show_user .img-thumbnail" width="150"  width="150">
+          <h4> {{ group_user.first_name }} {{ group_user.last_name }}</h4>
       {% endfor %}
 
     <h3><a href ="/invite_form/{{ group.group_id }}"> Invite people to join your group! </a></h3><br>

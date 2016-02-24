@@ -59,8 +59,8 @@ class Group(db.Model):
     group_descrip = db.Column(db.String(255), nullable=True)
     group_image = db.Column(db.String(255), nullable=False)
     admin_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
-    # pattern_pdf = db.Column(db.String(255), nullable=True)
-    # pattern_link = db.Column(db.String(255), nullable=True)
+    vote_timestamp = db.Column(db.DateTime, nullable=True) 
+    vote_days = db.Column(db.Integer, nullable=True)
     # pattern_name = db.Column(db.String(255), nullable=True)
     admin = db.relationship("User", backref=db.backref("group", order_by=group_id))
 

@@ -229,7 +229,7 @@ def create_group():
     group_name = request.form.get("group_name")
 
     group_descrip = request.form.get("group_descrip")
-    
+
     if request.form.get("group_image") == " ":
         filename = photos.save(request.files['photo'])
         group_image = str(photos.path(filename))
@@ -237,14 +237,28 @@ def create_group():
     else:
         group_image = request.form.get("group_image")
 
-    group = Group(group_name=group_name,
+    if request.form.get("vote_days"):
+        vote_days = request.form.get("vote_days")
+        vote_timestamp = datetime.now()
+
+        group = Group(group_name=group_name,
+                  group_descrip=group_descrip, 
+                  group_image=group_image,  
+                  admin_id=user.user_id,
+                  vote_days=vote_days,
+                  vote_timestamp=vote_timestamp)
+
+        db.session.add(group)
+        db.session.commit()
+    else:
+        group = Group(group_name=group_name,
                   group_descrip=group_descrip, 
                   group_image=group_image,  
                   admin_id=user.user_id)
 
-    db.session.add(group)
-    db.session.commit()
-    
+        db.session.add(group)
+        db.session.commit()
+
     user_group= UserGroup(group_id=group.group_id,
                           user_id=user.user_id)
 
@@ -278,6 +292,7 @@ def create_group():
 
         pattern_name = request.form.get("pattern_name_a")
         pattern_link = request.form.get("pattern_link_a")
+        
 
         if "pattern_pdf_a" in request.files and request.files['pattern_pdf_a'].filename:
             pdf_filename = manuals.save(request.files['pattern_pdf_a'])
@@ -343,19 +358,6 @@ def create_group():
 def show_group_page(group_id):
     """Show group's homepage"""
 
-    # in order to add the clockdown count:
-    # 1. add timestamp to Group model - optional
-    # 2. add day field to Group model - optional
-    # 3. add input to group form 
-    # 4. get from group from in route
-    # 5. pip install Delorean, add to requirements.
-    #     d = Delorean()
-    #     d2 = d + timedelta(hours = integer input from day field)
-    #     d3 = d2-d
-    #     d3.total_seconds()
-    #     this goes to js  clock.setTime() function.
-    #  add alert to admin user page/group page to approve pattern. pattern chosen field turn to true.
-
     group = Group.query.get(group_id)
 
     group_users = group.users
@@ -392,7 +394,8 @@ def show_group_page(group_id):
                         group_users=group_users, 
                         user=user,
                         comments=comments,
-                        patterns = chosen_pattern)
+                        patterns = chosen_pattern,
+                        votes=voter_ids)
         else:
             return render_template("group_page.html", 
                         group=group, 
@@ -461,6 +464,48 @@ def update_group_profile(group_id):
         
     return redirect("/group_home/%d" % (group.group_id))
 
+@app.route('/show_clock/<int:group_id>')
+def show_clock(group_id):
+    """Show clock for testing"""
+
+
+    return render_template('daily-counter-countdown.html', group_id=group_id)
+
+
+@app.route('/flip_clock.json/<int:group_id>', methods=['POST'])
+def update_clock(group_id):
+    """Update clock based on time remaining"""
+
+    group = Group.query.get(group_id)
+    clock_start = group.vote_timestamp
+    clock_start = Delorean(datetime=clock_start)
+    time_in_hours  = group.vote_days * 24
+    clock_end = clock_start + timedelta(hours = time_in_hours)
+
+    current_day_time = datetime.now()
+
+    seconds_remaining = clock_end - current_day_time
+    seconds_remaining = seconds_remaining.total_seconds()
+
+    clock_time = {}
+
+    clock_time['seconds'] = seconds_remaining
+    print clock_time
+     # in order to add the clockdown count:
+    # 1. add timestamp to Group model - optional
+    # 2. add day field to Group model - optional
+    # 3. add input to group form 
+    # 4. get from group from in route
+    # 5. pip install Delorean, add to requirements.
+    #     d = Delorean()
+    #     d2 = d + timedelta(hours = integer input from day field)
+    #     d3 = d2-d
+    #     d3.total_seconds()
+    #     this goes to js  clock.setTime() function.
+    #  add alert to admin user page/group page to approve pattern. pattern chosen field turn to true.
+    return jsonify(clock_time)
+
+
 @app.route('/update_poll.json', methods=['POST'])
 def update_vote():
     """Update voting table based on form input"""
@@ -526,7 +571,7 @@ def get_pattern_poll_data(group_id):
     poll_data = {}
     poll_data['labels'] = labels
     poll_data['datasets'] = [data_set]
-
+    print poll_data
     return jsonify(poll_data)
 
 
