@@ -2,7 +2,7 @@
 {% block content %}
 
 <section>
-  <h2>Welcome to the {{ group.group_name}}</h2>
+  <h2>Welcome to {{ group.group_name}}</h2>
     {% if user == group.admin_id %}
       <a href="/group_profile_form/{{ group.group_id }}">Update the group information</a>
     {% endif %}
@@ -47,11 +47,11 @@
 <hr>
 <section>
   <div class="clock" style="margin:2em;"></div>
-  <div class="message"></div>
 </section>
 
   <div id="final_vote_confirm">
-     <h3> Voting has now ended. Please confirm the winning pattern </h3>
+    <div class="message"></div>
+    <div class="votes_complete"> </div>
     <form id= "final_vote_form" action = "/final_vote/{{ group.group_id }}" method="POST">
     {% for pattern in patterns %}
       <label>{{ pattern.pattern_name}}</label>
@@ -114,18 +114,24 @@ $(document).ready(function(){
         autoStart: false,
         callbacks: {
           stop: function() {
-            $('.message').html('Voting for this group has now ended. Thanks for voting!')
+            $('.message').html('<h3> Voting has now ended. Please confirm the winning pattern. </h3>');
           }
         }
     });
     if (seconds_left > 1) {
       clock.setTime(seconds_left);
       if ({{ votes }}.length == {{ groups_ids }}.length) {
-        $('#final_vote_confirm').show();
-      }
+        if ({{ user }} == {{ group.admin_id }}) {
+          $('#final_vote_confirm').show();
+          $('.votes_complete').html('<h3> Everyone in your group has voted. Please confirm the winning pattern. </h3>')
+
+       }
+    }
     } else {
       clock.setTime(0);
       if ({{ user }} == {{ group.admin_id }}) {
+        console.log({{user}});
+        console.log({{group.admin_id}});
         $('#final_vote_confirm').show();
       }
     }

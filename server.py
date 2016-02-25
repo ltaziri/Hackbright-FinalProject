@@ -68,17 +68,17 @@ def handle_sign_in_form():
     if existing_user:
         if password == existing_user.password:
             session["user_id"] = existing_user.user_id
-            if session.get("invite_id"):
-                invite = Invite.query.get(session["invite_id"])
-                if invite.invite_confirm == False and email == invite.invite_email: 
-                    invite.invite_confirm = True
-                    user_group = UserGroup(
-                                           group_id=invite.group_id,
-                                           user_id=existing_user.user_id
-                                           )
-                    db.session.add(user_group)
-                    db.session.commit()
-                del session['invite_id']
+            # if session.get("invite_id"):
+            #     invite = Invite.query.get(session["invite_id"])
+            #     if invite.invite_confirm == False and email == invite.invite_email: 
+            #         invite.invite_confirm = True
+            #         user_group = UserGroup(
+            #                                group_id=invite.group_id,
+            #                                user_id=existing_user.user_id
+            #                                )
+            #         db.session.add(user_group)
+            #         db.session.commit()
+            #     del session['invite_id']
             return redirect("/user")
         else:
             flash("Invalid password.")
@@ -167,9 +167,74 @@ def show_user_home():
 
     user = User.query.get(session["user_id"])
 
+    open_invites = Invite.query.filter(Invite.invite_email == user.email, 
+                                       Invite.invite_confirm == False).all()
     groups = user.groups
 
-    return render_template("user_home.html", user=user, groups=groups)
+    group_vote_messages = {}
+    for group in groups:
+        message_dict ={}
+        users_in_group = UserGroup.query.filter_by(group_id=group.group_id).all()
+        votes_for_group = Vote.query.filter_by(group_id=group.group_id).all()
+        patterns_for_group = Pattern.query.filter_by(group_id =group.group_id).all()
+
+        if group.vote_timestamp:
+            clock_start = Delorean(datetime=group.vote_timestamp, timezone='UTC')
+            time_in_hours  = group.vote_days * 24
+            clock_end = clock_start + timedelta(hours = time_in_hours)
+            current_day_time = Delorean()
+            days_remaining =  clock_end - current_day_time
+            seconds_remaining = int(days_remaining.total_seconds())
+            message_dict['remaining_time'] = seconds_remaining
+        else:
+            message_dict['remaining_time'] = False 
+        
+        for pattern in patterns_for_group:
+            if pattern.chosen == True:
+                message_dict['pattern_chosen'] = True;
+        if message_dict.get('pattern_chosen', False) == False:
+            message_dict['pattern_chosen'] = False;
+
+        message_dict['group_id'] = group.group_id
+        message_dict['admin'] = group.admin_id
+        message_dict['user_count'] = len(users_in_group)
+        message_dict['vote_count'] = len(votes_for_group)
+        message_dict['vote_timestamp'] = group.vote_timestamp
+        group_vote_messages[group.group_name] = message_dict
+
+   
+    return render_template("user_home.html", 
+                            user=user, 
+                            groups=groups, 
+                            open_invites = open_invites, 
+                            group_vote_messages=group_vote_messages)
+
+
+@app.route('/invite_confirm.json', methonds=['POST'])
+def add_group_to_user():
+    """User confirm invite, join group, and return group info for AJAX temp div"""
+
+    invite_id = request.form.get('invite_id')
+
+    user = session["user_id"]
+
+    invite = Invite.query.get(invite_id)
+    invite.invite_confirm = True
+
+    user_group = UserGroup(
+                           group_id=invite.group_id,
+                           user_id=user
+                           )
+    db.session.add(user_group)
+    db.session.commit()
+
+    group_dict = {}
+
+    group_dict['group_id'] = invite.group_id
+    group_dict['group_name'] = invite.group.group_name
+    group_dict['group_image'] = invite.group.group_image
+
+    return jsonify(group_dict)
 
 
 @app.route('/user_profile')
