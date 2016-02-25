@@ -8,7 +8,7 @@ div.pop-up {
           background-color: #ffffff;
         }
 
-div#poll_div {
+div#poll_div, div#final_vote_confirm {
           display: none;
 }
 

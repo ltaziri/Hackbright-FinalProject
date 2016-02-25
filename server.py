@@ -373,14 +373,13 @@ def show_group_page(group_id):
     if session["user_id"] in groups_ids:
 
         user = session["user_id"]
-
-        voter_ids =[]
+        
         votes = Vote.query.filter_by(group_id = group_id).all()
 
         voter_ids =[]
         for voter in votes:
             voter_ids.append(voter.user_id)
-
+      
         comments =  Comment.query.filter_by(group_id=group_id)
 
         patterns = Pattern.query.filter_by(group_id=group_id).all()
@@ -395,7 +394,8 @@ def show_group_page(group_id):
                         user=user,
                         comments=comments,
                         patterns = chosen_pattern,
-                        votes=voter_ids)
+                        votes=voter_ids,
+                        groups_ids =groups_ids)
         else:
             return render_template("group_page.html", 
                         group=group, 
@@ -403,7 +403,8 @@ def show_group_page(group_id):
                         user=user,
                         comments=comments,
                         patterns = patterns,
-                        votes=voter_ids)
+                        votes=voter_ids,
+                        groups_ids = groups_ids)
 
     else:
         return redirect("/user")
@@ -555,6 +556,22 @@ def get_pattern_poll_data(group_id):
     poll_data['datasets'] = [data_set]
     print poll_data
     return jsonify(poll_data)
+
+
+@app.route('/final_vote/<int:group_id>', methods=['POST'] )
+def handle_final_vote_submit(group_id):
+    """process final pattern vote and mark it confirmed in the pattern table"""
+
+    vote = request.form.get('final_vote_submit')
+    vote = int(vote)
+    print vote
+    pattern = Pattern.query.filter_by(pattern_id = vote).one()
+    print pattern
+    pattern.chosen = True
+    db.session.commit()
+
+
+    return redirect('/group_home/%d' % group_id)
 
 
 @app.route('/comment_add.json', methods=['POST'])

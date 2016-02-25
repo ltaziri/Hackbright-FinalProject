@@ -23,16 +23,15 @@
 {% if patterns|length == 1 %}
 <section>
     <h3> This month we are working on {{ patterns[0].pattern_name }}</h3>
-
+      {% if group.group_image %}
+        <img src= "/{{ group.group_image }}" width="500">
+      {% endif %}
     <p>
       {% if patterns[0].pattern_pdf %}
         Click<a href="/{{ patterns[0].pattern_pdf }}" target="blank"> here </a> to download the pattern.<br> 
       {% endif %}
       {% if patterns[0].pattern_link %}
         Click <a href="{{ patterns[0].pattern_link }}" target="blank">here</a> to go to the pattern source.
-      {% endif %}
-      {% if group.group_image %}
-        <img src= "/{{ group.group_image }}" width="500">
       {% endif %} 
     </p>  
 </section>
@@ -50,6 +49,16 @@
   <div class="clock" style="margin:2em;"></div>
   <div class="message"></div>
 </section>
+
+  <div id="final_vote_confirm">
+     <h3> Voting has now ended. Please confirm the winning pattern </h3>
+    <form id= "final_vote_form" action = "/final_vote/{{ group.group_id }}" method="POST">
+    {% for pattern in patterns %}
+      <label>{{ pattern.pattern_name}}</label>
+      <button name="final_vote_submit" type="submit" value ="{{ pattern.pattern_id }}">Select</button>
+    {% endfor %}
+    </form>
+  </div>
 
 <hr>
 <section>
@@ -71,10 +80,10 @@
   {% endfor %}
   <input type="hidden" name="group_id" id="pattern_group" value="{{group.group_id}}">
   <button id="vote_submit" type="submit">Vote!</button>
-
   </form>
 </section>
 {% endif %}
+
 {% block javascript %}
     
 <script type="text/javascript">
@@ -93,21 +102,13 @@ $(document).ready(function(){
     patternPoll = new Chart(ctx_bar).Bar(data, options);
     $('#barLegend').html(patternPoll.generateLegend());
   });
-
   
-  if ({{ user }} in {{ votes }}) {
-    $('.pattern_select').hide();
-    $('#vote_form').append(voteConfirmation);
-    $('#vote_submit').hide();
-  }
-
   $.get('/flip_clock.json/{{ group. group_id}}', function(data) {
-  console.log(data);
   seconds_left = data.seconds;
   
 
   var clock;
-
+  
   clock = $('.clock').FlipClock({
         clockFace: 'DailyCounter',
         autoStart: false,
@@ -117,12 +118,30 @@ $(document).ready(function(){
           }
         }
     });
-    console.log(seconds_left);  
-    clock.setTime(seconds_left);
+    if (seconds_left > 1) {
+      clock.setTime(seconds_left);
+      if ({{ votes }}.length == {{ groups_ids }}.length) {
+        $('#final_vote_confirm').show();
+      }
+    } else {
+      clock.setTime(0);
+      if ({{ user }} == {{ group.admin_id }}) {
+        $('#final_vote_confirm').show();
+      }
+    }
     clock.setCountdown(true);
     clock.start();
     });
+
+for(var i=0;i<{{votes}}.length;i++) {
+    if({{ votes }}[i]==={{ user }} ){
+      $('.pattern_select').hide();
+      $('#vote_form').append(voteConfirmation);
+      $('#vote_submit').hide();
+  }}
 })
+
+
 
 function handleVote(evt) {
   evt.preventDefault();
@@ -142,6 +161,9 @@ function handleVote(evt) {
         patternPoll.update();
         } 
       }
+    $('.pattern_select').hide();
+    $('#vote_form').append(voteConfirmation);
+    $('#vote_submit').hide();
     });
   }
 
