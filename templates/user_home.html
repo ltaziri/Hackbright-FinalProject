@@ -11,7 +11,7 @@
 <section>
   <h3> Your craft groups:</h3>
         <div class="row">
-          <div class ="col-xs-12 col-sm-12 col-md-8 col-lg-9">
+          <div class ="col-xs-12 col-sm-12 col-md-8 col-lg-10">
           {% for group in groups %}
               <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
                   <a href="/group_home/{{ group.group_id }}">
@@ -20,10 +20,9 @@
                   </a>
               </div>
           {% endfor %}
-              <div id="group_add" class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
-              </div>
+              <div id="group_add"></div>
           </div>
-          <div class ="col-xs-12 col-sm-12 col-md-4 col-lg-3">
+          <div class ="col-xs-12 col-sm-12 col-md-4 col-lg-2">
               <h3> Messages: </h3>
               <ul>
               {% for groups, values in group_vote_messages.items() %}
@@ -31,7 +30,7 @@
                     {% if values['pattern_chosen'] == False %}
                       {% if values['remaining_time'] != False %}
                         {% if values['remaining_time'] < 1 %}
-                          <li> Voting time {{ groups }} has run out!.
+                          <li> Voting time for {{ groups }} has run out!.
                               Please confirm the winning pattern!
                               <a href="/group_home/{{ values['group_id'] }}">Confirm now</a>
                           </li>
@@ -48,7 +47,7 @@
               {% endfor %}
               {% if open_invites %}
                 {% for invite in open_invites %}
-                  <li> {{ invite.user.first_name}} has invited you to join {{invite.group.group_name}}.<br>
+                  <li class="invite_msg"> {{ invite.user.first_name}} has invited you to join {{invite.group.group_name}}.<br>
                         <form class = "invite_confirm" method="POST">
                           <input type="hidden" name="invite_id" class="invite_id" value="{{invite.invite_id}}">
                           <button type="submit" class = "btn btn-default">Join now</button>
@@ -71,9 +70,16 @@ function addGroup(evt) {
     "invite_id": $('.invite_id').val(),
   };
 
-  $.post('/invite_confirm.json', formInputs, function(data) {
+  $.post('/invite_confirm.json', formInput, function(results) {
+    var groupHtml ="";
+    groupHtml += "<a href='/group_home/" + results.group_id + "'>";
+    groupHtml += "<h3>" + results.group_name + "</h3>";
+    groupHtml += "<img src='" + results.group_image + "' width = '250'><br></a>";
 
-  }
+    $('#group_add').attr('class', 'col-xs-12 col-sm-12 col-md-6 col-lg-4');
+    $('#group_add').prepend(groupHtml);
+    $('.invite_msg').hide();
+  })
 
 }
 

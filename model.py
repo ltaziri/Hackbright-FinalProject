@@ -61,7 +61,7 @@ class Group(db.Model):
     admin_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
     vote_timestamp = db.Column(db.DateTime, nullable=True) 
     vote_days = db.Column(db.Integer, nullable=True)
-    # pattern_name = db.Column(db.String(255), nullable=True)
+    hashtag = db.Column(db.String(64), nullable=True)
     admin = db.relationship("User", backref=db.backref("group", order_by=group_id))
 
     def __repr__(self):
@@ -69,14 +69,13 @@ class Group(db.Model):
 
         return "<Group Id: %s Group name: %s>" %(self.group_id, self.group_name)
 
-    def get_user_list(self):
-        """ Get list of user ids in the group"""
+    def is_user_in_group(self, user_id):
+        """ Check if a user is in a group"""
 
-        groups_ids = []
-        for user_id in self.users.user_id:
-            groups_ids.append(user_id)
-
-        return groups_ids
+        if user_id in [user.user_id for user in self.users]:
+            return True
+        else:
+            return False
 
 
 class Comment(db.Model):

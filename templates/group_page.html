@@ -103,7 +103,7 @@ $(document).ready(function(){
     $('#barLegend').html(patternPoll.generateLegend());
   });
   
-  $.get('/flip_clock.json/{{ group. group_id}}', function(data) {
+  $.get('/flip_clock.json/{{ group.group_id}}', function(data) {
   seconds_left = data.seconds;
   
 
@@ -218,7 +218,7 @@ $('#vote_form').on('submit', handleVote)
         {% endif %}       
     </div>
     {% endfor %}
-
+</section>
 
 <script>
 "use strict";
@@ -259,10 +259,17 @@ $("#comment_form").submit(function(event){
 
 </script>
 
-
-
+<section>
+   <h3>Photo gallery</h3>
+  {% for comment in comments %}
+    {% if comment.comment_image %}
+      <img src="/{{ comment.comment_image }}" class=".img-thumbnail" width="150"  width="150">
+    {% endif %}  
+  {% endfor %}
 </section>
+
 <hr>
+
 <section>
     <h3>Users in this group are:</h3>
     
@@ -283,24 +290,21 @@ $("#comment_form").submit(function(event){
 </section>
 
 <script>
-      function showUserInfo(evt) {
-          var mouseX = evt.pageX;
-          var mouseY = evt.pageY;
-          $(this).prev('div.pop-up').show()
-          .css('left', mouseX)
-          .css('top', mouseY);
-      }
+  function showUserInfo(evt) {
+      var mouseX = evt.pageX;
+      var mouseY = evt.pageY;
+      $(this).prev('div.pop-up').show()
+      .css('left', mouseX)
+      .css('top', mouseY);
+  }
 
-      function hideUserInfo(evt) {
-            $('div.pop-up').hide();
-      }
+  function hideUserInfo(evt) {
+        $('div.pop-up').hide();
+  }
 
-      $(document).ready(function(){
-          $('.show_user').click(showUserInfo);
-          $('.pop-up').click(hideUserInfo);
-      });
-
-            
+  $('.show_user').click(showUserInfo);
+  $('.pop-up').click(hideUserInfo);
+    
 </script>
 <hr>
 <a href ="/user"> Return to user homepage </a>

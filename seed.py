@@ -42,7 +42,12 @@ def load_groups():
 
     for row in open("seed_data/groups.txt"):
         row = row.rstrip()
-        group_id, group_name, group_descrip, group_image, admin_id, vote_timestamp, vote_days = row.split("|")
+        group_id, group_name, group_descrip, group_image, admin_id, vote_timestamp, vote_days, hashtag = row.split("|")
+
+        if vote_timestamp == "":
+            vote_timestamp = None
+        if vote_days == "":
+            vote_days = None
 
         group = Group(group_id=group_id,
                       group_name=group_name,
@@ -50,8 +55,8 @@ def load_groups():
                       group_image=group_image,
                       admin_id=admin_id,
                       vote_timestamp=vote_timestamp, 
-                      vote_days=vote_days
-                      # pattern_name=pattern_name
+                      vote_days=vote_days,
+                      hashtag=hashtag
                       )
 
         db.session.add(group)

@@ -210,7 +210,7 @@ def show_user_home():
                             group_vote_messages=group_vote_messages)
 
 
-@app.route('/invite_confirm.json', methonds=['POST'])
+@app.route('/invite_confirm.json', methods=['POST'])
 def add_group_to_user():
     """User confirm invite, join group, and return group info for AJAX temp div"""
 
@@ -427,16 +427,13 @@ def show_group_page(group_id):
 
     group_users = group.users
 
-    # groups_ids_class = group.get_user_list
-    # print "++++++++++++++++++++++++++++++ from class", groups_ids_class
-
     groups_ids = []
     for group_user in group_users:
         groups_ids.append(group_user.user_id)
 
-    # print "++++++++++++++++++++++++++++++ from server", groups_ids
-    if session["user_id"] in groups_ids:
-
+    if group.is_user_in_group(session["user_id"])==False:
+        return redirect("/user")     
+    else: 
         user = session["user_id"]
         
         votes = Vote.query.filter_by(group_id = group_id).all()
@@ -471,8 +468,6 @@ def show_group_page(group_id):
                         votes=voter_ids,
                         groups_ids = groups_ids)
 
-    else:
-        return redirect("/user")
 
 
 @app.route('/group_profile_form/<int:group_id>')
@@ -483,11 +478,7 @@ def show_group_profile_form(group_id):
 
     group_users = group.users
 
-    groups_ids = []
-    for group_user in group_users:
-        groups_ids.append(group_user.user_id)
-
-    if session["user_id"] in groups_ids:
+    if group.is_user_in_group(session["user_id"])==False:
         return render_template("group_update_form.html", group=group)
     else:
         return redirect("/user")
