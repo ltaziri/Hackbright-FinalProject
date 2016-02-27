@@ -89,6 +89,7 @@
 <script type="text/javascript">
 var patternPoll
 var voteConfirmation = "<p>Thanks for voting! Your vote has been recorded</p>"
+
 $(document).ready(function(){
   
   var options = { 
@@ -120,7 +121,7 @@ $(document).ready(function(){
     });
     if (seconds_left > 1) {
       clock.setTime(seconds_left);
-      if ({{ votes }}.length == {{ groups_ids }}.length) {
+      if({{ votes }}.length=== {{ num_group_users }}) {
         if ({{ user }} == {{ group.admin_id }}) {
           $('#final_vote_confirm').show();
           $('.votes_complete').html('<h3> Everyone in your group has voted. Please confirm the winning pattern. </h3>')
@@ -145,9 +146,8 @@ for(var i=0;i<{{votes}}.length;i++) {
       $('#vote_form').append(voteConfirmation);
       $('#vote_submit').hide();
   }}
+
 })
-
-
 
 function handleVote(evt) {
   evt.preventDefault();
@@ -176,6 +176,7 @@ function handleVote(evt) {
 $('#vote_form').on('submit', handleVote)
 
 </script>
+
 {% endblock %}
 
 <section>   
@@ -258,17 +259,21 @@ $("#comment_form").submit(function(event){
 }
 
 </script>
-
+<hr>
 <section>
    <h3>Photo gallery</h3>
   {% for comment in comments %}
     {% if comment.comment_image %}
+      <div>
       <img src="/{{ comment.comment_image }}" class=".img-thumbnail" width="150"  width="150">
+    </div>
     {% endif %}  
   {% endfor %}
+  <div id="instafeed"></div>
 </section>
 
 <hr>
+
 
 <section>
     <h3>Users in this group are:</h3>

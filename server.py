@@ -13,6 +13,8 @@ import os
 import sys
 from chart import chart_data
 from delorean import Delorean
+import twitter
+import requests
 
 
 app = Flask(__name__)
@@ -21,6 +23,12 @@ app = Flask(__name__)
 app.secret_key = "ABC"
 
 app.jinja_env.undefined = StrictUndefined
+
+api = twitter.Api(
+    consumer_key=os.environ['TWITTER_CONSUMER_KEY'],
+    consumer_secret=os.environ['TWITTER_CONSUMER_SECRET'],
+    access_token_key=os.environ['TWITTER_ACCESS_TOKEN'],
+    access_token_secret=os.environ['TWITTER_TOKEN_SECRET'])
 
 photos = UploadSet('photos', IMAGES)
 manuals = UploadSet('manuals')
@@ -45,15 +53,6 @@ def index():
 
     else:
         return render_template("homepage.html")
-
-
-@app.route('/invite/<invite_id>')
-def invite_index(invite_id):
-    """Redirect to landing page when accepting an invite"""
-
-    session["invite_id"] = invite_id
-
-    return redirect("/")
 
 
 @app.route('/sign_in', methods=['POST'])
@@ -427,10 +426,6 @@ def show_group_page(group_id):
 
     group_users = group.users
 
-    groups_ids = []
-    for group_user in group_users:
-        groups_ids.append(group_user.user_id)
-
     if group.is_user_in_group(session["user_id"])==False:
         return redirect("/user")     
     else: 
@@ -441,13 +436,14 @@ def show_group_page(group_id):
         voter_ids =[]
         for voter in votes:
             voter_ids.append(voter.user_id)
-      
+
+        num_group_users = len(group_users)
+        
         comments =  Comment.query.filter_by(group_id=group_id)
 
         patterns = Pattern.query.filter_by(group_id=group_id).all()
 
         chosen_pattern = Pattern.query.filter(Pattern.group_id == group_id, Pattern.chosen == True).all()
-        
 
         if chosen_pattern:
             return render_template("group_page.html", 
@@ -457,7 +453,7 @@ def show_group_page(group_id):
                         comments=comments,
                         patterns = chosen_pattern,
                         votes=voter_ids,
-                        groups_ids =groups_ids)
+                        num_group_users=num_group_users)
         else:
             return render_template("group_page.html", 
                         group=group, 
@@ -466,8 +462,60 @@ def show_group_page(group_id):
                         comments=comments,
                         patterns = patterns,
                         votes=voter_ids,
-                        groups_ids = groups_ids)
+                        num_group_users=num_group_users)
 
+@app.route('/sample_twitter/<int:group_id>')
+def show_sample_twitter(group_id):
+    """trial html for twitter info"""
+
+    return render_template('sample_twitter.html', group_id=group_id)
+
+
+@app.route('/group_twitter.json/<int:group_id>')
+def get_twitter_feed(group_id):
+    """Make twitter request to api and return data"""
+       
+    group = Group.query.get(group_id)
+    
+    # hashtag = group.hashtag
+    # this gives all tweet objects with hash tag
+    tagged_tweets = api.GetSearch(term=group.hashtag, 
+                                  geocode=None, 
+                                  since_id=None, 
+                                  max_id=None, 
+                                  until=None, 
+                                  count=15, 
+                                  lang=None, 
+                                  locale=None, 
+                                  result_type='mixed', 
+                                  include_entities=None)
+    print tagged_tweets
+    
+    twitter_feed = {}
+    tweet_id = 1
+    for tweet in tagged_tweets:
+        tweet_photo = tweet.media
+        twitter_feed[tweet_id] = { 'screen_name': tweet.user.screen_name,
+                                    'text':tweet.text, 
+                                    'user_profile_pic': tweet.user.profile_image_url,
+                                    'image_url' : tweet_photo[0]['media_url_https']
+                                    }
+        tweet_id = tweet_id + 1
+        # tweet_photo = tweet.media
+        # twitter_feed[tweet.user.screen_name]['image_url']=tweet_photo[0]['media_url_https']
+        # # for media in tweet.media:
+        #     tweet_photo = media['media_url_https']
+        #     twitter_feed[tweet.user.screen_name]['image_url']=tweet_photo
+        # else:
+        #     photos = tweet.media
+        #     for photo in tweet.media:
+        #         photo_url = photo['media_url_https']
+        #         twitter_feed[tweet.user.screen_name] = {'text':tweet.text, 
+        #                                                 'user_profile_pic': tweet.user.profile_image_url, 
+        #                                                 'image_url': photo_url}
+            
+ 
+    return jsonify(twitter_feed)
 
 
 @app.route('/group_profile_form/<int:group_id>')
@@ -705,7 +753,7 @@ def send_invitation(group_id):
     db.session.add(invite)
     db.session.commit()
 
-    send_email(invite_email, invite_name, user.first_name, group.group_name, invite_text, invite.invite_id)
+    send_email(invite_email, invite_name, user.first_name, group.group_name, invite_text)
 
     flash("Invitation sent!")
 

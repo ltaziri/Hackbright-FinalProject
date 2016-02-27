@@ -3,7 +3,7 @@ import os
 import sys
 
 
-def send_email(invite_email, invite_name, user_name, group_name, invite_text, invite_id):
+def send_email(invite_email, invite_name, user_name, group_name, invite_text):
 
     api_key = os.environ['SEND_GRID_API']
     sg = sendgrid.SendGridClient(api_key)
@@ -17,11 +17,11 @@ def send_email(invite_email, invite_name, user_name, group_name, invite_text, in
                         <p>%s has sent you the following invite for the %s group.\n</p> 
                         <p>%s</p>
                         
-                        <a href=\"/%d\">Join the group!</a> """% (invite_name, 
+                        <a href=\"/">Join the group!</a> """% (invite_name, 
                                                                   user_name, 
                                                                   group_name, 
                                                                   invite_text, 
-                                                                  invite_id ))
+                                                                  ))
 
     message.set_from("admin@virtcraft.com")
     
