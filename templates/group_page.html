@@ -1,88 +1,183 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<section>
-  <h2>Welcome to {{ group.group_name}}</h2>
-    {% if user == group.admin_id %}
-      <a href="/group_profile_form/{{ group.group_id }}">Update the group information</a>
-    {% endif %}
-</section>
+<div class = "row">
+<section class = "col-xs-12">
+  <div class = "row">
+    <div class = "col-xs-12 col-sm-12 col-md-9">
+      <h2>Welcome to {{ group.group_name}}</h2>
 
-<hr>
-{% if patterns|length == 0 %}
-<section>
-    <p>
-      {% if group.group_image %}
-        <img src= "/{{ group.group_image }}" width="500">
-      {% endif %} 
-    </p>  
+      <section>   
+          {% if group.group_descrip %}
+            <p>{{ group.group_descrip }}</p>
+          {% endif %}
+          {% if user == group.admin_id %}
+            <a href="/group_profile_form/{{ group.group_id }}">Update the group information</a>
+          {% endif %}
+          <hr>       
+      </section>
 
-</section>
-{% endif %}
-
-{% if patterns|length == 1 %}
-<section>
-    <h3> This month we are working on {{ patterns[0].pattern_name }}</h3>
-      {% if group.group_image %}
-        <img src= "/{{ group.group_image }}" width="500">
+      {% if patterns|length == 0 %}
+        <section>
+            <p>
+              {% if group.group_image %}
+                <img src= "/{{ group.group_image }}" width="500">
+              {% endif %} 
+            </p>  
+        </section>
       {% endif %}
-    <p>
-      {% if patterns[0].pattern_pdf %}
-        Click<a href="/{{ patterns[0].pattern_pdf }}" target="blank"> here </a> to download the pattern.<br> 
-      {% endif %}
-      {% if patterns[0].pattern_link %}
-        Click <a href="{{ patterns[0].pattern_link }}" target="blank">here</a> to go to the pattern source.
-      {% endif %} 
-    </p>  
-</section>
-{% endif %}
 
-{% if patterns|length > 1 %}
-<section>
-  <div id = "myChart" class = "pattern_poll">
-    <canvas id = "pattern_bar_graph"></canvas>
-    <div id = "barLegend" class="chart-legend"></div>
+      <section> 
+        {% if patterns|length == 1 %}
+             <img src= "/{{ group.group_image }}" width="500">
+        {% endif %}
+      </section>
+
+      <section>
+        {% if patterns|length > 1 %}
+          <div id = "myChart" class = "pattern_poll">
+            <canvas id = "pattern_bar_graph"></canvas>
+            <div id = "barLegend" class="chart-legend"></div>
+          </div>
+        {% endif %}
+      </section>
+      <hr>
+    </div>
+    <div class = "col-xs-12 col-sm-12 col-md-3">
+        <h3>Users in this group are:</h3>
+          <div class = "row">
+          {% for group_user in group_users %}
+            <div class = "col-xs-6">          
+              <div class="pop-up">       
+                <h2>{{ group_user.first_name }} {{ group_user.last_name }}</h2>
+                <img src="/{{ group_user.user_photo }}" width="200">
+                <p> {{ group_user.user_descrip }}</p>
+                <button>close</button>
+              </div>
+
+              <img src="/{{ group_user.user_photo }}" class="show_user img-circle" width="50"  height="50">
+              <p> {{ group_user.first_name }} {{ group_user.last_name }}</p>
+            </div>  
+          {% endfor %}
+          <div class = "row">
+            <div class = "col-xs-12">
+              <h4><a href ="/invite_form/{{ group.group_id }}"> Invite people to join your group! </a></h4>
+            </div>
+          </div>
+    </div>
+  </div>  
+</section>
+
+<div class = "row">
+<section class = "col-xs-12">
+  <div class = "row">
+    <div class = "col-xs-12 col-sm-12 col-md-9">
+      {% if patterns|length == 1 %}
+        <section>
+            <h3> This month we are working on {{ patterns[0].pattern_name }}</h3>
+            <p>
+              {% if patterns[0].pattern_pdf %}
+                Click<a href="/{{ patterns[0].pattern_pdf }}" target="blank"> here </a> to download the pattern.<br> 
+              {% endif %}
+              {% if patterns[0].pattern_link %}
+                Click <a href="{{ patterns[0].pattern_link }}" target="blank">here</a> to go to the pattern source.
+              {% endif %} 
+            </p>  
+        </section>
+      {% endif %}   
+
+      {% if patterns|length > 1 %}
+        <section>
+          <div class="clock" style="margin:2em;"></div>
+        </section>
+        <div id="final_vote_confirm">
+          <div class="message"></div>
+          <div class="votes_complete"> </div>
+            <form id= "final_vote_form" action = "/final_vote/{{ group.group_id }}" method="POST">
+            {% for pattern in patterns %}
+              <label>{{ pattern.pattern_name}}</label>
+              <button name="final_vote_submit" type="submit" value ="{{ pattern.pattern_id }}">Select</button>
+            {% endfor %}
+            </form>
+        </div>
+        <section>
+            <h3>Your vote counts!</h3>
+            <p> Here are the choices for the group's pattern.</p>
+            <div class = "row">
+              <form id ="vote_form" action="/poll.json/<int:group_id>" method="POST">
+                  {% for pattern in patterns %}
+                    <div class ="col-xs-12 col-sm-12 col-md-4">
+                      <b> {{ pattern.pattern_name }} </b>
+                      <br>
+                      {% if pattern.pattern_pdf %}
+                        Click<a href="/{{ pattern.pattern_pdf }}" target="blank"> here </a> to get the pdf pattern.<br> 
+                      {% endif %}
+                      {% if pattern.pattern_link %}
+                        Click <a href="{{ pattern.pattern_link }}" target="blank">here</a> to go to the pattern source.<br>
+                      {% endif %}
+                      <input type="radio" class ="pattern_select" name="pattern_select" value="{{ pattern.pattern_id }}">
+                    </div>
+                  {% endfor %}
+                  <input type="hidden" name="group_id" id="pattern_group" value="{{group.group_id}}">
+                  <button id="vote_submit" type="submit">Vote!</button>
+              </form>
+            </div>
+        </section>
+      {% endif %}
+
+      <section>
+          <div>
+          <h3> Comments:</h3>
+         
+              <form id="comment_form" action="/comment_add.json" method="POST" enctype="multipart/form-data">
+                  Add a comment:
+                  <input type="hidden" name="group_id" id="group_id" value="{{group.group_id}}">
+                  <br>
+                  <input type="text" name="comment_text" id="comment_text" placeholder="comment">
+                  &nbsp;Add a picture! <input type="file" id="comment_image" name="comment_image"><br>
+                  
+                  <button type="submit">Add your comment</button>
+              </form>
+              <br>
+          </div>
+
+          <div id="new_comment"></div>
+
+          {% for comment in comments|sort(attribute="comment_id", reverse = True) %}
+          <div class ="comment_style">
+              <img src="/{{ comment.user.user_photo }}" width="50">
+              <b>{{ comment.user.first_name }}</b><br>
+              <i>{{ comment.comment_timestamp.strftime("%m/%d/%y %X") }}</i><br>
+              {{ comment.comment_text }} <br>
+              {% if comment.comment_image %}
+                <img src="/{{ comment.comment_image }}" width="300">
+              {% endif %}       
+          </div>
+          {% endfor %}
+      </section>
+    </div>
+    <div class = "col-xs-12 col-sm-12 col-md-3">
+      <section>
+        <h3>Latest tweets:</h3>
+        <p>{{ group.hashtag}}</p>
+        <div id="twitter"></div>
+      </section>
+      <section>
+        <h3>Photo gallery:</h3>
+        {% for comment in comments %}
+          {% if comment.comment_image %}
+            <div>
+            <img src="/{{ comment.comment_image }}" class=".img-thumbnail" width="100"  width="100">
+          </div>
+          {% endif %}  
+        {% endfor %}
+      </section>
+    </div>
   </div>
 </section>
 <hr>
-<section>
-  <div class="clock" style="margin:2em;"></div>
-</section>
 
-  <div id="final_vote_confirm">
-    <div class="message"></div>
-    <div class="votes_complete"> </div>
-    <form id= "final_vote_form" action = "/final_vote/{{ group.group_id }}" method="POST">
-    {% for pattern in patterns %}
-      <label>{{ pattern.pattern_name}}</label>
-      <button name="final_vote_submit" type="submit" value ="{{ pattern.pattern_id }}">Select</button>
-    {% endfor %}
-    </form>
-  </div>
 
-<hr>
-<section>
-  <h3>Your vote counts!</h3>
-  <p> Here are the choices for the group's pattern.</p>
-  <form id ="vote_form" action="/poll.json/<int:group_id>" method="POST">
-  {% for pattern in patterns %}
-      <div>
-      <b> {{ pattern.pattern_name }} </b>
-      <br>
-      {% if pattern.pattern_pdf %}
-        Click<a href="/{{ pattern.pattern_pdf }}" target="blank"> here </a> to get the pdf pattern.<br> 
-      {% endif %}
-      {% if pattern.pattern_link %}
-        Click <a href="{{ pattern.pattern_link }}" target="blank">here</a> to go to the pattern source.<br>
-      {% endif %}
-      <input type="radio" class ="pattern_select" name="pattern_select" value="{{ pattern.pattern_id }}">
-    </div><br>
-  {% endfor %}
-  <input type="hidden" name="group_id" id="pattern_group" value="{{group.group_id}}">
-  <button id="vote_submit" type="submit">Vote!</button>
-  </form>
-</section>
-{% endif %}
 
 {% block javascript %}
     
@@ -91,6 +186,24 @@ var patternPoll
 var voteConfirmation = "<p>Thanks for voting! Your vote has been recorded</p>"
 
 $(document).ready(function(){
+
+  $.get('/group_twitter.json/{{ group.group_id }}', function(results) {
+        var keys = Object.keys(results);
+        console.log(results);
+        console.log(keys)
+         console.log(keys.length)
+        for(var i=0;i<keys.length;i++) {
+            console.log(results[keys[i]].user_profile_pic)
+            var twitter_div = "";
+            twitter_div += "<b>"+ results[keys[i]].screen_name + "</b><br>";
+            twitter_div += "<img src='" + results[keys[i]].user_profile_pic + "' width='50'>";
+            twitter_div += "<i>" + results[keys[i]].text + "</i><br>";
+            if(results[keys[i]].image_url) {
+            twitter_div += "<img src='" + results[keys[i]].image_url + "' width='300'><br>";
+            }
+        $("#twitter").prepend(twitter_div);
+        }
+    })
   
   var options = { 
                 responsive: true, 
@@ -178,49 +291,6 @@ $('#vote_form').on('submit', handleVote)
 </script>
 
 {% endblock %}
-
-<section>   
-    {% if group.group_descrip %}
-    <hr>
-        <p>{{ group.group_descrip }}</p>
-    {% endif %}
-    <br> 
-
-</section>
-
-<hr>
-
-<section>
-    <div>
-    <h3> Comments:</h3>
-   
-        <form id="comment_form" action="/comment_add.json" method="POST" enctype="multipart/form-data">
-            Add a comment:
-            <input type="hidden" name="group_id" id="group_id" value="{{group.group_id}}">
-            <br>
-            <input type="text" name="comment_text" id="comment_text" placeholder="comment">
-            &nbsp;Add a picture! <input type="file" id="comment_image" name="comment_image"><br>
-            
-            <button type="submit">Add your comment</button>
-        </form>
-        <br>
-    </div>
-
-    <div id="new_comment"></div>
-
-    {% for comment in comments|sort(attribute="comment_id", reverse = True) %}
-    <div>
-        <img src="/{{ comment.user.user_photo }}" width="50">
-        <b>{{ comment.user.first_name }}</b><br>
-        <i>{{ comment.comment_timestamp.strftime("%m/%d/%y %X") }}</i><br>
-        {{ comment.comment_text }} <br>
-        {% if comment.comment_image %}
-          <img src="/{{ comment.comment_image }}" width="300">
-        {% endif %}       
-    </div>
-    {% endfor %}
-</section>
-
 <script>
 "use strict";
 
@@ -259,40 +329,6 @@ $("#comment_form").submit(function(event){
 }
 
 </script>
-<hr>
-<section>
-   <h3>Photo gallery</h3>
-  {% for comment in comments %}
-    {% if comment.comment_image %}
-      <div>
-      <img src="/{{ comment.comment_image }}" class=".img-thumbnail" width="150"  width="150">
-    </div>
-    {% endif %}  
-  {% endfor %}
-  <div id="instafeed"></div>
-</section>
-
-<hr>
-
-
-<section>
-    <h3>Users in this group are:</h3>
-    
-      {% for group_user in group_users %}
-                  
-          <div class="pop-up">       
-            <h2>{{ group_user.first_name }} {{ group_user.last_name }}</h2>
-            <img src="/{{ group_user.user_photo }}" width="200">
-            <p> {{ group_user.user_descrip }}</p>
-            <button>close</button>
-          </div>
-
-          <img src="/{{ group_user.user_photo }}" class="show_user .img-thumbnail" width="150"  width="150">
-          <h4> {{ group_user.first_name }} {{ group_user.last_name }}</h4>
-      {% endfor %}
-
-    <h3><a href ="/invite_form/{{ group.group_id }}"> Invite people to join your group! </a></h3><br>
-</section>
 
 <script>
   function showUserInfo(evt) {

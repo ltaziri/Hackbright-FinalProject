@@ -1,73 +1,249 @@
 {% extends 'base.html' %}
 {% block content %}
+<div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-9 col-lg-11  column col-sm-offset-0 col-md-offset-1 col-lg-offset-1">
+        <h2>Make updates to the {{ group.group_name }} group </h2>
 
-<h2>Make updates to the {{ group.group_name }} group </h2>
+        <form action="/group_profile_update/{{ group.group_id }}" id="update_group_submit" method="POST" enctype="multipart/form-data">
+            
+            <div class="row">
+                <div class ="col-xs-12 col-sm-12 col-md-6 form-group">
+                    <h3>Group Name</h3>
+                    <p>Currently:<i> {{ group.group_name }}</i></p>
+                    <label>Update:</label>
+                    <input type="text" class="form-control" name="group_name" placeholder="group name">
+                </div>
+            </div>
+            <div class="row ">
+                <div class ="col-xs-12 col-sm-12 col-md-9 form-group">
+                    <h3>Group Description</h3>
+                    {% if group.group_descrip %}
+                    <p>Currently: <i>{{ group.group_descrip }}</i></p>
+                    {% endif %}
+                    <label>Update:</label> 
+                     <textarea class="form-control" rows = 3 name="group_descrip" placeholder="group description"></textarea>
+                </div>
+            </div>
+            <div class="row">
+                <div class ="col-xs-12 col-sm-12 col-md-4 form-group">
+                    <h3>Group Hashtag</h3>
+                    <p>Currently:<i> {{ group.hashtag }}</i></p>
+                    <div class ="input-group">
+                        <div class="input-group-addon">#makealong</div>
+                        <input type="text" class="form-control" name="hashtag" placeholder="hashtag">
+                    </div>
+                </div>
+            </div>
+            <div class="clearfix visible-lg-block"></div>
+            <div class="row">
+                <div class ="col-xs-12 col-sm-12 col-md-4 form-group">
+                    <h3>Group Photo</h3>
+                    <p>Currently: <br> <img src="/{{ group.group_image }}" width="200"></p>
+                    <br>
+                    <label>Update:</label> 
+                    <input type="file" class="form-control" name="group_img" id="update_group_photo">
+                    <br>
+                </div>
+            </div>
+            <h3>Pattern</h3>
 
-<form action="/group_profile_update/{{ group.group_id }}" id="update_group_submit" method="POST" enctype="multipart/form-data">
+            {% if patterns|length > 1 %}
+            <p> Pattern voting is in process. Return to the group page for more information </p> <br>
+            {% endif %}
+
+            {% if patterns|length == 1 %}
+                <div class="row">
+                    <div class ="col-xs-12 col-sm-12 col-md-6 form-group">
+                        <h3>Pattern Name:</h3>
+                        {% if patterns.pattern_pdf %}
+                        <p>Currently: <i>{{ patterns.pattern_name }}</i></p>
+                        {% endif %}
+                        <label>Update:</label>
+                        <input type="text" class="form-control" name="pattern_name" placeholder="pattern name">
+                    </div>
+                </div>
+                <div class="row">
+                     <div class ="col-xs-12 col-sm-12 col-md-6 form-group">
+                        <h3>PDF Pattern: </h3>
+                        {% if patterns.pattern_pdf %}
+                        <p>Currently: <a href="/{{ patterns.pattern_pdf }}" target="blank"> {{ patterns.pattern_pdf[12:] }} <a> </p>
+                        {% endif %}
+                        <label>Update:</label><br>
+                         <input type="file" class="form-control" name="pattern_pdf">  
+                    </div>                    
+                </div>
+                <div class="row">
+                     <div class ="col-xs-12 col-sm-12 col-md-6 form-group">
+                        <h3>Pattern Link:</h3>
+                        {% if patterns.pattern_link %}
+                        <p>Currently: <a href="{{ patterns.pattern_link }}" target="blank"> {{ patterns.pattern_link }} <a> </p>
+                        <br>
+                        {% endif %}
+                        <label>Update:</label>
+                        <input type="url" class="form-control" name="pattern_link" placeholder="link to pattern">
+                    </div>
+                </div>
+            {% endif %}
+
+            {% if patterns|length == 0 %}
+                <div id ="update_base_pattern">
+                <p>Currently: <i>None</i></p>
+                <div class="row">
+                    <div class ="col-xs-12 col-sm-12 col-md-6 form-group">
+                        <label>Pattern Name:</label>
+                        <input type="text" class="form-control pattern_name" name="pattern_name" placeholder="pattern name">
+                    </div>
+                </div>
+                <div class="row">
+                     <div class ="col-xs-12 col-sm-12 col-md-6 form-group">
+                        <label>PDF Pattern: </label>
+                         <input type="file" class="form-control pattern_pdf" name="pattern_pdf">  
+                    </div>                    
+                </div>
+                <div class="row">
+                     <div class ="col-xs-12 col-sm-12 col-md-6 form-group">
+                        <label>Pattern Link:</label>
+                        <input type="url" class="form-control pattern_link" name="pattern_link" placeholder="link to pattern">
+                    </div>
+                </div>
+                </div>
+                <div class ="form-group">    
+                    
+                    <label>Want to create a poll instead?</label>
+                    <input type="checkbox" id="update_pattern_poll" name="pattern_poll" value="pattern_poll">
+                </div>
+
+                <div class="update_poll_div">
+                    <div class = "row">
+                        <div class ="col-xs-12 col-sm-12 col-lg-10">
+                            <div class ="form-group form-inline">
+                                <label>How many days to you want to give friend's to vote?</label>
+                                <input type="number" class="form-control input-small num_days" name="vote_days" placeholder="days">
+                            </div>
+                        </div>
+                    </div>
+                    <div class = "row">
+                        <div class ="col-xs-12 col-sm-12 col-lg-3 poll-setup">
+                            <b>Option 1</b></br>
+                            <div class ="form-group"> 
+                                <label>First Pattern's Name:</label><br>
+                                <input type="text" class="form-control pattern_name_a" name="pattern_name_a" placeholder="pattern name">
+                            </div>
+                            <div class ="form-group">
+                                <label>Upload a PDF Pattern(optional):</label> <br>
+                                <input type="file" class="form-control pattern_pdf_a" name="pattern_pdf_a">
+                            </div>
+                            <div class ="form-group">
+                                <label>Link to Pattern(optional):</label><br>
+                                <input type="url" class="form-control pattern_link_a" name="pattern_link_a" placeholder="link to pattern">
+                            </div>
+                        </div>
+                        <div class ="col-xs-12 col-sm-12 col-lg-3 poll-setup">
+                            <b>Option 2</b></br>
+                            <div class ="form-group"> 
+                                <label>Second Pattern's Name:</label><br>
+                                <input type="text" class="form-control pattern_name_b" name="pattern_name_b" placeholder="pattern name">
+                            </div>
+                            <div class ="form-group">
+                                <label>Upload a PDF Pattern(optional):</label> <br>
+                                <input type="file" class="form-control pattern_pdf_b" name="pattern_pdf_b">
+                            </div>
+                            <div class ="form-group">
+                                <label>Link to Pattern(optional):</label><br>
+                                <input type="url" class="form-control pattern_link_b" name="pattern_link_b" placeholder="link to pattern">
+                            </div>
+                        </div>
+                        <div class ="col-xs-12 col-sm-12 col-lg-3 poll-setup">
+                            <b>Option 3</b></br>
+                             <div class ="form-group"> 
+                                <label>Third Pattern's Name:</label><br>
+                                <input type="text" class="form-control pattern_name_c" name="pattern_name_c" placeholder="pattern name">
+                            </div>
+                            <div class ="form-group">
+                                <label>Upload a PDF Pattern(optional):</label> <br>
+                                <input type="file" class="form-control pattern_pdf_c" name="pattern_pdf_c">
+                            </div>
+                            <div class ="form-group">
+                                <label>Link to Pattern(optional):</label><br>
+                                <input type="url" class="form-control pattern_link_c" name="pattern_link_c" placeholder="link to pattern">
+                            </div>
+                        </div>
+                    </div>
+                </div>       
+            {% endif %}          
+           <button class="btn btn-default" type="submit">"Update Your Profile"</button>
+        </form>
+    </div>
+</div>
+<script>    
     
-    <h3>Group Name</h3>
-    Currently: <i>{{ group.group_name }}</i><br>
-    <br>
-    <b>Update:</b> 
-    <input type="text" name="group_name" placeholder="group name">
-    <br>
+$(document).ready(function(){
+        $('div.update_poll_div').hide();
+        $('#update_pattern_poll').click( function() {
+            if($('#update_pattern_poll').is(":checked")){
+                $('div.update_poll_div').show(800);
+                $("div#update_base_pattern").hide(800);
+                $("input.pattern_name").prop("disabled", true);
+                $("input.pattern_link").prop("disabled", true);
+                $("input.pattern_pdf").prop("disabled", true);
+                $("input.pattern_name_a").prop("disabled", false);
+                $("input.pattern_link_a").prop("disabled", false);
+                $("input.pattern_pdf_a").prop("disabled", false);
+                $("input.pattern_name_b").prop("disabled", false);
+                $("input.pattern_link_b").prop("disabled", false);
+                $("input.pattern_pdf_b").prop("disabled", false);
+                $("input.pattern_name_c").prop("disabled", false);
+                $("input.pattern_link_c").prop("disabled", false);
+                $("input.pattern_pdf_c").prop("disabled", false);
+            } else if (!$('#update_pattern_poll').is(":checked")) {
+                $('div.update_poll_div').hide(800);
+                $("div#update_base_pattern").show(800);
+                $("input.pattern_name").prop("disabled", false);
+                $("input.pattern_link").prop("disabled", false);
+                $("input.pattern_pdf").prop("disabled", false);
+                $("input.pattern_name_a").prop("disabled", true);
+                $("input.pattern_link_a").prop("disabled", true);
+                $("input.pattern_pdf_a").prop("disabled", true);
+                $("input.pattern_name_b").prop("disabled", true);
+                $("input.pattern_link_b").prop("disabled", true);
+                $("input.pattern_pdf_b").prop("disabled", true);
+                $("input.pattern_name_c").prop("disabled", true);
+                $("input.pattern_link_c").prop("disabled", true);
+                $("input.pattern_pdf_c").prop("disabled", true);
+            }
+          });
+      });      
 
-    <h3>Group Description</h3>
-    {% if group.group_descrip %}
-    Currently: <i>{{ group.group_descrip }}</i><br>
-    <br>
-    {% endif %}
-    <b>Update:</b> 
-    <input type="text" name="group_descrip" placeholder="group description">
-    <br>
-
-    <h3>Group Photo</h3>
-    Currently: <br> <img src="/{{ group.group_image }}" width="200"><br>
-    <br>
-    <b>Update:</b> 
-    <input type="file" name="group_img" id="update_group_photo">
-    <br>
-
-    <h3>Pattern Name:</h3>
-    {% if group.pattern_name %}
-    Currently: <i>{{ group.pattern_name }}</i><br>
-    <br>
-    {% endif %}
-    <b>Update:</b>
-    <input type="text" name="pattern_name" placeholder="pattern name">
-    
-    <h3>PDF Pattern: </h3>
-    {% if group.pattern_pdf %}
-    Currently: <a href="/{{ group.pattern_pdf }}" target="blank"> {{ group.pattern_pdf[12:] }} <a> <br>
-    <br>
-    {% endif %}
-    <b>Update:</b>
-    <input type="file" name="pattern_pdf" id="update_pattern_pdf">  
-
-    <h3>Pattern Link:</h3>
-    {% if group.pattern_link %}
-    Currently: <a href="{{ group.pattern_link }}" target="blank"> {{ group.pattern_link }} <a> <br>
-    <br>
-    {% endif %}
-    <b>Update:</b>
-    <input type="url" name="pattern_link" placeholder="link to pattern"><br>
-    
-    <br>
-    <input type="submit" value="Update Your Profile">
-</form>
-
-<script>
-
-$('#update_group_submit').on('submit', function(evt){
-    var validatePhoto= $('#update_group_photo').val().length;
-    if(validatePhoto < 1) {
-        $('input#update_group_photo').remove();
+$("#update_group_submit").on('submit', function(evt){
+    var updatePatternCount = 0
+    if (!$('#update_pattern_poll').is(":checked")) {
+        patternCount = patternCount + 2
+    } 
+    if ($('.pattern_name_a').val().length > 1 || 
+       $('.pattern_pdf_a').val().length > 1 ||
+       $('.pattern_link_a').val().length > 1) {
+        updatePatternCount = updatePatternCount + 1
+    } 
+    if ($('.pattern_name_b').val().length > 1 || 
+       $('.pattern_pdf_b').val().length > 1 ||
+       $('.pattern_link_b').val().length > 1) {
+        updatePatternCount = updatePatternCount + 1
+    } 
+    if ($('.pattern_name_c').val().length > 1 || 
+       $('.pattern_pdf_c').val().length > 1 ||
+       $('.pattern_link_c').val().length > 1) {
+        updatePatternCount = updatePatternCount + 1
     }
-    var validatePdf = $('#update_pattern_pdf').val().length;
-    if(validatePdf < 1) {
-        $('input#update_pattern_pdf').remove();
+    console.log(updatePatternCount);
+
+    if (updatePatternCount < 2 && $("#update_pattern_poll").prop("checked", true)) {
+        alert('You must submit more than one pattern to create a poll');
+        evt.preventDefault();
+    } else if ($('#num_days').val() < 1 ){
+        alert('Please select how many days you want your poll to be open');
+        evt.preventDefault();
     }
-});
+})
 
 </script>
 {% endblock %}

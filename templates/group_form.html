@@ -1,114 +1,122 @@
 {% extends 'base.html' %}
 {% block content %}
 
-    <div class="row clearfix">
+    <div class="row">
     <div class="col-xs-12 col-sm-12 col-md-9 col-lg-11  column col-sm-offset-0 col-md-offset-1 col-lg-offset-1">
 
         <form action="/create_group" id="new_group_form" enctype="multipart/form-data" method="POST">
             <h2>Create a Group!</h2>
             <h3> Group Information</h3>
-            <div class="row clearfix">
-            <div class ="col-xs-12 col-sm-12 col-md-6 form-group">
-                <label>Group Name:</label></br>
-                <input type="text" class="form-control" name="group_name" placeholder="group name">
-            </div>
+            <div class="row">
+                <div class ="col-xs-12 col-sm-12 col-md-6 form-group">
+                    <label>Group Name:</label></br>
+                    <input type="text" class="form-control" name="group_name" placeholder="group name">
+                </div>
             </div>    
-           <div class="row clearfix">
-           <div class ="col-xs-12 col-sm-12 col-md-9 form-group">
-                <label>Group Description (optional):</label><br>
-                <textarea class = "form-control" rows = 3 name="group_descrip" placeholder="group description" > 
-                </textarea>
+           <div class="row">
+               <div class ="col-xs-12 col-sm-12 col-md-9 form-group">
+                    <label>Group Description (optional):</label><br>
+                    <textarea class="form-control" rows = 3 name="group_descrip" placeholder="group description"></textarea>
+                </div> 
             </div> 
-            </div>   
+            <div class="row">
+               <div class ="col-xs-12 col-sm-12 col-md-4 form-group">
+                    <label>Group Hashtag(optional):</label><br>
+                    <div class ="input-group">
+                        <div class="input-group-addon">#makealong</div>
+                        <input type="text" class="form-control" name="hashtag" placeholder="hashtag">
+                    </div>
+                </div> 
+            </div>    
             <br>
             <h3> What Pattern Will Your Group be Working on?</h3>
                 <div id="base_pattern">
-                    <div class="row clearfix">
-                    <div class ="col-xs-12 col-sm-12 col-md-9 form-group">
-                        <label>Pattern Name (optional):</label><br>
-                        <input type="text" class="form-control" name="pattern_name" id="pattern_name" placeholder="pattern name">
+                    <div class="row">
+                        <div class ="col-xs-12 col-sm-12 col-md-9 form-group">
+                            <label>Pattern Name (optional):</label><br>
+                            <input type="text" class="form-control" name="pattern_name" id="pattern_name" placeholder="pattern name">
+                        </div>
                     </div>
+                     <div class="row">
+                        <div class ="col-xs-12 col-sm-12 col-md-9 form-group">
+                            <label>Upload a PDF Pattern (optional):</label><br>
+                            <input type="file" class="form-control" name="pattern_pdf" id="pattern_pdf">
+                        </div>
                     </div>
-                    <div class ="form-group">
-                        <label>Upload a PDF Pattern (optional):</lablel><br>
-                        <input type="file" class="form-control" name="pattern_pdf" id="pattern_pdf">
-                    </div>
-                    <div class="row clearfix">
-                    <div class ="col-xs-12 col-sm-12 col-md-9 form-group">
-                        <label>Link to Pattern(optional):</label><br>
-                        <input type="url" class="form-control" name="pattern_link" id="pattern_link" placeholder="link to pattern"><br>
-                    </div>
+                    <div class="row">
+                        <div class ="col-xs-12 col-sm-12 col-md-9 form-group">
+                            <label>Link to Pattern(optional):</label><br>
+                            <input type="url" class="form-control" name="pattern_link" id="pattern_link" placeholder="link to pattern"><br>
+                        </div>
                     </div>
                 </div>
-                    <div class ="form-group">    
-                        <h4>Have some options and want the group to help you decide? <br>
-                            We can create poll for you and your friends can help you decide!</h4>
-                        <br>
-                        <label>Create a poll</label>
-                        <input type="checkbox" id="pattern_poll" name="pattern_poll" value="pattern_poll">
-                    </div>
-                <br>
+                <div class ="form-group">    
+                    <h4>Have some options and want the group to help you decide? <br>
+                        We can create poll for you and your friends can help you decide!</h4>
+                    <br>
+                    <label>Create a poll</label>
+                    <input type="checkbox" id="pattern_poll" name="pattern_poll" value="pattern_poll">
+                </div>
 
-                <div class="row clearfix" id="poll_div">
+                <div id="poll_div">
                     <div class = "row">
                         <div class ="col-xs-12 col-sm-12 col-lg-10">
-                        <div class ="form-group">
-                            <label>How many days to you want to give friend's to vote?</label>
-                            <input type="number" class="form-control" name="vote_days" id="num_days" placeholder="days">
-                        </div>
-                        </div>
-                    <!-- </div> -->
-                    </div>
-                    <div class = "row clearfix">
-                    <div class ="col-xs-12 col-sm-12 col-lg-3 poll-setup">
-                        <b>Option 1</b></br>
-                        <div class ="form-group"> 
-                            <label>First Pattern's Name:</label><br>
-                            <input type="text" class="form-control" name="pattern_name_a" id="pattern_name_a" placeholder="pattern name">
-                        </div>
-                        <div class ="form-group">
-                            <label>Upload a PDF Pattern(optional):</label> <br>
-                            <input type="file" class="form-control" id="pattern_pdf_a" name="pattern_pdf_a">
-                        </div>
-                        <div class ="form-group">
-                            <label>Link to Pattern(optional):</label><br>
-                            <input type="url" class="form-control" name="pattern_link_a" id="pattern_link_a" placeholder="link to pattern">
+                            <div class ="form-group form-inline">
+                                <label>How many days to you want to give friend's to vote?</label>
+                                <input type="number" class="form-control input-small" name="vote_days" id="num_days" placeholder="days">
+                            </div>
                         </div>
                     </div>
-                    <div class ="col-xs-12 col-sm-12 col-lg-3 poll-setup">
-                        <b>Option 2</b></br>
-                        <div class ="form-group"> 
-                            <label>Second Pattern's Name:</label><br>
-                            <input type="text" class="form-control" name="pattern_name_b" id="pattern_name_b" placeholder="pattern name">
+                    <div class = "row">
+                        <div class ="col-xs-12 col-sm-12 col-lg-3 poll-setup">
+                            <b>Option 1</b></br>
+                            <div class ="form-group"> 
+                                <label>First Pattern's Name:</label><br>
+                                <input type="text" class="form-control" name="pattern_name_a" id="pattern_name_a" placeholder="pattern name">
+                            </div>
+                            <div class ="form-group">
+                                <label>Upload a PDF Pattern(optional):</label> <br>
+                                <input type="file" class="form-control" id="pattern_pdf_a" name="pattern_pdf_a">
+                            </div>
+                            <div class ="form-group">
+                                <label>Link to Pattern(optional):</label><br>
+                                <input type="url" class="form-control" name="pattern_link_a" id="pattern_link_a" placeholder="link to pattern">
+                            </div>
                         </div>
-                        <div class ="form-group">
-                            <label>Upload a PDF Pattern(optional):</label> <br>
-                            <input type="file" class="form-control" id="pattern_pdf_b" name="pattern_pdf_b">
+                        <div class ="col-xs-12 col-sm-12 col-lg-3 poll-setup">
+                            <b>Option 2</b></br>
+                            <div class ="form-group"> 
+                                <label>Second Pattern's Name:</label><br>
+                                <input type="text" class="form-control" name="pattern_name_b" id="pattern_name_b" placeholder="pattern name">
+                            </div>
+                            <div class ="form-group">
+                                <label>Upload a PDF Pattern(optional):</label> <br>
+                                <input type="file" class="form-control" id="pattern_pdf_b" name="pattern_pdf_b">
+                            </div>
+                            <div class ="form-group">
+                                <label>Link to Pattern(optional):</label><br>
+                                <input type="url" class="form-control" name="pattern_link_b" id="pattern_link_b" placeholder="link to pattern">
+                            </div>
                         </div>
-                        <div class ="form-group">
-                            <label>Link to Pattern(optional):</label><br>
-                            <input type="url" class="form-control" name="pattern_link_b" id="pattern_link_b" placeholder="link to pattern">
+                        <div class ="col-xs-12 col-sm-12 col-lg-3 poll-setup">
+                            <b>Option 3</b></br>
+                             <div class ="form-group"> 
+                                <label>Third Pattern's Name:</label><br>
+                                <input type="text" class="form-control" name="pattern_name_c" id="pattern_name_c" placeholder="pattern name">
+                            </div>
+                            <div class ="form-group">
+                                <label>Upload a PDF Pattern(optional):</label> <br>
+                                <input type="file" class="form-control" id="pattern_pdf_c" name="pattern_pdf_c">
+                            </div>
+                            <div class ="form-group">
+                                <label>Link to Pattern(optional):</label><br>
+                                <input type="url" class="form-control" name="pattern_link_c" id="pattern_link_c" placeholder="link to pattern">
+                            </div>
                         </div>
-                    </div>
-                    <div class ="col-xs-12 col-sm-12 col-lg-3 poll-setup">
-                        <b>Option 3</b></br>
-                         <div class ="form-group"> 
-                            <label>Third Pattern's Name:</label><br>
-                            <input type="text" class="form-control" name="pattern_name_c" id="pattern_name_c" placeholder="pattern name">
-                        </div>
-                        <div class ="form-group">
-                            <label>Upload a PDF Pattern(optional):</label> <br>
-                            <input type="file" class="form-control" id="pattern_pdf_c" name="pattern_pdf_c">
-                        </div>
-                        <div class ="form-group">
-                            <label>Link to Pattern(optional):</label><br>
-                            <input type="url" class="form-control" name="pattern_link_c" id="pattern_link_c" placeholder="link to pattern">
-                        </div>
-                    </div>
                     </div>
                 </div>    
             <h3>Select an image for your group or upload your own:</h3>
-            <div class = "row clearfix">
+            <div class = "row">
                  <div class ="form-group col-xs-12 col-sm-12 col-md-6 col-lg-3">
                     <input class="image_radio" type='radio' name="group_image" value="static/images/knitting_group_default.jpg">
                     <img src="static/images/knitting_group_default.jpg" width="200">
@@ -148,7 +156,16 @@ $(document).ready(function(){
                 $("input#pattern_name").prop("disabled", true);
                 $("input#pattern_link").prop("disabled", true);
                 $("input#pattern_pdf").prop("disabled", true);
-            } else {
+                $("input#pattern_name_a").prop("disabled", false);
+                $("input#pattern_link_a").prop("disabled", false);
+                $("input#pattern_pdf_a").prop("disabled", false);
+                $("input#pattern_name_b").prop("disabled", false);
+                $("input#pattern_link_b").prop("disabled", false);
+                $("input#pattern_pdf_b").prop("disabled", false);
+                $("input#pattern_name_c").prop("disabled", false);
+                $("input#pattern_link_c").prop("disabled", false);
+                $("input#pattern_pdf_c").prop("disabled", false);
+            } else if (!$('#pattern_poll').is(":checked")) {
                 $('div#poll_div').hide(800);
                 $("div#base_pattern").show(800);
                 $("input#pattern_name").prop("disabled", false);
@@ -189,13 +206,13 @@ $("#new_group_form").on('submit', function(evt){
     }
     console.log(patternCount);
 
-    if (patternCount < 2 && $("#group_radio").prop("checked", true)) {
+    if (patternCount < 2 && $("#pattern_poll").prop("checked", true)) {
         alert('You must submit more than one pattern to create a poll');
         evt.preventDefault();
-    } else if (num_days <1 ) {
-        alert('Please select how many days you wany your poll to be open');
+    } else if ($('#num_days').val() <1 ) {
+        alert('Please select how many days you want your poll to be open');
         evt.preventDefault();
-    }
+    } 
 })
 
 </script>

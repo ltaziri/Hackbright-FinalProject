@@ -294,6 +294,9 @@ def create_group():
 
     group_descrip = request.form.get("group_descrip")
 
+    hashtag = request.form.get("hashtag")
+    hashtag = '#makealong' + hashtag
+
     if request.form.get("group_image") == " ":
         filename = photos.save(request.files['photo'])
         group_image = str(photos.path(filename))
@@ -310,7 +313,8 @@ def create_group():
                   group_image=group_image,  
                   admin_id=user.user_id,
                   vote_days=vote_days,
-                  vote_timestamp=vote_timestamp)
+                  vote_timestamp=vote_timestamp,
+                  hashtag=hashtag)
 
         db.session.add(group)
         db.session.commit()
@@ -318,7 +322,8 @@ def create_group():
         group = Group(group_name=group_name,
                   group_descrip=group_descrip, 
                   group_image=group_image,  
-                  admin_id=user.user_id)
+                  admin_id=user.user_id,
+                  hashtag=hashtag)
 
         db.session.add(group)
         db.session.commit()
@@ -438,11 +443,8 @@ def show_group_page(group_id):
             voter_ids.append(voter.user_id)
 
         num_group_users = len(group_users)
-        
         comments =  Comment.query.filter_by(group_id=group_id)
-
         patterns = Pattern.query.filter_by(group_id=group_id).all()
-
         chosen_pattern = Pattern.query.filter(Pattern.group_id == group_id, Pattern.chosen == True).all()
 
         if chosen_pattern:
@@ -464,12 +466,6 @@ def show_group_page(group_id):
                         votes=voter_ids,
                         num_group_users=num_group_users)
 
-@app.route('/sample_twitter/<int:group_id>')
-def show_sample_twitter(group_id):
-    """trial html for twitter info"""
-
-    return render_template('sample_twitter.html', group_id=group_id)
-
 
 @app.route('/group_twitter.json/<int:group_id>')
 def get_twitter_feed(group_id):
@@ -477,8 +473,6 @@ def get_twitter_feed(group_id):
        
     group = Group.query.get(group_id)
     
-    # hashtag = group.hashtag
-    # this gives all tweet objects with hash tag
     tagged_tweets = api.GetSearch(term=group.hashtag, 
                                   geocode=None, 
                                   since_id=None, 
@@ -489,31 +483,24 @@ def get_twitter_feed(group_id):
                                   locale=None, 
                                   result_type='mixed', 
                                   include_entities=None)
-    print tagged_tweets
     
     twitter_feed = {}
     tweet_id = 1
     for tweet in tagged_tweets:
-        tweet_photo = tweet.media
-        twitter_feed[tweet_id] = { 'screen_name': tweet.user.screen_name,
+        if tweet.media:
+            tweet_photo = tweet.media
+            twitter_feed[tweet_id] = { 'screen_name': tweet.user.screen_name,
                                     'text':tweet.text, 
                                     'user_profile_pic': tweet.user.profile_image_url,
                                     'image_url' : tweet_photo[0]['media_url_https']
                                     }
-        tweet_id = tweet_id + 1
-        # tweet_photo = tweet.media
-        # twitter_feed[tweet.user.screen_name]['image_url']=tweet_photo[0]['media_url_https']
-        # # for media in tweet.media:
-        #     tweet_photo = media['media_url_https']
-        #     twitter_feed[tweet.user.screen_name]['image_url']=tweet_photo
-        # else:
-        #     photos = tweet.media
-        #     for photo in tweet.media:
-        #         photo_url = photo['media_url_https']
-        #         twitter_feed[tweet.user.screen_name] = {'text':tweet.text, 
-        #                                                 'user_profile_pic': tweet.user.profile_image_url, 
-        #                                                 'image_url': photo_url}
-            
+            tweet_id = tweet_id + 1
+        else:
+            twitter_feed[tweet_id] = { 'screen_name': tweet.user.screen_name,
+                                    'text':tweet.text, 
+                                    'user_profile_pic': tweet.user.profile_image_url
+                                    }
+            tweet_id = tweet_id + 1  
  
     return jsonify(twitter_feed)
 
@@ -524,12 +511,18 @@ def show_group_profile_form(group_id):
 
     group = Group.query.get(group_id)
 
-    group_users = group.users
-
     if group.is_user_in_group(session["user_id"])==False:
-        return render_template("group_update_form.html", group=group)
-    else:
-        return redirect("/user")
+        return redirect("/user") 
+
+    else: 
+        user = session["user_id"]
+        patterns = Pattern.query.filter_by(group_id=group_id).all()
+        chosen_pattern = Pattern.query.filter(Pattern.group_id == group_id, Pattern.chosen == True).all()
+        if chosen_pattern:
+            return render_template("group_update_form.html", group=group, patterns=chosen_pattern)
+        else:
+            return render_template("group_update_form.html", group=group, patterns=patterns)
+    
 
 
 @app.route('/group_profile_update/<int:group_id>', methods=['POST'])
@@ -542,7 +535,7 @@ def update_group_profile(group_id):
     new_group_descrip = request.form.get("group_descrip")
     new_group_pattern_name = request.form.get("pattern_name")
     new_group_pattern_link = request.form.get("pattern_link")
-    
+
 
     if new_group_name != "":
         group.group_name = new_group_name
@@ -550,7 +543,7 @@ def update_group_profile(group_id):
     if new_group_descrip != "":
         group.group_descrip = new_group_descrip
         db.session.commit()
-    if "group_img" in request.files:
+    if "group_img" in request.files and request.files['group_img'].filename:
         group_photo_filename = photos.save(request.files["group_img"])
         new_group_image = str(photos.path(group_photo_filename))
         group.group_image = new_group_image
@@ -558,7 +551,7 @@ def update_group_profile(group_id):
     if new_group_pattern_name != "":
         group.pattern_name = new_group_pattern_name
         db.session.commit()
-    if "pattern_pdf" in request.files:
+    if "pattern_pdf" in request.files and request.files['pattern_pdf'].filename:
         pattern_pdf_filename = manuals.save(request.files['pattern_pdf'])
         new_group_pattern_pdf = str(manuals.path(pattern_pdf_filename))
         group.pattern_pdf = new_group_pattern_pdf
