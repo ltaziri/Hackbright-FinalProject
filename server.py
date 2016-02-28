@@ -67,17 +67,7 @@ def handle_sign_in_form():
     if existing_user:
         if password == existing_user.password:
             session["user_id"] = existing_user.user_id
-            # if session.get("invite_id"):
-            #     invite = Invite.query.get(session["invite_id"])
-            #     if invite.invite_confirm == False and email == invite.invite_email: 
-            #         invite.invite_confirm = True
-            #         user_group = UserGroup(
-            #                                group_id=invite.group_id,
-            #                                user_id=existing_user.user_id
-            #                                )
-            #         db.session.add(user_group)
-            #         db.session.commit()
-            #     del session['invite_id']
+
             return redirect("/user")
         else:
             flash("Invalid password.")
@@ -111,19 +101,13 @@ def new_user_sign_up():
     password = request.form.get("password")
     first_name = request.form.get("first_name")
     last_name = request.form.get("last_name")
-    
-    # use Flask-Uploads to add file path for uploaded photo or add path
-    # to default image that was selected on radio button.  
+
     if request.form.get("user_photo") == " ":
         filename = photos.save(request.files['photo'])
         user_photo = str(photos.path(filename))
     else:
         user_photo = request.form.get("user_photo")
     
-    # check if someone is already signed up for an account with that email
-    # if not create a new user in users table. Check if that person came to 
-    # the website via and invite link, if so add an entry to the association
-    # usergroup table so the user joins the group.
 
     existing_user = User.query.filter_by(email=email).first()
     
@@ -141,19 +125,6 @@ def new_user_sign_up():
         db.session.add(user)
         db.session.commit()
         session["user_id"] = user.user_id
-
-        if session.get("invite_id"):
-            print session
-            invite = Invite.query.get(session["invite_id"])
-            if email == invite.invite_email:  
-                invite.invite_confirm = True
-                user_group = UserGroup(
-                                       group_id=invite.group_id,
-                                       user_id=user.user_id
-                                       )
-                db.session.add(user_group)
-                db.session.commit()
-            del session['invite_id']
 
         flash("You are successfully signed up!")
 
@@ -357,7 +328,7 @@ def create_group():
 
     if (request.form.get("pattern_name_a") 
         or request.form.get("pattern_link_a") 
-        or  "pattern_pdf_a" in request.files):
+        or ("pattern_pdf_a" in request.files and request.files['pattern_pdf_a'].filename)):
 
         pattern_name = request.form.get("pattern_name_a")
         pattern_link = request.form.get("pattern_link_a")
@@ -379,7 +350,7 @@ def create_group():
 
     if (request.form.get("pattern_name_b") 
         or request.form.get("pattern_link_b") 
-        or  "pattern_pdf_b" in request.files):
+        or ("pattern_pdf_b" in request.files and request.files['pattern_pdf_b'].filename)):
 
         pattern_name = request.form.get("pattern_name_b")
         pattern_link = request.form.get("pattern_link_b")
@@ -400,7 +371,7 @@ def create_group():
 
     if (request.form.get("pattern_name_c") 
         or request.form.get("pattern_link_c") 
-        or  "pattern_pdf_c" in request.files):
+        or ("pattern_pdf_c" in request.files and request.files['pattern_pdf_c'].filename)):
 
         pattern_name = request.form.get("pattern_name_c")
         pattern_link = request.form.get("pattern_link_c")
@@ -418,8 +389,7 @@ def create_group():
                           group_id = group.group_id) 
         db.session.add(pattern_three)
         db.session.commit()
-  
-
+    
     return redirect("/group_home/%d" % (group.group_id))
 
 
@@ -531,35 +501,148 @@ def update_group_profile(group_id):
 
     group = Group.query.get(group_id)
 
-    new_group_name = request.form.get("group_name")
-    new_group_descrip = request.form.get("group_descrip")
-    new_group_pattern_name = request.form.get("pattern_name")
-    new_group_pattern_link = request.form.get("pattern_link")
+    if group.is_user_in_group(session["user_id"])==False:
+        return redirect("/user") 
 
+    else: 
+        chosen_pattern = Pattern.query.filter(Pattern.group_id == group_id, Pattern.chosen == True)
 
-    if new_group_name != "":
-        group.group_name = new_group_name
-        db.session.commit()
-    if new_group_descrip != "":
-        group.group_descrip = new_group_descrip
-        db.session.commit()
-    if "group_img" in request.files and request.files['group_img'].filename:
-        group_photo_filename = photos.save(request.files["group_img"])
-        new_group_image = str(photos.path(group_photo_filename))
-        group.group_image = new_group_image
-        db.session.commit()
-    if new_group_pattern_name != "":
-        group.pattern_name = new_group_pattern_name
-        db.session.commit()
-    if "pattern_pdf" in request.files and request.files['pattern_pdf'].filename:
-        pattern_pdf_filename = manuals.save(request.files['pattern_pdf'])
-        new_group_pattern_pdf = str(manuals.path(pattern_pdf_filename))
-        group.pattern_pdf = new_group_pattern_pdf
-        db.session.commit()
-    if new_group_pattern_link != "":
-        group.pattern_link = new_group_pattern_link
-        db.session.commit()
+        update_group_name = request.form.get("group_name")
+        update_group_descrip = request.form.get("group_descrip")
+        update_group_hashtag = request.form.get("hashtag")
         
+        update_group_pattern_name = request.form.get("update_pattern_name")
+        update_group_pattern_link = request.form.get("update_pattern_link")
+        
+    #basic user description update
+        if update_group_name != "":
+            group.group_name = update_group_name
+            db.session.commit()
+
+        if update_group_descrip != "":
+            group.group_descrip = update_group_descrip
+            db.session.commit()
+
+        if update_group_hashtag != "":
+            group.hashtag = update_group_hashtag
+            db.session.commit()
+
+        if "group_img" in request.files and request.files['group_img'].filename:
+            group_photo_filename = photos.save(request.files["group_img"])
+            update_group_image = str(photos.path(group_photo_filename))
+            group.group_image = update_group_image
+            db.session.commit()
+
+    #update if group had a pattern, and is just changing info about it.
+        if update_group_pattern_name != "":
+            chosen_pattern.pattern_name = update_group_pattern_name
+            db.session.commit()
+
+        if update_group_pattern_link != "":
+            chosen_pattern.pattern_link = update_group_pattern_link
+            db.session.commit()
+
+        if "update_pattern_pdf" in request.files and request.files['update_pattern_pdf'].filename:
+            pattern_pdf_filename = manuals.save(request.files['update_pattern_pdf'])
+            new_group_pattern_pdf = str(manuals.path(pattern_pdf_filename))
+            chosen_pattern.pattern_pdf = new_group_pattern_pdf
+            db.session.commit()
+
+    # add pattern if one is selected and a poll is not created.
+
+        if (request.form.get("new_pattern_name") 
+            or request.form.get("new_pattern_link") 
+            or ("new_pattern_pdf" in request.files and request.files['new_pattern_pdf'].filename)):
+
+            new_group_pattern_name = request.form.get("new_pattern_name")
+            new_group_pattern_link = request.form.get("new_pattern_link")
+
+            if "new_pattern_pdf" in request.files and request.files['new_pattern_pdf'].filename:
+                pdf_filename = manuals.save(request.files['new_pattern_pdf'])
+                new_pattern_pdf = str(manuals.path(pdf_filename))
+            else:
+                new_pattern_pdf = None
+
+            pattern = Pattern(pattern_name = new_group_pattern_name,
+                              pattern_link = new_group_pattern_link,
+                              pattern_pdf = new_pattern_pdf,
+                              chosen = True,
+                              group_id = group.group_id)
+            db.session.add(pattern)
+            db.session.commit()
+
+    ##info if pattern poll was created##
+        
+        if request.form.get("vote_days"):
+            vote_days = request.form.get("vote_days")
+            vote_timestamp = datetime.now()
+            group.vote_days = vote_days
+            group.vote_timestamp = vote_timestamp
+            db.session.commit()
+
+        if (request.form.get("pattern_name_a") 
+            or request.form.get("pattern_link_a") 
+            or  ("pattern_pdf_a" in request.files and request.files['pattern_pdf_a'].filename)):
+
+            pattern_name = request.form.get("pattern_name_a")
+            pattern_link = request.form.get("pattern_link_a")
+
+            if "pattern_pdf_a" in request.files and request.files['pattern_pdf_a'].filename:
+                pdf_filename = manuals.save(request.files['pattern_pdf_a'])
+                pattern_pdf = str(manuals.path(pdf_filename))
+            else:
+                pattern_pdf = None
+
+            pattern_one = Pattern(pattern_name = pattern_name,
+                              pattern_link = pattern_link,
+                              pattern_pdf = pattern_pdf,
+                              chosen = False,
+                              group_id = group.group_id)
+            db.session.add(pattern_one)
+            db.session.commit()
+
+        if (request.form.get("pattern_name_b") 
+            or request.form.get("pattern_link_b") 
+            or ("pattern_pdf_b" in request.files and request.files['pattern_pdf_b'].filename)):
+
+            pattern_name = request.form.get("pattern_name_b")
+            pattern_link = request.form.get("pattern_link_b")
+
+            if "pattern_pdf_b" in request.files and request.files['pattern_pdf_b'].filename:
+                pdf_filename = manuals.save(request.files['pattern_pdf_b'])
+                pattern_pdf = str(manuals.path(pdf_filename))
+            else:
+                pattern_pdf = None
+
+            pattern_two = Pattern(pattern_name = pattern_name,
+                              pattern_link = pattern_link,
+                              pattern_pdf = pattern_pdf,
+                              chosen = False,
+                              group_id = group.group_id) 
+            db.session.add(pattern_two)
+            db.session.commit()
+
+        if (request.form.get("pattern_name_c") 
+            or request.form.get("pattern_link_c") 
+            or  ("pattern_pdf_c" in request.files and request.files['pattern_pdf_c'].filename)):
+
+            pattern_name = request.form.get("pattern_name_c")
+            pattern_link = request.form.get("pattern_link_c")
+
+            if "pattern_pdf_c" in request.files and request.files['pattern_pdf_c'].filename:
+                pdf_filename = manuals.save(request.files['pattern_pdf_c'])
+                pattern_pdf = str(manuals.path(pdf_filename))
+            else:
+                pattern_pdf = None
+
+            pattern_three = Pattern(pattern_name = pattern_name,
+                                  pattern_link = pattern_link,
+                                  pattern_pdf = pattern_pdf,
+                                  chosen = False,
+                                  group_id = group.group_id) 
+            db.session.add(pattern_three)
+            db.session.commit()
+        db.session.commit()
     return redirect("/group_home/%d" % (group.group_id))
 
 
@@ -711,17 +794,11 @@ def show_invite_form(group_id):
 
     group = Group.query.get(group_id)
 
-    group_users = group.users
-
-    groups_ids = []
-    for group_user in group_users:
-        groups_ids.append(group_user.user_id)
-
-    if session["user_id"] in groups_ids:
-        return render_template("invite_form.html", group=group)
+    if group.is_user_in_group(session["user_id"])==False:
+        return redirect("/user") 
     else:
-        return redirect("/user")
-
+        return render_template("invite_form.html", group=group)
+    
 
 @app.route('/send_invite/<int:group_id>', methods=['POST'])
 def send_invitation(group_id):

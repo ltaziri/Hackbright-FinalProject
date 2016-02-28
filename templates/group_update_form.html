@@ -55,32 +55,32 @@
                 <div class="row">
                     <div class ="col-xs-12 col-sm-12 col-md-6 form-group">
                         <h3>Pattern Name:</h3>
-                        {% if patterns.pattern_pdf %}
-                        <p>Currently: <i>{{ patterns.pattern_name }}</i></p>
+                        {% if patterns[0].pattern_name %}
+                        <p>Currently: <i>{{ patterns[0].pattern_name }}</i></p>
                         {% endif %}
                         <label>Update:</label>
-                        <input type="text" class="form-control" name="pattern_name" placeholder="pattern name">
+                        <input type="text" class="form-control" name="update_pattern_name" placeholder="pattern name">
                     </div>
                 </div>
                 <div class="row">
                      <div class ="col-xs-12 col-sm-12 col-md-6 form-group">
                         <h3>PDF Pattern: </h3>
-                        {% if patterns.pattern_pdf %}
-                        <p>Currently: <a href="/{{ patterns.pattern_pdf }}" target="blank"> {{ patterns.pattern_pdf[12:] }} <a> </p>
+                        {% if patterns[0].pattern_pdf %}
+                        <p>Currently: <a href="/{{ patterns[0].pattern_pdf }}" target="blank"> {{ patterns[0].pattern_pdf[12:] }} <a> </p>
                         {% endif %}
                         <label>Update:</label><br>
-                         <input type="file" class="form-control" name="pattern_pdf">  
+                         <input type="file" class="form-control" name="update_pattern_pdf">  
                     </div>                    
                 </div>
                 <div class="row">
                      <div class ="col-xs-12 col-sm-12 col-md-6 form-group">
                         <h3>Pattern Link:</h3>
-                        {% if patterns.pattern_link %}
-                        <p>Currently: <a href="{{ patterns.pattern_link }}" target="blank"> {{ patterns.pattern_link }} <a> </p>
+                        {% if patterns[0].pattern_link %}
+                        <p>Currently: <a href="{{ patterns[0].pattern_link }}" target="blank"> {{ patterns[0].pattern_link }} <a> </p>
                         <br>
                         {% endif %}
                         <label>Update:</label>
-                        <input type="url" class="form-control" name="pattern_link" placeholder="link to pattern">
+                        <input type="url" class="form-control" name="update_pattern_link" placeholder="link to pattern">
                     </div>
                 </div>
             {% endif %}
@@ -91,19 +91,19 @@
                 <div class="row">
                     <div class ="col-xs-12 col-sm-12 col-md-6 form-group">
                         <label>Pattern Name:</label>
-                        <input type="text" class="form-control pattern_name" name="pattern_name" placeholder="pattern name">
+                        <input type="text" class="form-control pattern_name" name="new_pattern_name" placeholder="pattern name">
                     </div>
                 </div>
                 <div class="row">
                      <div class ="col-xs-12 col-sm-12 col-md-6 form-group">
                         <label>PDF Pattern: </label>
-                         <input type="file" class="form-control pattern_pdf" name="pattern_pdf">  
+                         <input type="file" class="form-control pattern_pdf" name="new_pattern_pdf">  
                     </div>                    
                 </div>
                 <div class="row">
                      <div class ="col-xs-12 col-sm-12 col-md-6 form-group">
                         <label>Pattern Link:</label>
-                        <input type="url" class="form-control pattern_link" name="pattern_link" placeholder="link to pattern">
+                        <input type="url" class="form-control pattern_link" name="new_pattern_link" placeholder="link to pattern">
                     </div>
                 </div>
                 </div>
