@@ -163,96 +163,105 @@ class Vote(db.Model):
 ##############################################################################
 # Helper functions
 
-# def example_data():
-#     """Create some sample data for test file."""
+def example_data():
+    """Create some sample data for test file."""
 
-#     # In case this is run more than once, empty out existing data
-#     User.query.delete()
-#     Group.query.delete()
-#     UserGroup.query.delete()
-#     Comment.query.delete()
-#     Invite.query.delete()
-
-
-#     ua = User( 
-#               email = "usera@gmail.com", 
-#               password = "test", 
-#               first_name = "Bob", 
-#               last_name = "Smith",
-#               user_photo = "static/images/sewing_machine.jpg",
-#               user_descrip = "Knitting Rules!")
-
-#     ub = User( 
-#               email = "userb@gmail.com", 
-#               password = "test", 
-#               first_name = "Jane", 
-#               last_name = "Doe",
-#               user_photo = "static/images/glue_gun.jpg",
-#               user_descrip = "Sewing Rocks!")
+    # In case this is run more than once, empty out existing data
+    # User.query.delete()
+    # Group.query.delete()
+    # UserGroup.query.delete()
+    # Comment.query.delete()
+    # Invite.query.delete()
+    
+    
 
 
-#     uc = User( 
-#               email = "userc@gmail.com", 
-#               password = "test", 
-#               first_name ="Betty", 
-#               last_name = "Sue",
-#               user_photo = "static/images/crafter.jpg",
-#               user_descrip = "DIY to the rescue!")
+    ua = User( 
+              user_id=1,
+              email = "usera@gmail.com", 
+              password = "test", 
+              first_name = "Bob", 
+              last_name = "Smith",
+              user_photo = "static/images/sewing_machine.jpg",
+              user_descrip = "Knitting Rules!")
+
+    ub = User(
+              user_id=2, 
+              email = "userb@gmail.com", 
+              password = "test", 
+              first_name = "Jane", 
+              last_name = "Doe",
+              user_photo = "static/images/glue_gun.jpg",
+              user_descrip = "Sewing Rocks!")
+
+
+    uc = User( 
+              user_id=3,
+              email = "userc@gmail.com", 
+              password = "test", 
+              first_name ="Betty", 
+              last_name = "Sue",
+              user_photo = "static/images/crafter.jpg",
+              user_descrip = "DIY to the rescue!")
   
 
-#     ga = Group(
-#                group_name = "Knit Knit Knit",
-#                group_descrip = "Lets knit some stuff!",
-#                group_image = "static/images/knitting_group_default.jpg", 
-#                pattern_pdf = "static/pdfs/kilgore_mits.pdf", 
-#                pattern_link = "https://www.fancytigercrafts.com/patternpdfs/kilgore-mitts-pdf-pattern|Killgore Mitts",
-#                pattern_name = "Killgore Mitts")
+    ga = Group(
+               group_id=1,
+               group_name = "Knit Knit Knit",
+               group_descrip = "Lets knit some stuff!",
+               group_image = "static/images/knitting_group_default.jpg", 
+               admin_id = 1, 
+               vote_timestamp = datetime.now(),
+               hashtag= "#test",
+               vote_days = 3)
 
-#     gb = Group(
-#                group_name = "Sew Sew Sew",
-#                group_descrip = "Lets sew some stuff!",
-#                group_image = "static/images/sewing_group_default.jpg", 
-#                pattern_pdf = "static/pdfs/3245_instructions.pdf", 
-#                pattern_link = "https://jalie.com/jalie3245-raglan-tee-racerback-tank-tunic-pattern",
-#                pattern_name = "Jalie Raglan Tee/Tank/Tunic")
-
-
-#     uga = UserGroup(groups.group_id = 1, users.user_id = 1)
-#     ugb = UserGroup(groups.group_id = 2, users.user_id = 1)
-#     ugc = UserGroup(groups.group_id = 3, users.user_id = 1)
-#     ugd = UserGroup(groups.group_id = 1, users.user_id = 2)
-#     uge = UserGroup(groups.group_id = 2, users.user_id = 2)
-#     ugf = UserGroup(groups.group_id = 3, users.user_id = 3)
+    gb = Group(
+               group_id=2,
+               group_name = "Sew Sew Sew",
+               group_descrip = "Lets sew some stuff!",
+               group_image = "static/images/sewing_group_default.jpg",
+               admin_id = 1, 
+               vote_timestamp = datetime.now(),
+               hashtag= "#testtwo",
+               vote_days = 5)
 
 
-#     ca = Comment(
-#                  comment_text = "I live for this pattern!",
-#                  comment_image = "static/images/balloonicorn.jpg",
-#                  comment_timestamp = datetime.now(),
-#                  user_id = 1,
-#                  group_id = 1)
+    ca = Comment(
+                 comment_text = "I live for this pattern!",
+                 comment_image = "static/images/balloonicorn.jpg",
+                 comment_timestamp = datetime.now(),
+                 user_id = 1,
+                 group_id = 1)
 
-#     cb = Comment(
-#                  comment_text = "Can't stop, wont stop!",
-#                  comment_image = "static/images/tiger.jpeg",
-#                  comment_timestamp = datetime.now(),
-#                  user_id = 2,
-#                  group_id = 2)
+    cb = Comment(
+                 comment_text = "Can't stop, wont stop!",
+                 comment_image = "static/images/tiger.jpeg",
+                 comment_timestamp = datetime.now(),
+                 user_id = 2,
+                 group_id = 2)
 
-#     ia = Invite(invite_email = "friend@gmail.com", 
-#                     invite_text = "come sew with me", 
-#                     invite_timestamp = datetime.now(),
-#                     group_id = 2,
-#                     user_id = 3)
+    ia = Invite(invite_email = "friend@gmail.com", 
+                    invite_text = "come sew with me", 
+                    invite_timestamp = datetime.now(),
+                    group_id = 2,
+                    user_id = 3)
 
-#     ib = Invite(invite_email = "friendb@gmail.com", 
-#                     invite_text = "come knit with me", 
-#                     invite_timestamp = datetime.now(),
-#                     group_id = 1,
-#                     user_id = 1)
-#     db.session.add_all([ua, ub, uc, ub, ga, gb, uga, ugb, ugc, ugd, uge, ugf])
-#     # db.session.add_all([ua, ub, uc, ga, gb, uga, ugb, ugc, ugd, uge, ugf, ca, cb, ia, ib])
-#     db.session.commit()
+    ib = Invite(invite_email = "friendb@gmail.com", 
+                    invite_text = "come knit with me", 
+                    invite_timestamp = datetime.now(),
+                    group_id = 1,
+                    user_id = 1)
+
+    # uga = UserGroup(group_id = 1, user_id = 1)
+    # ugb = UserGroup(group_id = 1, user_id = 2)
+    # ugc = UserGroup(group_id = 1, user_id = 3)
+    # ugd = UserGroup(group_id = 2, user_id = 1)
+    # uge = UserGroup(group_id = 2, user_id = 2)
+    # ugf = UserGroup(group_id = 2, user_id = 3)
+    db.session.add_all([ ca, cb, ia, ib])
+    # db.session.add_all([ua, ub, uc, ga, gb, uga, ugb, ugc, ugd, uge, ugf, ca, cb, ia, ib])
+    db.session.commit()
+
 
 
 

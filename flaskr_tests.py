@@ -1,18 +1,19 @@
 import json
-from unittest import TestCase
-from model import User, UserGroup, Group, Comment, Invite, connect_to_db, db
-# example_data
+import unittest
+# from unittest import TestCase
+from model import User, UserGroup, Group, Comment, Invite, connect_to_db, db, example_data
 from server import app
 import server
 import seed
+import os
 
-class FlaskTests(TestCase):
+class FlaskTests(unittest.TestCase):
 
     def setUp(self):
 
         app.config['SECRET_KEY'] = 'sekrit!'
         # Get the Flask test client
-        self.client = app.test_client()
+        self.client = app.test_client(use_cookies=True)
 
         # self.app = app.test_client()
 
@@ -23,67 +24,96 @@ class FlaskTests(TestCase):
         connect_to_db(app, "postgresql://localhost/testdb")
 
         # Create tables and add sample data
-        db.create_all()
-        
-        seed.load_users()
-        seed.load_groups()
-        seed.load_usergroups()
+        # db.create_all()
 
-        # example_data()
-
+        # db.session.commit()
 
     def tearDown(self):
         """Do at end of every test."""
 
         db.session.close()
-        db.drop(usergroups)
-        db.drop(groups)
-        db.drop(users)
-        
+        db.drop_all()
+        # Session.rollback() 
 
 
+    def test_home(self):
+        result = self.client.get('/')
+        self.assertIn('<h2>Please Sign In</h2>', result.data)
+
+   
+    def test_login(self):
+        return self.client.post('/sign_in', 
+                                  data=dict(
+                                  email='userbgmail.com',
+                                  password='wrong'),
+                                  follow_redirects=True)
+
+        self.assertIn('<h2>Please Sign In</h2>', result.data)
+
+        return self.client.post('/sign_in', 
+                                  data=dict(
+                                  email='userfgmail.com',
+                                  password='test'),
+                                  follow_redirects=True)
+
+        self.assertIn('<h2>Sign Up!</h2>', result.data)
 
 
-    def login(self, username, password, inviteid):
-        """Simulate login with inputs"""
+        return self.client.post('/sign_in', 
+                                  data=dict(
+                                  email='useragmail.com',
+                                  password='test'),
+                                  follow_redirects=True)
 
-        return self.app.post('/sign_in', data=dict(
-        username=username,
-        password=password,
-        inviteid=inviteid),
-        follow_redirects=True)
+        self.assertIn('<h3> Your craft groups:</h3>', result.data)
+
+    def test_sign_up_form(self):
+        result = self.client.get('/sign_up_form')
+        self.assertIn('<h2>Sign Up!</h2>', result.data)
+
+    
+    def test_logout(self):
+        result = self.client.get('/log_out')
+        self.assertIn('<h2>Please Sign In</h2>', result.data)
 
 
-    # def logout(self):
-    #     return self.app.get('/log_out', follow_redirects=True)
+    def test_sign_up(self):
+        return self.client.post('/sign_up', 
+                                  data=dict(
+                                  email='userdamail.com',
+                                  password='test',
+                                  first_name='Betty',
+                                  last_name='Sue',
+                                  user_photo='images/cat'),
+                                  follow_redirects=True)
+
+        self.assertIn('<h2>Please Sign In</h2>', result.data)
+
+        return self.client.post('/sign_up', 
+                                  data=dict(
+                                  email='userdgmail.com',
+                                  password='test',
+                                  first_name='Jane',
+                                  last_name='Doe',
+                                  user_photo='images/dog'),
+                                  follow_redirects=True)
+
+        self.assertIn(' <h2>Welcome Jane</h2>', result.data)
 
 
-    def test_login_session(self):
-        """Test login session with inputs"""
-
-        rv = self.login('useragmail.com', 'test', None)
-        assert flask.session['user_id'] == 1 
-        rv = self.login('userbgmail.com', 'wrong', None)
-        assert flask.session['user_id'] == False
-        rv = self.login('userfgmail.com', 'test', None)
-        assert flask.session['user_id'] == False
     
 
-    # def test_login_redirect(self):
-    #     """Test login redirects with inputs"""
 
-    #     rv = self.login('useragmail.com', 'test', None)
-    #     self.assert_redirects(rv, '/user')
-    #     rv = self.login('userbgmail.com', 'wrong', None)
-    #     self.assert_redirects(rv, '/') 
-    #     # 'Invalid password.' in response.data
-    #     rv = self.login('userfgmail.com', 'test', None)
-    #     self.assert_redirects(rv, '/sign_up_form') 
-        # "You are not signed up yet, please sign up." in response.data
+    
 
-#when testing session have to insert mock secret_key otherwise session will fail. 
 
-# test database insertion and flask routing.
+   
+    
+
+    
+
+        
+
 
 if __name__ == '__main__':
     import unittest

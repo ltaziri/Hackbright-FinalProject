@@ -54,9 +54,10 @@
                 <p> {{ group_user.user_descrip }}</p>
                 <button>close</button>
               </div>
-
-              <img src="/{{ group_user.user_photo }}" class="show_user img-circle" width="50"  height="50">
+              <div class = "show_user">
+              <img src="/{{ group_user.user_photo }}" width="50" class="img-circle" height="50">
               <p> {{ group_user.first_name }} {{ group_user.last_name }}</p>
+              </div>
             </div>  
           {% endfor %}
           <div class = "row">
@@ -176,14 +177,14 @@
   </div>
 </section>
 <hr>
-
+<a href ="/user"> Return to user homepage </a>
 
 
 {% block javascript %}
     
 <script type="text/javascript">
 var patternPoll
-var voteConfirmation = "<p>Thanks for voting! Your vote has been recorded</p>"
+var voteConfirmation = "<br><p>Thanks for voting! Your vote has been recorded</p>"
 
 $(document).ready(function(){
 
@@ -327,16 +328,13 @@ $("#comment_form").submit(function(event){
   $("#comment_text").val('');
   $("#comment_image").val('');
 }
-
 </script>
 
 <script>
   function showUserInfo(evt) {
-      var mouseX = evt.pageX;
-      var mouseY = evt.pageY;
-      $(this).prev('div.pop-up').show()
-      .css('left', mouseX)
-      .css('top', mouseY);
+      $(this).prev('div.pop-up').css('z-index', 2);
+      $(this).prev('div.pop-up').siblings('div').css('z-index', 1);
+      $(this).prev('div.pop-up').show();
   }
 
   function hideUserInfo(evt) {
@@ -347,8 +345,7 @@ $("#comment_form").submit(function(event){
   $('.pop-up').click(hideUserInfo);
     
 </script>
-<hr>
-<a href ="/user"> Return to user homepage </a>
+
 
 
 

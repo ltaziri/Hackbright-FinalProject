@@ -17,18 +17,24 @@
 </head>
 
 <body>
+<div class = "container">  
 
-<h1>Welome to Virtual Craft Club</h1>
+    <h1>MakeAround</h1>
 
-<h2>Please Sign In</h2>
-
-<form action="/sign_in" method="POST">
-
-    <input type="email" name="email" placeholder="email"><br>
-    <input type="password" name="password" placeholder="password"><br>
-    <input type="submit" value="login">
-</form>
-
-<p>Don't Have an Account? <a href="/sign_up_form">Sign Up Today!</a></p>
+    <h2>Bringing the world together, one project at a time</h2>
+    <div class="row">
+      <div class = "col-xs-12 col-sm-12 col-lg-3">
+        <h3> Sign in </h3>
+        <form action="/sign_in" method="POST">
+            <div class ="form-group"> 
+              <input class="form-control" type="email" name="email" placeholder="email"><br>
+              <input class="form-control" type="password" name="password" placeholder="password"><br>
+              <input type="submit" value="login">
+            </div>
+        </form>
+        <p>Don't Have an Account? <a href="/sign_up_form">Sign Up Today!</a></p>
+      </div>
+    </div>
+</div>
 </body>
 </html>

@@ -67,7 +67,6 @@ def handle_sign_in_form():
     if existing_user:
         if password == existing_user.password:
             session["user_id"] = existing_user.user_id
-
             return redirect("/user")
         else:
             flash("Invalid password.")
