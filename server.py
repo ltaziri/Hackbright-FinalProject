@@ -15,6 +15,7 @@ from chart import chart_data
 from delorean import Delorean
 import twitter
 import requests
+import helper
 
 
 app = Flask(__name__)
@@ -148,13 +149,10 @@ def show_user_home():
         patterns_for_group = Pattern.query.filter_by(group_id =group.group_id).all()
 
         if group.vote_timestamp:
-            clock_start = Delorean(datetime=group.vote_timestamp, timezone='UTC')
-            time_in_hours  = group.vote_days * 24
-            clock_end = clock_start + timedelta(hours = time_in_hours)
-            current_day_time = Delorean()
-            days_remaining =  clock_end - current_day_time
-            seconds_remaining = int(days_remaining.total_seconds())
-            message_dict['remaining_time'] = seconds_remaining
+            message_dict['remaining_time'] = helper.calculate_vote_time_left(
+                                                                            group.vote_timestamp,
+                                                                            group.vote_days)
+            
         else:
             message_dict['remaining_time'] = False 
         
@@ -171,7 +169,7 @@ def show_user_home():
         # message_dict['vote_timestamp'] = group.vote_timestamp
         group_vote_messages[group.group_name] = message_dict
 
-    # print "Message dict!!!!!!!!!!!!!!!", group_vote_messages 
+    print "Message dict!!!!!!!!!!!!!!!", group_vote_messages 
     return render_template("user_home.html", 
                             user=user, 
                             groups=groups, 
