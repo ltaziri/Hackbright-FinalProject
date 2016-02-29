@@ -142,34 +142,9 @@ def show_user_home():
     groups = user.groups
 
     group_vote_messages = {}
-    for group in groups:
-        message_dict ={}
-        users_in_group = UserGroup.query.filter_by(group_id=group.group_id).all()
-        votes_for_group = Vote.query.filter_by(group_id=group.group_id).all()
-        patterns_for_group = Pattern.query.filter_by(group_id =group.group_id).all()
+    for group in groups:       
+        group_vote_messages[group.group_name] = helper.create_group_messages(group)
 
-        if group.vote_timestamp:
-            message_dict['remaining_time'] = helper.calculate_vote_time_left(
-                                                                            group.vote_timestamp,
-                                                                            group.vote_days)
-            
-        else:
-            message_dict['remaining_time'] = False 
-        
-        for pattern in patterns_for_group:
-            if pattern.chosen == True:
-                message_dict['pattern_chosen'] = True;
-        if message_dict.get('pattern_chosen', False) == False:
-            message_dict['pattern_chosen'] = False;
-
-        message_dict['group_id'] = group.group_id
-        message_dict['admin'] = group.admin_id
-        message_dict['user_count'] = len(users_in_group)
-        message_dict['vote_count'] = len(votes_for_group)
-        # message_dict['vote_timestamp'] = group.vote_timestamp
-        group_vote_messages[group.group_name] = message_dict
-
-    print "Message dict!!!!!!!!!!!!!!!", group_vote_messages 
     return render_template("user_home.html", 
                             user=user, 
                             groups=groups, 
