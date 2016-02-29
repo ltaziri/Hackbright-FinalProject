@@ -1,4 +1,46 @@
+/*@font-face {
+    font-family: 'Bazar-Medium';
+    src: url('Fonts/Bazar2.ttf')format('truetype'),
+    font-weight: normal;
+    font-style: normal;
 
+}*/
+@font-face {
+  font-family: 'Bazar-Medium';
+  src: url('Fonts/Bazar2.ttf');
+  src: local('Bazar-Medium'), local('Bazar-Medium'), url('Fonts/Bazar2.ttf') format('truetype');
+}
+/*#homepage {
+     margin: 0;
+     background: url('test_imgs/AdobeStock_103148407_WM.jpeg');
+     background-size: cover;
+     background-attachment: fixed;
+     background-position: left top; 
+     background-repeat:no-repeat;
+     text-transform: uppercase;
+     font: 18px/20px "Bazar-Medium", sans-serif;
+     color:black;
+}
+.retro-borders {
+    text-shadow: 1px 2px #504F4F, 3px 4px #E2E1DE;
+    font-size: 350%
+}*/
+
+#homepage {
+     margin: 0;
+     background-image: url('test_imgs/AdobeStock_100447996_WM.jpeg');
+     background-size: cover;
+     background-attachment: fixed;
+     background-position: left top; 
+     background-repeat:no-repeat;
+     text-transform: uppercase;
+     font: 18px/20px "Bazar-Medium", sans-serif;
+     color:#4c5057;
+}
+.retro-borders {
+    text-shadow: 1px 2px #FCFAF7, 3px 4px #4c5057;
+    font-size: 350%
+}
 
 div.pop-up {
           display: none;

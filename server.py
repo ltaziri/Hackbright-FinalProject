@@ -97,23 +97,23 @@ def new_user_sign_up():
     """Handle sign up form submission"""
 
     email = request.form.get("email")
-    password = request.form.get("password")
-    first_name = request.form.get("first_name")
-    last_name = request.form.get("last_name")
-
-    if request.form.get("user_photo") == " ":
-        filename = photos.save(request.files['photo'])
-        user_photo = str(photos.path(filename))
-    else:
-        user_photo = request.form.get("user_photo")
-    
-
     existing_user = User.query.filter_by(email=email).first()
-    
+
+
     if existing_user:
         flash("email already exists, please sign in")
         return redirect("/")
-    else:
+    else:    
+        password = request.form.get("password")
+        first_name = request.form.get("first_name")
+        last_name = request.form.get("last_name")
+
+        if request.form.get("user_photo") == " ":
+            filename = photos.save(request.files['photo'])
+            user_photo = str(photos.path(filename))
+        else:
+            user_photo = request.form.get("user_photo")
+                
         user = User(
                     email=email, 
                     password=password, 
@@ -127,7 +127,7 @@ def new_user_sign_up():
 
         flash("You are successfully signed up!")
 
-    return redirect('/user')
+        return redirect('/user')
 
 
 @app.route('/user')
@@ -168,10 +168,10 @@ def show_user_home():
         message_dict['admin'] = group.admin_id
         message_dict['user_count'] = len(users_in_group)
         message_dict['vote_count'] = len(votes_for_group)
-        message_dict['vote_timestamp'] = group.vote_timestamp
+        # message_dict['vote_timestamp'] = group.vote_timestamp
         group_vote_messages[group.group_name] = message_dict
 
-   
+    # print "Message dict!!!!!!!!!!!!!!!", group_vote_messages 
     return render_template("user_home.html", 
                             user=user, 
                             groups=groups, 
