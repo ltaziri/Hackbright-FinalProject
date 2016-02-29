@@ -206,10 +206,10 @@ $("#new_group_form").on('submit', function(evt){
     }
     console.log(patternCount);
 
-    if (patternCount < 2 && $("#pattern_poll").prop("checked", true)) {
+    if (patternCount < 2 && ($('#pattern_poll').is(":checked"))) {
         alert('You must submit more than one pattern to create a poll');
         evt.preventDefault();
-    } else if ($('#num_days').val() <1 ) {
+    } else if ($('#num_days').val() <1 && ($('#pattern_poll').is(":checked"))) {
         alert('Please select how many days you want your poll to be open');
         evt.preventDefault();
     } 

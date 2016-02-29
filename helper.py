@@ -2,6 +2,9 @@
 from delorean import Delorean
 from datetime import datetime, timedelta
 from model import User, Group, UserGroup, Comment, Invite, Pattern, Vote, connect_to_db, db
+from flask import request
+from server import photos, manuals
+from flask.ext.uploads import UploadSet, configure_uploads, IMAGES, patch_request_class
 
 def calculate_vote_time_left(start_timestamp, vote_days):
     """Calculate seconds left to vote in group pattern poll"""
@@ -14,6 +17,7 @@ def calculate_vote_time_left(start_timestamp, vote_days):
     seconds_remaining = int(days_remaining.total_seconds())
 
     return seconds_remaining
+
 
 def create_group_messages(group):
     """Create dictionary for user messages by group"""
@@ -42,3 +46,25 @@ def create_group_messages(group):
     message_dict['vote_count'] = len(votes_for_group)
 
     return message_dict
+
+
+def add_pattern(name, link, pdf, group_id):
+    """add a group pattern or poll pattern"""
+
+    pattern_name = request.form.get(name)
+    pattern_link = request.form.get(link)
+
+    if pdf in request.files and request.files[pdf].filename:
+        pdf_filename = manuals.save(request.files[pdf])
+        pattern_pdf = str(manuals.path(pdf_filename))
+    else:
+        pattern_pdf = None
+
+    pattern = Pattern(pattern_name = pattern_name,
+                      pattern_link = pattern_link,
+                      pattern_pdf = pattern_pdf,
+                      chosen = True,
+                      group_id = group_id)
+
+    db.session.add(pattern)
+    db.session.commit()

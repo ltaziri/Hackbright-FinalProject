@@ -252,21 +252,21 @@ def create_group():
         vote_timestamp = datetime.now()
 
         group = Group(group_name=group_name,
-                  group_descrip=group_descrip, 
-                  group_image=group_image,  
-                  admin_id=user.user_id,
-                  vote_days=vote_days,
-                  vote_timestamp=vote_timestamp,
-                  hashtag=hashtag)
+                      group_descrip=group_descrip, 
+                      group_image=group_image,  
+                      admin_id=user.user_id,
+                      vote_days=vote_days,
+                      vote_timestamp=vote_timestamp,
+                      hashtag=hashtag)
 
         db.session.add(group)
         db.session.commit()
     else:
         group = Group(group_name=group_name,
-                  group_descrip=group_descrip, 
-                  group_image=group_image,  
-                  admin_id=user.user_id,
-                  hashtag=hashtag)
+                      group_descrip=group_descrip, 
+                      group_image=group_image,  
+                      admin_id=user.user_id,
+                      hashtag=hashtag)
 
         db.session.add(group)
         db.session.commit()
@@ -281,22 +281,23 @@ def create_group():
         or request.form.get("pattern_link") 
         or  "pattern_pdf" in request.files):
 
-        base_pattern_name = request.form.get("pattern_name")
-        base_pattern_link = request.form.get("pattern_link")
+        helper.add_pattern("pattern_name", "pattern_link","pattern_pdf", group.group_id)
+        # base_pattern_name = request.form.get("pattern_name")
+        # base_pattern_link = request.form.get("pattern_link")
 
-        if "pattern_pdf" in request.files and request.files['pattern_pdf'].filename:
-            pdf_filename = manuals.save(request.files['pattern_pdf'])
-            base_pattern_pdf = str(manuals.path(pdf_filename))
-        else:
-            base_pattern_pdf = None
+        # if "pattern_pdf" in request.files and request.files['pattern_pdf'].filename:
+        #     pdf_filename = manuals.save(request.files['pattern_pdf'])
+        #     base_pattern_pdf = str(manuals.path(pdf_filename))
+        # else:
+        #     base_pattern_pdf = None
 
-        pattern = Pattern(pattern_name = base_pattern_name,
-                          pattern_link = base_pattern_link,
-                          pattern_pdf = base_pattern_pdf,
-                          chosen = True,
-                          group_id = group.group_id)
-        db.session.add(pattern)
-        db.session.commit()
+        # pattern = Pattern(pattern_name = base_pattern_name,
+        #                   pattern_link = base_pattern_link,
+        #                   pattern_pdf = base_pattern_pdf,
+        #                   chosen = True,
+        #                   group_id = group.group_id)
+        # db.session.add(pattern)
+        # db.session.commit()
 
     if (request.form.get("pattern_name_a") 
         or request.form.get("pattern_link_a") 
