@@ -183,6 +183,7 @@ def add_group_to_user():
 def show_user_profile(): 
     """Show users profile page"""
 
+
     user = User.query.get(session["user_id"])
 
     return render_template("user_profile.html", user=user)
@@ -206,7 +207,7 @@ def user_profile_update():
     new_user_descrip = request.form.get("user_descrip")
 
 
-    if 'user_photo' in request.files:
+    if 'user_photo' in request.files and request.files['user_photo'].filename:
         user_photo_filename = photos.save(request.files['user_photo'])
         new_user_photo = str(photos.path(user_photo_filename))
         user.user_photo = new_user_photo
@@ -235,7 +236,11 @@ def create_group():
     group_name = request.form.get("group_name")
     group_descrip = request.form.get("group_descrip")
     hashtag = request.form.get("hashtag")
-    hashtag = '#makealong' + hashtag
+
+    if hashtag != "":
+        hashtag = '#makealong' + hashtag
+    else:
+        hashtag = None
 
     if request.form.get("group_image") == " ":
         filename = photos.save(request.files['photo'])
@@ -273,10 +278,7 @@ def create_group():
         db.session.add(group)
         db.session.commit()
 
-        if (request.form.get("pattern_name") 
-            or request.form.get("pattern_link") 
-            or ("pattern_pdf" in request.files and request.files['pattern_pdf_a'].filename)):
-            
+        if request.form.get("pattern_name"):             
             helper.add_pattern("pattern_name", "pattern_link","pattern_pdf", group.group_id)
         
     user_group= UserGroup(group_id=group.group_id,
@@ -403,6 +405,7 @@ def update_group_profile(group_id):
         chosen_pattern = Pattern.query.filter(Pattern.group_id == group_id, Pattern.chosen == True)
 
         update_group_name = request.form.get("group_name")
+        print update_group_name
         update_group_descrip = request.form.get("group_descrip")
         update_group_hashtag = request.form.get("hashtag")
         
@@ -525,13 +528,14 @@ def get_pattern_poll_data(group_id):
     vote_data = {} 
 
     for vote in votes:
-        if vote_data.get(vote.pattern.pattern_name, False) == False:
-            vote_data[vote.pattern.pattern_name] = 1
+        new_pattern_vote = vote_data.get(vote.pattern.pattern_name, 1)
+        if new_pattern_vote == 1:
+            vote_data[vote.pattern.pattern_name] = new_pattern_vote
         else:
             vote_data[vote.pattern.pattern_name] +=1
 
     for pattern in group_patterns:
-        if vote_data.get(pattern.pattern_name, False) == False:
+        if not vote_data.get(pattern.pattern_name, False):
             vote_data[pattern.pattern_name] = 0
 
    

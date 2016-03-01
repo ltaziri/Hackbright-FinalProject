@@ -3,15 +3,15 @@
 
 <h2>Sign Up!</h2>
 
-<form enctype ="multipart/form-data" action="/sign_up" method="POST">
+<form enctype ="multipart/form-data" id="sign_up" action="/sign_up" method="POST">
 
-    <input type="email" name="email" placeholder="email"><br>
+    <input type="email" id="new_user_email" name="email" placeholder="email" required><br>
     <br>
-    <input type="text" name="password" placeholder="password"><br>
+    <input type="text" id="new_user_password" name="password" placeholder="password" required><br>
     <br>
-    <input type="text" name="first_name" placeholder="first name"><br>
+    <input type="text" id="new_user_first" name="first_name" placeholder="first name" required><br>
     <br>
-    <input type="text" name="last_name" placeholder="last name"><br>
+    <input type="text" id="new_user_last" name="last_name" placeholder="last name" required><br>
     <br>
 
     <p>Choose a user photo or upload your own:</p>
@@ -39,7 +39,16 @@
 $("#upload_file").click(function(){
     $("#upload_radio").prop("checked", true);
 });
-
+$('#sign_up').on('submit', function(evt){
+    if ($("#new_user_email").val().length < 1 ||
+       $("#new_user_password").val().length < 1 ||
+       $("#new_user_first").val().length < 1 ||
+       $("#new_user_last").val().length < 1 ) {
+    alert('Please fix the required form fields');
+        $('this').css("borderColor", "red");
+        evt.preventDefault();
+    }
+})
 </script>
 
 {% endblock %}

@@ -4,9 +4,8 @@ from model import Group
 from model import UserGroup
 from model import Pattern
 from datetime import datetime
-
 from model import connect_to_db, db
-from server import app
+from server import app, photos, manuals
 
 def load_users():
     """Load users from user.txt into database."""

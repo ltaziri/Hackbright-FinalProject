@@ -6,6 +6,8 @@ from server import app
 import server
 import seed
 import os
+from flask import session
+
 
 class FlaskTests(unittest.TestCase):
 
@@ -114,11 +116,59 @@ class FlaskTests(unittest.TestCase):
 
         self.assertIn('<h3> Your craft groups:</h3>', result.data)
 
+        return self.client.post('/sign_up', 
+                                  data=dict(
+                                  email='',
+                                  password='test',
+                                  first_name='Jane',
+                                  last_name='Doe',
+                                  user_photo='images/dog'),
+                                  follow_redirects=True)
 
-    
+        self.assertIn('<h2>Sign Up!</h2>', result.data)        
 
+        return self.client.post('/sign_up', 
+                                  data=dict(
+                                  email='userdgmail.com',
+                                  password='',
+                                  first_name='Jane',
+                                  last_name='Doe',
+                                  user_photo='images/dog'),
+                                  follow_redirects=True)
 
-    
+        self.assertIn('<h2>Sign Up!</h2>', result.data)
+
+        return self.client.post('/sign_up', 
+                                  data=dict(
+                                  email='userdgmail.com',
+                                  password='test',
+                                  first_name='',
+                                  last_name='Doe',
+                                  user_photo='images/dog'),
+                                  follow_redirects=True)
+
+        self.assertIn('<h2>Sign Up!</h2>', result.data)
+
+        return self.client.post('/sign_up', 
+                                  data=dict(
+                                  email='userdgmail.com',
+                                  password='test',
+                                  first_name='Jane',
+                                  last_name='',
+                                  user_photo='images/dog'),
+                                  follow_redirects=True)
+
+        self.assertIn('<h2>Sign Up!</h2>', result.data)
+
+    # def request_with_user v
+    def test_user_home(self):
+        with app.test_client() as c:
+            with c.session_transaction() as sess:
+                sess['user_id'] = "1"                  
+                result = c.get('/user')
+
+                self.assertTrue(result is not None)
+
 
 
    
