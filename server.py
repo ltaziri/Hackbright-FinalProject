@@ -474,20 +474,10 @@ def update_clock(group_id):
 
     group = Group.query.get(group_id)
 
-    clock_start = group.vote_timestamp
-    clock_start = Delorean(datetime=clock_start, timezone='UTC')
-    
-    time_in_hours  = group.vote_days * 24
-    clock_end = clock_start + timedelta(hours = time_in_hours)
-    current_day_time = Delorean()
-    days_remaining =  clock_end - current_day_time
-
-    seconds_remaining = int(days_remaining.total_seconds())
-
     clock_time = {}
-
-    clock_time['seconds'] = seconds_remaining
-
+    clock_time['seconds'] = helper.calculate_vote_time_left(
+                                                     group.vote_timestamp,
+                                                     group.vote_days)
     return jsonify(clock_time)
 
 
