@@ -63,7 +63,7 @@
                         <div class ="col-xs-12 col-sm-12 col-lg-10">
                             <div class ="form-group form-inline">
                                 <label>How many days to you want to give friend's to vote?</label>
-                                <input type="number" class="form-control input-small" name="vote_days" id="num_days" placeholder="days">
+                                <input type="number" class="form-control input-small" name="vote_days" id="num_days" min="1" placeholder="days">
                             </div>
                         </div>
                     </div>
@@ -153,33 +153,13 @@ $(document).ready(function(){
             if($('#pattern_poll').is(":checked")){
                 $('div#poll_div').show(800);
                 $("div#base_pattern").hide(800);
-                $("input#pattern_name").prop("disabled", true);
-                $("input#pattern_link").prop("disabled", true);
-                $("input#pattern_pdf").prop("disabled", true);
-                $("input#pattern_name_a").prop("disabled", false);
-                $("input#pattern_link_a").prop("disabled", false);
-                $("input#pattern_pdf_a").prop("disabled", false);
-                $("input#pattern_name_b").prop("disabled", false);
-                $("input#pattern_link_b").prop("disabled", false);
-                $("input#pattern_pdf_b").prop("disabled", false);
-                $("input#pattern_name_c").prop("disabled", false);
-                $("input#pattern_link_c").prop("disabled", false);
-                $("input#pattern_pdf_c").prop("disabled", false);
+                $("div#base_pattern").find('input').prop("disabled", true);
+                $("div#poll_div").find('input').prop("disabled", false);
             } else if (!$('#pattern_poll').is(":checked")) {
                 $('div#poll_div').hide(800);
                 $("div#base_pattern").show(800);
-                $("input#pattern_name").prop("disabled", false);
-                $("input#pattern_link").prop("disabled", false);
-                $("input#pattern_pdf").prop("disabled", false);
-                $("input#pattern_name_a").prop("disabled", true);
-                $("input#pattern_link_a").prop("disabled", true);
-                $("input#pattern_pdf_a").prop("disabled", true);
-                $("input#pattern_name_b").prop("disabled", true);
-                $("input#pattern_link_b").prop("disabled", true);
-                $("input#pattern_pdf_b").prop("disabled", true);
-                $("input#pattern_name_c").prop("disabled", true);
-                $("input#pattern_link_c").prop("disabled", true);
-                $("input#pattern_pdf_c").prop("disabled", true);
+                $("div#base_pattern").find('input').prop("disabled", false);
+                $("div#poll_div").find('input').prop("disabled", true);
             }
           });
       });      
@@ -189,22 +169,37 @@ $("#new_group_form").on('submit', function(evt){
     if (!$('#pattern_poll').is(":checked")) {
         patternCount = patternCount + 2
     } 
-    if ($('#pattern_name_a').val().length > 1 || 
-       $('#pattern_pdf_a').val().length > 1 ||
-       $('#pattern_link_a').val().length > 1) {
-        patternCount = patternCount + 1
+    if ($('#pattern_name_a').val().length < 1 && 
+       ($('#pattern_pdf_a').val().length > 1 ||
+       $('#pattern_link_a').val().length > 1)) {
+        alert('You must enter a pattern name');
+        $('#pattern_name_a').css("borderColor", "red");
+        evt.preventDefault();
     } 
-    if ($('#pattern_name_b').val().length > 1 || 
-       $('#pattern_pdf_b').val().length > 1 ||
-       $('#pattern_link_b').val().length > 1) {
-        patternCount = patternCount + 1
+    if ($('#pattern_name_b').val().length < 1 && 
+       ($('#pattern_pdf_b').val().length > 1 ||
+       $('#pattern_link_b').val().length > 1)) {
+        alert('You must enter a pattern name');
+        $('#pattern_name_b').css("borderColor", "red");
+        evt.preventDefault();
     } 
-    if ($('#pattern_name_c').val().length > 1 || 
-       $('#pattern_pdf_c').val().length > 1 ||
-       $('#pattern_link_c').val().length > 1) {
+    if ($('#pattern_name_c').val().length < 1 && 
+       ($('#pattern_pdf_c').val().length > 1 ||
+       $('#pattern_link_c').val().length > 1)) {
+        alert('You must enter a pattern name');
+        $('#pattern_name_c').css("borderColor", "red");
+        evt.preventDefault();
+    }
+
+    if ($('#pattern_name_a').val().length > 1) {
         patternCount = patternCount + 1
     }
-    console.log(patternCount);
+    if ($('#pattern_name_b').val().length > 1) {
+        patternCount = patternCount + 1
+    }
+    if ($('#pattern_name_c').val().length > 1) {
+        patternCount = patternCount + 1
+    }
 
     if (patternCount < 2 && ($('#pattern_poll').is(":checked"))) {
         alert('You must submit more than one pattern to create a poll');
@@ -212,7 +207,7 @@ $("#new_group_form").on('submit', function(evt){
     } else if ($('#num_days').val() <1 && ($('#pattern_poll').is(":checked"))) {
         alert('Please select how many days you want your poll to be open');
         evt.preventDefault();
-    } 
+    }
 })
 
 </script>

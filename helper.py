@@ -68,3 +68,17 @@ def add_pattern(name, link, pdf, group_id):
 
     db.session.add(pattern)
     db.session.commit()
+
+def create_patterns_for_poll(group_id):
+    """create patterns for poll when group poll is created"""
+
+    if request.form.get("pattern_name_a"):
+        add_pattern("pattern_name_a", "pattern_link_a","pattern_pdf_a", group_id)
+
+
+    if request.form.get("pattern_name_b"):
+        add_pattern("pattern_name_b", "pattern_link_b","pattern_pdf_b", group_id)
+
+
+    if request.form.get("pattern_name_c"): 
+        add_pattern("pattern_name_c", "pattern_link_c","pattern_pdf_c", group_id)
