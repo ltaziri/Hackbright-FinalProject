@@ -310,7 +310,7 @@ def show_group_page(group_id):
             voter_ids.append(voter.user_id)
 
         num_group_users = len(group_users)
-        comments =  Comment.query.filter_by(group_id=group_id)
+        comments =  Comment.query.filter_by(group_id=group_id).all()
         patterns = Pattern.query.filter_by(group_id=group_id).all()
         chosen_pattern = Pattern.query.filter(Pattern.group_id == group_id, Pattern.chosen == True).all()
 
@@ -332,6 +332,19 @@ def show_group_page(group_id):
                         patterns = patterns,
                         votes=voter_ids,
                         num_group_users=num_group_users)
+
+# @app.route('/photo_test/<int:group_id>')
+# def show_test(group_id):
+
+#     comments =  Comment.query.filter_by(group_id=group_id)
+
+#     comment_pics = []
+#     for comment in comments:
+#         if comment.comment_image:
+#             comment_pics.append(comment.comment_image)
+
+#     print comment_pics
+#     return render_template('photo_test.html', comment_pics=comment_pics)
 
 
 @app.route('/group_twitter.json/<int:group_id>')
@@ -405,7 +418,7 @@ def update_group_profile(group_id):
         chosen_pattern = Pattern.query.filter(Pattern.group_id == group_id, Pattern.chosen == True)
 
         update_group_name = request.form.get("group_name")
-        print update_group_name
+        
         update_group_descrip = request.form.get("group_descrip")
         update_group_hashtag = request.form.get("hashtag")
         
@@ -476,8 +489,8 @@ def update_clock(group_id):
 
     clock_time = {}
     clock_time['seconds'] = helper.calculate_vote_time_left(
-                                                     group.vote_timestamp,
-                                                     group.vote_days)
+                                                            group.vote_timestamp,
+                                                            group.vote_days)
     return jsonify(clock_time)
 
 
@@ -528,14 +541,13 @@ def get_pattern_poll_data(group_id):
         if not vote_data.get(pattern.pattern_name, False):
             vote_data[pattern.pattern_name] = 0
 
-   
     labels = []
     data = []
 
-    for tup in vote_data.items():
-        labels.append(tup[0])
-        data.append(tup[1])
-
+    for key in sorted(vote_data):
+        labels.append(key)
+        data.append(vote_data[key])
+        
     data_set = {'label': "Votes",
                 'fillColor': "rgba(220,220,220,0.5)",
                 'strokeColor': "rgba(220,220,220,0.8)",

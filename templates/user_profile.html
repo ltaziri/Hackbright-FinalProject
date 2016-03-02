@@ -10,7 +10,7 @@
 <div class= "row">
     <div class ="col-xs-12 col-sm-12 col-md-4 col-lg-6">
         {% if user.user_descrip %}
-        <h3> About me:</h3><h4>{{ user.user_descrip }}</h4>
+        <h3> About me:</h3><h4 data-linkify="this">{{ user.user_descrip }}</h4>
         {% endif %} 
         <br>    
         <img class="img-responsive img-rounded" src="/{{ user.user_photo }}"><br>      

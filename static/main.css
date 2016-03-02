@@ -55,7 +55,8 @@ div.poll_div, div#final_vote_confirm {
 }
 
 #myChart{
-width: 800px;
+width: 90%;
+height: 300px;
 }
 
 
@@ -83,6 +84,22 @@ div.comment_style {
         min-height: 150px;
 }
 
+#container img {
+        border: 2px solid white;
+}
+
+div#container {
+        border: 2px solid gray;
+        padding: 5px;
+        max-height: 200px;
+        overflow: auto;
+        overflow-x:hidden;
+}
+
+.feature {
+          height: 200px;
+          border: 2px solid gray;
+}
 /*  Bootstrap Clearfix */
 
 /*  Tablet  */
