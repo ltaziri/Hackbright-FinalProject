@@ -72,7 +72,7 @@
             <h3>Your vote counts!</h3>
             <p> Here are the choices for the group's pattern.</p>
             <div class = "row">
-              <form id ="vote_form" action="/poll.json/<int:group_id>" method="POST" style= "margin-bottom:20px">
+              <form id ="vote_form" action="/poll.json/{{group.group_id}}" method="POST" style= "margin-bottom:20px">
                   {% for pattern in patterns %}
                     <div class ="col-xs-12 col-sm-12 col-md-4">
                       <b> {{ pattern.pattern_name }} </b>
@@ -157,49 +157,76 @@
       <section >
         
         <h3>Photo gallery:</h3>
+        {% if comment_pics|length > 1 %}
+        <div class="row">
+            <div id="photo_height_fix">
+              <div id="carousel" class="carousel slide" data-ride="carousel">
+                <div class="carousel-inner">
+                    <div class="item active">
+                        <img src="/{{ comment_pics[0] }}">
+                    </div>
+                    {% for pic in comment_pics[1:] %}
+                    <div class="item">
+                        <img src="/{{ pic }}">
+                    </div>
+                    {% endfor %}
+                </div>
+              </div>
+            </div> 
+            <div class="clearfix">
+            <div id="thumbcarousel" class="carousel slide" data-interval="false">
+              <div class="carousel-inner">
+                  <div class="item active">
+                      
+                      {% if comment_pics|length < 4 %}
+                          
+                          {% for pic in comment_pics %}
+                          <div data-target="#carousel" data-slide-to="{{ loop.index0 }}" class="thumb"><img src="/{{ pic }}"></div>
+                          
+                          {% endfor %}
+                      {% endif %}
+                      {% if comment_pics|length >= 4 %}
+                          
+                          {% for pic in comment_pics[:4] %}
+                          <div data-target="#carousel" data-slide-to="{{ loop.index0 }}" class="thumb"><img src="/{{ pic }}"></div>
+                          
+                          {% endfor %}
+                      {% endif %}
+                  </div><!-- /item -->
+                  <div class="item" style="vertical-align:middle">
 
-        {% if comments|length > 0 %}
-          {% if comments[0].comment_image %}
-          <div> <img class ="feature" src="/{{ comments[0].comment_image }}" width="100%">
-
-          <div id="container">
-          {% endif %}
-        {% endif %}
-        {% for comment in comments %}
-          {% if comment.comment_image %}
-            <div>
-            <img class = "tinypic" src="/{{ comment.comment_image }}" width="80px">
-           </div>
-          {% endif %}  
-        {% endfor %}
+                      {% if comment_pics|length >= 4 %}
+                          {% for pic in comment_pics[4:] %}
+                              <div data-target="#carousel" data-slide-to="{{ loop.index0 + 4}}" class="thumb"><img src="/{{ pic }}">
+                              </div>
+                          {% endfor %}
+                       {% endif %}
+                  </div><!-- /item -->
+              </div><!-- /carousel-inner -->
+                <a class="left carousel-control" href="#thumbcarousel" role="button" data-slide="prev">
+                  <span class="glyphicon glyphicon-chevron-left"></span>
+                </a>
+                <a class="right carousel-control" href="#thumbcarousel" role="button" data-slide="next">
+                  <span class="glyphicon glyphicon-chevron-right"></span>
+                </a>
+            </div> <!-- /thumbcarousel -->
+          </div><!-- /clearfix -->
       </div>
+      {% endif %} <!-- /row -->
       </section>
     </div>
-  </div>
-</section>
 
 
 {% block javascript %}
-    
+<script src="../static/flipclock.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.js"></script>
 <script type="text/javascript">
 var patternPoll
 var voteConfirmation = "<br><h4 class='text-success' style='margin-left:15px;' >Thanks for voting! Your vote has been recorded</h4>"
 
 $(document).ready(function(){
-   $(".tinypic").click(function() {
-                var new_image = $(this).attr("src");
-                // var old_image = $('.feature').attr("src");
-                console.log(new_image);
-                $('.feature').attr("src", new_image);
-                console.log($('.feature').attr("src"))
-                $('.feature').fadeIn('slow');
-            });
-
-  $.get('/group_twitter.json/{{ group.group_id }}', function(results) {
+   $.get('/group_twitter.json/{{ group.group_id }}', function(results) {
         var keys = Object.keys(results);
-        console.log(results);
-        console.log(keys)
-         console.log(keys.length)
         for(var i=0;i<keys.length;i++) {
             console.log(results[keys[i]].user_profile_pic)
             var twitter_div = "";
@@ -228,7 +255,6 @@ $(document).ready(function(){
   $.get('/flip_clock.json/{{ group.group_id}}', function(data) {
   seconds_left = data.seconds;
   
-
   var clock;
   
   clock = $('.clock').FlipClock({
@@ -296,83 +322,8 @@ $('#vote_form').on('submit', handleVote)
 </script>
 
 {% endblock %}
-<script>
-"use strict";
-var options = {
-      defaultProtocol: 'http',
-      events: null,
-      format: function (value, type) {
-        return value;
-      },
-      formatHref: function (href, type) {
-        return href;
-      },
-      linkAttributes: null,
-      linkClass: null,
-      nl2br: false,
-      tagName: 'a',
-      target: function (href, type) {
-        return type === 'url' ? '_blank' : null;
-      }
-    };
+<script src="../static/group_page.js"></script>
 
-$("#comment_form").submit(function(event){
-  
-  event.preventDefault();
-
-    var formData = new FormData($('form#comment_form')[0]);
-    
-
-    $.ajax({
-      url: '/comment_add.json',
-      type: 'POST',
-      data: formData,
-      async: false,
-      cache: false,
-      contentType: false,
-      processData: false,
-      success: showComment,
-      });
-    
-  });
-  
-
-    function showComment(results) {
-    var htmlStr = "";
-    htmlStr += "<img src='/" + results.comment_user_photo + "' width='50'>";
-    htmlStr += "<h4>"+ results.comment_user_name + "</h4><br>"
-    htmlStr += "<i>" + results.comment_timestamp + "</i><br>"
-    htmlStr += "<p>" + results.comment_text + "</p><br>"
-    if(results.comment_image) {
-      htmlStr += "<img src='/" + results.comment_image + "' width='300'><br><br>";
-    }
-
-    $("#new_comment").prepend(htmlStr);
-    $("#new_comment").linkify(options);
-    $("#comment_text").val('');
-    $("#comment_image").val('');
-}
-</script>
-
-<script>
-  function showUserInfo(evt) {
-      $(this).prev('div.pop-up').css('z-index', 2);
-      $(this).prev('div.pop-up').siblings('div').css('z-index', 1);
-      $(this).prev('div.pop-up').show();
-  }
-
-  function hideUserInfo(evt) {
-        $('div.pop-up').hide();
-  }
-
-  $('.show_user').click(showUserInfo);
-  $('.pop-up').click(hideUserInfo);
-    
-</script>
-
-<script>
-  $('#container').freetile();
-</script>
 
 
 {% endblock %}

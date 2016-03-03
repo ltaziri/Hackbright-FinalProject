@@ -80,26 +80,29 @@ div#twitter {
         overflow: auto;
         overflow-x:hidden;
 }
-div.comment_style {
-        min-height: 150px;
+
+
+.carousel {
+    margin-top: 20px;
+}
+.item .thumb {
+  width: 25%;
+  cursor: pointer;
+  float: left;
+}
+.item .thumb img {
+  width: 100%;
+  margin: 2px;
+}
+.item img {
+  width: auto;
+  height: 100%;  
 }
 
-#container img {
-        border: 2px solid white;
+#photo_height_fix {
+ height:225px;
 }
 
-div#container {
-        border: 2px solid gray;
-        padding: 5px;
-        max-height: 200px;
-        overflow: auto;
-        overflow-x:hidden;
-}
-
-.feature {
-          height: 200px;
-          border: 2px solid gray;
-}
 /*  Bootstrap Clearfix */
 
 /*  Tablet  */

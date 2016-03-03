@@ -142,8 +142,10 @@ def show_user_home():
     groups = user.groups
 
     group_vote_messages = {}
-    for group in groups:       
+    for group in groups:
         group_vote_messages[group.group_name] = helper.create_group_messages(group)
+
+    print "GROUP VOTE MESSAGES!!!!!!!!!!!!!!!!!!", group_vote_messages
 
     return render_template("user_home.html", 
                             user=user, 
@@ -279,7 +281,7 @@ def create_group():
         db.session.commit()
 
         if request.form.get("pattern_name"):             
-            helper.add_pattern("pattern_name", "pattern_link","pattern_pdf", group.group_id)
+            helper.add_chosen_pattern("pattern_name", "pattern_link","pattern_pdf", group.group_id)
         
     user_group= UserGroup(group_id=group.group_id,
                           user_id=user.user_id)
@@ -310,9 +312,14 @@ def show_group_page(group_id):
             voter_ids.append(voter.user_id)
 
         num_group_users = len(group_users)
-        comments =  Comment.query.filter_by(group_id=group_id).all()
         patterns = Pattern.query.filter_by(group_id=group_id).all()
         chosen_pattern = Pattern.query.filter(Pattern.group_id == group_id, Pattern.chosen == True).all()
+
+        comments =  Comment.query.filter_by(group_id=group_id).all()
+        comment_pics = []
+        for comment in comments:
+            if comment.comment_image:
+                comment_pics.append(comment.comment_image)
 
         if chosen_pattern:
             return render_template("group_page.html", 
@@ -320,6 +327,7 @@ def show_group_page(group_id):
                         group_users=group_users, 
                         user=user,
                         comments=comments,
+                        comment_pics=comment_pics,
                         patterns = chosen_pattern,
                         votes=voter_ids,
                         num_group_users=num_group_users)
@@ -329,22 +337,10 @@ def show_group_page(group_id):
                         group_users=group_users, 
                         user=user,
                         comments=comments,
+                        comment_pics=comment_pics,
                         patterns = patterns,
                         votes=voter_ids,
                         num_group_users=num_group_users)
-
-# @app.route('/photo_test/<int:group_id>')
-# def show_test(group_id):
-
-#     comments =  Comment.query.filter_by(group_id=group_id)
-
-#     comment_pics = []
-#     for comment in comments:
-#         if comment.comment_image:
-#             comment_pics.append(comment.comment_image)
-
-#     print comment_pics
-#     return render_template('photo_test.html', comment_pics=comment_pics)
 
 
 @app.route('/group_twitter.json/<int:group_id>')
@@ -465,7 +461,7 @@ def update_group_profile(group_id):
             or request.form.get("new_pattern_link") 
             or ("new_pattern_pdf" in request.files and request.files['new_pattern_pdf'].filename)):
 
-            helper.add_pattern("new_pattern_name", "new_pattern_link","new_pattern_pdf", group.group_id)
+            helper.add_chosen_pattern("new_pattern_name", "new_pattern_link","new_pattern_pdf", group.group_id)
 
     ##info if pattern poll was created##
         

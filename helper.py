@@ -36,10 +36,12 @@ def create_group_messages(group):
     
     for pattern in patterns_for_group:
         if pattern.chosen == True:
-            message_dict['pattern_chosen'] = True;            
-    patternless = message_dict.get('pattern_chosen', False)
+            message_dict['pattern_chosen'] = True  
 
-    message_dict['pattern_chosen'] = patternless;
+    patternless = message_dict.get('pattern_chosen', False)
+    if not patternless:
+        message_dict['pattern_chosen'] = False
+
     message_dict['group_id'] = group.group_id
     message_dict['admin'] = group.admin_id
     message_dict['user_count'] = len(users_in_group)
@@ -48,7 +50,7 @@ def create_group_messages(group):
     return message_dict
 
 
-def add_pattern(name, link, pdf, group_id):
+def add_chosen_pattern(name, link, pdf, group_id):
     """add a group pattern or poll pattern"""
 
     pattern_name = request.form.get(name)
@@ -69,16 +71,38 @@ def add_pattern(name, link, pdf, group_id):
     db.session.add(pattern)
     db.session.commit()
 
+def add_poll_pattern(name, link, pdf, group_id):
+    """add a group pattern or poll pattern"""
+
+    pattern_name = request.form.get(name)
+    pattern_link = request.form.get(link)
+
+    if pdf in request.files and request.files[pdf].filename:
+        pdf_filename = manuals.save(request.files[pdf])
+        pattern_pdf = str(manuals.path(pdf_filename))
+    else:
+        pattern_pdf = None
+
+    pattern = Pattern(pattern_name = pattern_name,
+                      pattern_link = pattern_link,
+                      pattern_pdf = pattern_pdf,
+                      chosen = False,
+                      group_id = group_id)
+
+    db.session.add(pattern)
+    db.session.commit()
+
+
 def create_patterns_for_poll(group_id):
     """create patterns for poll when group poll is created"""
 
     if request.form.get("pattern_name_a"):
-        add_pattern("pattern_name_a", "pattern_link_a","pattern_pdf_a", group_id)
+        add_poll_pattern("pattern_name_a", "pattern_link_a","pattern_pdf_a", group_id)
 
 
     if request.form.get("pattern_name_b"):
-        add_pattern("pattern_name_b", "pattern_link_b","pattern_pdf_b", group_id)
+        add_poll_pattern("pattern_name_b", "pattern_link_b","pattern_pdf_b", group_id)
 
 
     if request.form.get("pattern_name_c"): 
-        add_pattern("pattern_name_c", "pattern_link_c","pattern_pdf_c", group_id)
+        add_poll_pattern("pattern_name_c", "pattern_link_c","pattern_pdf_c", group_id)
