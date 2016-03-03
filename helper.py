@@ -3,8 +3,11 @@ from delorean import Delorean
 from datetime import datetime, timedelta
 from model import User, Group, UserGroup, Comment, Invite, Pattern, Vote, connect_to_db, db
 from flask import request
-from server import photos, manuals
+# from server import photos, manuals
 from flask.ext.uploads import UploadSet, configure_uploads, IMAGES, patch_request_class
+import re
+from urlparse import urlparse
+
 
 def calculate_vote_time_left(start_timestamp, vote_days):
     """Calculate seconds left to vote in group pattern poll"""
@@ -106,3 +109,20 @@ def create_patterns_for_poll(group_id):
 
     if request.form.get("pattern_name_c"): 
         add_poll_pattern("pattern_name_c", "pattern_link_c","pattern_pdf_c", group_id)
+
+
+def find_comment_youtube(comment_text):
+    """Parse through text inputs to find youtube links"""
+    
+    url = re.findall('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', comment_text)
+
+    if url:
+        parsed_url = urlparse(url[0])
+        if parsed_url.netloc == 'www.youtube.com':
+            video_id = parsed_url.query[2:]
+        else:
+            video_id = None
+    else:
+        video_id= None
+            
+    return video_id

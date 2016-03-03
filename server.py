@@ -16,6 +16,8 @@ from delorean import Delorean
 import twitter
 import requests
 import helper
+import re
+
 
 
 app = Flask(__name__)
@@ -320,7 +322,7 @@ def show_group_page(group_id):
         for comment in comments:
             if comment.comment_image:
                 comment_pics.append(comment.comment_image)
-
+        
         if chosen_pattern:
             return render_template("group_page.html", 
                         group=group, 
@@ -581,6 +583,8 @@ def add_comment():
 
     group_id = request.form.get("group_id")
     comment_text = request.form.get("comment_text")
+    youtube_id = helper.find_comment_youtube(comment_text)
+    
     
     if 'comment_image' in request.files and request.files['comment_image'].filename:
         comment_img_filename = photos.save(request.files['comment_image'])
@@ -591,6 +595,7 @@ def add_comment():
     comment = Comment(comment_text=comment_text, 
                       comment_image=comment_image, 
                       comment_timestamp=datetime.now(),
+                      youtube_id=youtube_id,
                       user_id=session["user_id"],
                       group_id=group_id)
 
@@ -603,7 +608,8 @@ def add_comment():
                     'comment_user_name': comment.user.first_name,
                     'comment_timestamp':format_timestamp,
                     'comment_text': comment.comment_text,
-                    'comment_image': comment.comment_image }
+                    'comment_image': comment.comment_image,
+                    'youtube_id': youtube_id }
 
     return jsonify(comment_dict)
 

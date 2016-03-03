@@ -47,9 +47,12 @@ $("#comment_form").submit(function(event){
     htmlStr += "<i>" + results.comment_timestamp + "</i><br>"
     htmlStr += "<p>" + results.comment_text + "</p><br>"
     if(results.comment_image) {
-      htmlStr += "<img src='/" + results.comment_image + "' width='300'><br><br>";
+      htmlStr += "<img src='/" + results.comment_image + "' width='300'><br>";
     }
-
+    if (results.youtube_id){
+      console.log(results.youtube_id);
+      htmlStr +='<iframe width="300" height="300" src="http://www.youtube.com/embed/' + results.youtube_id + '?autoplay=0"></iframe><br>';
+    }
     $("#new_comment").prepend(htmlStr);
     $("#new_comment").linkify(options);
     $("#comment_text").val('');

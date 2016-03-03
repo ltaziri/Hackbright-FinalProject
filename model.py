@@ -86,7 +86,8 @@ class Comment(db.Model):
     comment_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     comment_text = db.Column(db.String(255), nullable=False)
     comment_image = db.Column(db.String(255), nullable=True) 
-    comment_timestamp = db.Column(db.DateTime, nullable=False)   
+    comment_timestamp = db.Column(db.DateTime, nullable=False)
+    youtube_id =  db.Column(db.String(255), nullable=True)  
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False) 
     group_id = db.Column(db.Integer, db.ForeignKey('groups.group_id'), nullable=False)
 

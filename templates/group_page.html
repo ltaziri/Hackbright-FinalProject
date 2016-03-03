@@ -6,7 +6,7 @@
   <div class = "row">
     <div class = "col-xs-12 col-sm-12 col-md-9">
       <h2>Welcome to {{ group.group_name}}</h2>
-
+      
       <section>   
           {% if group.group_descrip %}
             <p data-linkify="this">{{ group.group_descrip }}</p>
@@ -14,9 +14,21 @@
           {% if user == group.admin_id %}
             <a href="/group_profile_form/{{ group.group_id }}">Update the group information</a>
           {% endif %}
-          <hr>       
+                
       </section>
-
+    
+      {% if patterns|length > 1 %}
+       
+        <section>
+          <div class="clock" ></div><br>
+           <div class = "row">
+              <div class="col-xs-12 col-md-9 col-md-offset-3">
+              <h4> Days left to vote on a pattern </h4>
+              </div>
+           </div>
+        </section>
+      {% endif %}
+    
       {% if patterns|length == 0 %}
         <section>
             <p>
@@ -54,9 +66,7 @@
 
       {% if patterns|length > 1 %}
         <div class ="row">
-          <section class = "col-lg-10 col-lg-offset-1">
-            <div class="clock" style="margin:2em;"></div>
-          </section>
+          
         </div>
         <div id="final_vote_confirm">
           <div class="message"></div>
@@ -86,8 +96,9 @@
                       <input type="radio" class ="pattern_select" name="pattern_select" value="{{ pattern.pattern_id }}">
                     </div>
                   {% endfor %}
+                 
                   <input type="hidden" name="group_id" id="pattern_group" value="{{group.group_id}}">
-                  <button id="vote_submit" type="submit">Vote!</button>
+                  <button class="btn btn-default" id="vote_submit" type="submit">Vote!</button>
               </form>
             </div>
         </section>
@@ -114,11 +125,16 @@
             {% for comment in comments|sort(attribute="comment_id", reverse = True) %}
             <div>
                 <img src="/{{ comment.user.user_photo }}" width="50">
-                <h4>{{ comment.user.first_name }}</h4><br>
+                <b>{{ comment.user.first_name }}</b><br>
                 <i>{{ comment.comment_timestamp.strftime("%m/%d/%y %X") }}</i><br>
-                    <div data-linkify="this"><p>{{ comment.comment_text }}</p></div> <br>
+                    <div class="comment_text" data-linkify="this">{{ comment.comment_text }}</div>
                     {% if comment.comment_image %}
                     <img src="/{{ comment.comment_image }}" width="300"><br>
+                    {% endif %}
+                    {% if comment.youtube_id %}
+                    <iframe width="300" height="300" src="http://www.youtube.com/embed/{{ comment.youtube_id }}?autoplay=0">
+                    </iframe><br>
+                    
                     {% endif %}     
             </div>
             {% endfor %}

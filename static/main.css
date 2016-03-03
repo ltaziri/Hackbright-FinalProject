@@ -103,6 +103,19 @@ div#twitter {
  height:225px;
 }
 
+.clock {
+position: relative !important;
+padding-top: 0px;
+margin-left: auto;
+height:50px;
+width: 800px;
+/zoom: .6;/ 
+transform: scale(.75);
+-ms-transform: scale(.75); /* IE 9 /*/
+-webkit-transform: scale(.75); /*/ Safari and Chrome /*/
+-o-transform: scale(.75);/* / Opera /*/
+-moz-transform: scale(.75); /*/ Firefox */
+}
 /*  Bootstrap Clearfix */
 
 /*  Tablet  */
@@ -129,7 +142,6 @@ div#twitter {
     clear: left;
   }
 }
-
 
 /*  Medium Desktop  */
 @media (min-width:992px){
