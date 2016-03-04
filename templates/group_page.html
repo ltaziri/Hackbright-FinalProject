@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
 
+<a href="/user"> <span class="glyphicon glyphicon-menu-left" aria-hidden="true"></span> Return to your homepage</a>
 <div class = "row">
 <section class = "col-xs-12">
   <div class = "row">
@@ -96,9 +97,12 @@
                       <input type="radio" class ="pattern_select" name="pattern_select" value="{{ pattern.pattern_id }}">
                     </div>
                   {% endfor %}
-                 
-                  <input type="hidden" name="group_id" id="pattern_group" value="{{group.group_id}}">
+                  <div class = "row">
+                  <div class = "col-xs-12 col-md-12">
+                  <input type="hidden" name="group_id" id="pattern_group" value="{{group.group_id}}"><br>
                   <button class="btn btn-default" id="vote_submit" type="submit">Vote!</button>
+                </div>
+                </div>
               </form>
             </div>
         </section>
@@ -209,22 +213,23 @@
                           {% endfor %}
                       {% endif %}
                   </div><!-- /item -->
+                  {% if comment_pics|length > 4 %}
                   <div class="item" style="vertical-align:middle">
-
-                      {% if comment_pics|length >= 4 %}
                           {% for pic in comment_pics[4:] %}
                               <div data-target="#carousel" data-slide-to="{{ loop.index0 + 4}}" class="thumb"><img src="/{{ pic }}">
                               </div>
                           {% endfor %}
-                       {% endif %}
                   </div><!-- /item -->
+                   {% endif %}
               </div><!-- /carousel-inner -->
+                {% if comment_pics|length > 4 %}
                 <a class="left carousel-control" href="#thumbcarousel" role="button" data-slide="prev">
                   <span class="glyphicon glyphicon-chevron-left"></span>
                 </a>
                 <a class="right carousel-control" href="#thumbcarousel" role="button" data-slide="next">
                   <span class="glyphicon glyphicon-chevron-right"></span>
                 </a>
+                {% endif %}
             </div> <!-- /thumbcarousel -->
           </div><!-- /clearfix -->
       </div>
@@ -238,17 +243,16 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.js"></script>
 <script type="text/javascript">
 var patternPoll
-var voteConfirmation = "<br><h4 class='text-success' style='margin-left:15px;' >Thanks for voting! Your vote has been recorded</h4>"
+var voteConfirmation = "<h4 class='text-success' style='margin-left:15px;' >Thanks for voting! Your vote has been recorded</h4>"
 
 $(document).ready(function(){
    $.get('/group_twitter.json/{{ group.group_id }}', function(results) {
         var keys = Object.keys(results);
         for(var i=0;i<keys.length;i++) {
-            console.log(results[keys[i]].user_profile_pic)
             var twitter_div = "";
             twitter_div += "<b>"+ results[keys[i]].screen_name + "</b><br>";
             twitter_div += "<img src='" + results[keys[i]].user_profile_pic + "' width='50'>";
-            twitter_div += "<i>" + results[keys[i]].text + "</i><br>";
+            twitter_div += "<p><i>" + results[keys[i]].text + "</i></p><br>";
             if(results[keys[i]].image_url) {
             twitter_div += "<img src='" + results[keys[i]].image_url + "' width='300'><br>";
             }
@@ -260,11 +264,13 @@ $(document).ready(function(){
                 responsive: true, 
                 scaleShowGridLines : false,
                 maintainAspectRatio: false,
-                barValueSpacing : 50, 
+                barValueSpacing : 50,
+                scaleFontSize: 10,
                 };
   var ctx_bar = $("#pattern_bar_graph").get(0).getContext("2d");
 
   $.get('/poll.json/{{ group.group_id }}', function(data) {
+    console.log(data);
     patternPoll = new Chart(ctx_bar).Bar(data, options);
   });
   

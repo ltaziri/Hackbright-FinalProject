@@ -1,37 +1,66 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<h2>Sign Up!</h2>
+ <div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-9 col-lg-11  column col-sm-offset-0 col-md-offset-1 col-lg-offset-1">
+        <h2>Sign Up!</h2>
 
-<form enctype ="multipart/form-data" id="sign_up" action="/sign_up" method="POST">
+        <form enctype ="multipart/form-data" id="sign_up" action="/sign_up" method="POST">
+            <div class="row">
+                <div class ="col-xs-12 col-sm-12 col-md-3 form-group">
+                    <label>Email:</label>
+                    <input type="email" class="form-control" id="new_user_email" name="email" placeholder="email" required>
+                </div>
+            </div>
+            <div class="row">
+               <div class ="col-xs-12 col-sm-12 col-md-3 form-group">
+                    <label>Password:</label>
+                    <input type="text" class="form-control" id="new_user_password" name="password" placeholder="password" required>
+                </div>
+            </div>
+            <div class="row">
+               <div class ="col-xs-12 col-sm-12 col-md-3 form-group">
+                    <label>First Name:</label>
+                    <input type="text" class="form-control" id="new_user_first" name="first_name" placeholder="first name" required>
+                </div>
+            </div>
+            <div class="row">
+               <div class ="col-xs-12 col-sm-12 col-md-3 form-group">
+                    <label>Last Name:</label>
+                    <input type="text" id="new_user_last" class="form-control" name="last_name" placeholder="last name" required>
+                </div>
+            </div>
 
-    <input type="email" id="new_user_email" name="email" placeholder="email" required><br>
-    <br>
-    <input type="text" id="new_user_password" name="password" placeholder="password" required><br>
-    <br>
-    <input type="text" id="new_user_first" name="first_name" placeholder="first name" required><br>
-    <br>
-    <input type="text" id="new_user_last" name="last_name" placeholder="last name" required><br>
-    <br>
-
-    <p>Choose a user photo or upload your own:</p>
-
-    <input type='radio' name="user_photo" value="static/images/glue_gun.jpg">
-    <img src="/static/images/glue_gun.jpg" width="100">
-
-    <input type='radio' name="user_photo" value="static/images/crafter.jpg">
-    <img src="/static/images/crafter.jpg" width="100">
-
-    <input type='radio' name="user_photo" value="static/images/sewing_machine.jpg">
-    <img src="/static/images/sewing_machine.jpg" width="100">
-
-    <input type='radio' name="user_photo" value=" " id="upload_radio">
-
-    <input id="upload_file" type="file" name="photo"><br>
-
-    <br>
-    <input type="submit" value="Sign Up">
-</form>
+            <div class = "row">
+                 <div class ="form-group col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                    <label>Choose a user photo or upload your own:</label>
+                    <div class = "row">
+                         <div class="form-group col-xs-12 col-sm-12 col-md-6 col-lg-3">
+                            <input type='radio' class="form-control" name="user_photo" value="static/images/glue_gun.jpg">
+                            <img src="/static/images/glue_gun.jpg" width="100">
+                        </div>
+                        <div class ="form-group col-xs-12 col-sm-12 col-md-6 col-lg-3">  
+                            <input type='radio' class="form-control" name="user_photo" value="static/images/crafter.jpg">
+                            <img src="/static/images/crafter.jpg" width="100">
+                        </div>
+                        <div class ="form-group col-xs-12 col-sm-12 col-md-6 col-lg-3">  
+                            <input type='radio' class="form-control" name="user_photo" value="static/images/sewing_machine.jpg">
+                            <img src="/static/images/sewing_machine.jpg" width="100">
+                        </div>
+                        <div class ="form-group col-xs-12 col-sm-12 col-md-6 col-lg-3"> 
+                            <input type='radio' class="form-control" name="user_photo" value=" " id="upload_radio">
+                            <input id="upload_file" class="form-control"  type="file" name="photo"><br>
+                        </div>
+                </div>
+            </div>
+            <div class = "row">
+                <div class ="col-xs-12">
+                <input type="submit" value="Sign Up">
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
 
 <script>
 

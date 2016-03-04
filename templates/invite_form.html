@@ -1,19 +1,34 @@
 {% extends 'base.html' %}
 {% block content %}
+<div class="row">
+    <div class="col-xs-12 col-md-6 col-lg-5">
+        <h3>Invite people to join: </h3>
+        <h2>{{ group.group_name }} </h3>
 
-<h2>Invite people to join {{ group.group_name }} </h2>
-
-<form action="/send_invite/{{ group.group_id }}" method="POST">
-
-    <h3>Your friend's email:</h3>
-    <input type="text" name="email" placeholder="email">
-    <h3>Friend's name:</h3>
-    <input type="text" name="name" placeholder="name">
-    <h3>Include a note(optional):</h3>
-    <input type="text" name="text" placeholder="note">
-    <br>
-    <br>
-    <input type="submit" value="send invite">
-</form>
-
+        <img src="/{{ group.group_image}}" width="100%">
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-12 col-md-6 col-lg-5 form-group">
+        <form action="/send_invite/{{ group.group_id }}" method="POST">
+            <div class="row">
+               <div class ="col-xs-12 col-sm-12 col-md-6 form-group">
+                    <label>Your friend's email:</label>
+                    <input type="email" class="form-control" name="email" value="ltaziri@gmail.com" placeholder="email">
+                </div>
+            </div>
+            <div class="row">
+               <div class ="col-xs-12 col-sm-12 col-md-6 form-group">
+                    <label>Friend's name:</label>
+                    <input type="text" class="form-control"  name="name" value="Leilani Taziri" placeholder="name">
+                </div>
+            </div>
+            <label>Include a note(optional):</label>
+            <textarea class="form-control" rows=3 name="text" placeholder="Write your friend a note!">This is an awesome group! Would love for you to join!</textarea>
+            <br>
+            <br>
+            <button class="btn btn-default" type="submit">Send Invite</button>
+        </form>
+    </div>
+</div>
 {% endblock %}

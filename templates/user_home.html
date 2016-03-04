@@ -20,11 +20,28 @@
                   </a>
               </div>
           {% endfor %}
-              <div id="group_add"></div>
+          <div id="group_add"></div><hr>
+            <div class="row">
+              <div class="col-xs-12">
+                <br>
+                 <a href="/group_form"> <button class="btn btn-default">Create a new group</button></a>
+              </div>
+            </div>
           </div>
           <div class ="col-xs-12 col-sm-12 col-md-4 col-lg-2">
               <h3> Messages: </h3>
-              <ul>
+              <ul id="message">
+              {% if open_invites %}
+              {% for invite in open_invites %}
+                <li class="invite_msg"> {{ invite.user.first_name}} has invited you to join:<br> {{invite.group.group_name}}.<br>
+                      <form class = "invite_confirm" method="POST">
+                        <input type="hidden" name="invite_id" class="invite_id" value="{{invite.invite_id}}">
+                        <button type="submit" class = "btn btn-default">Join now</button>
+                      </form>
+                </li>
+                <br>
+              {% endfor %}
+              {% endif %}
               {% for groups, values in group_vote_messages.items() %} 
                  {% if values['admin'] == user.user_id %} 
                     {% if values['pattern_chosen'] == False %}
@@ -46,24 +63,12 @@
                       {% endif %}        
                   {% endif %}
                 {% endif %}
-              {% endfor %}
-
-              {% if open_invites %}
-                {% for invite in open_invites %}
-                  <li class="invite_msg"> {{ invite.user.first_name}} has invited you to join {{invite.group.group_name}}.<br>
-                        <form class = "invite_confirm" method="POST">
-                          <input type="hidden" name="invite_id" class="invite_id" value="{{invite.invite_id}}">
-                          <button type="submit" class = "btn btn-default">Join now</button>
-                        </form>
-                  </li>
-                {% endfor %}
-              {% endif %}
+              {% endfor %} 
               </ul>
           </div>
         </div>
 </section>
-<hr>
-<a href="/group_form"> <button class="btn btn-default">Create a new group</button></a>
+
 
 <script>
 function addGroup(evt) {

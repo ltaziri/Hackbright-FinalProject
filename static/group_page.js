@@ -43,15 +43,14 @@ $("#comment_form").submit(function(event){
     function showComment(results) {
     var htmlStr = "";
     htmlStr += "<img src='/" + results.comment_user_photo + "' width='50'>";
-    htmlStr += "<h4>"+ results.comment_user_name + "</h4><br>"
+    htmlStr += "<b>"+ results.comment_user_name + "</b><br>"
     htmlStr += "<i>" + results.comment_timestamp + "</i><br>"
-    htmlStr += "<p>" + results.comment_text + "</p><br>"
+    htmlStr += results.comment_text 
     if(results.comment_image) {
       htmlStr += "<img src='/" + results.comment_image + "' width='300'><br>";
     }
     if (results.youtube_id){
-      console.log(results.youtube_id);
-      htmlStr +='<iframe width="300" height="300" src="http://www.youtube.com/embed/' + results.youtube_id + '?autoplay=0"></iframe><br>';
+      htmlStr +='<br><iframe width="300" height="300" src="http://www.youtube.com/embed/' + results.youtube_id + '?autoplay=0"></iframe><br>';
     }
     $("#new_comment").prepend(htmlStr);
     $("#new_comment").linkify(options);

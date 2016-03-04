@@ -2,7 +2,7 @@
 
 from jinja2 import StrictUndefined
 from flask import Flask, render_template, redirect, request, flash, session, jsonify
-from flask_debugtoolbar import DebugToolbarExtension
+# from flask_debugtoolbar import DebugToolbarExtension
 from flask.ext.uploads import UploadSet, configure_uploads, IMAGES, patch_request_class
 from model import User, Group, UserGroup, Comment, Invite, Pattern, Vote, connect_to_db, db
 from datetime import datetime, timedelta
@@ -314,7 +314,9 @@ def show_group_page(group_id):
             voter_ids.append(voter.user_id)
 
         num_group_users = len(group_users)
-        patterns = Pattern.query.filter_by(group_id=group_id).all()
+        patterns = Pattern.query.filter_by(group_id=group_id).order_by(Pattern.pattern_name).all()
+        
+
         chosen_pattern = Pattern.query.filter(Pattern.group_id == group_id, Pattern.chosen == True).all()
 
         comments =  Comment.query.filter_by(group_id=group_id).all()
@@ -526,15 +528,15 @@ def get_pattern_poll_data(group_id):
     group_patterns = Pattern.query.filter_by(group_id=group_id).all()
 
     votes = Vote.query.filter(Vote.group_id == group_id).all()
+
     vote_data = {} 
 
     for vote in votes:
-        new_pattern_vote = vote_data.get(vote.pattern.pattern_name, 1)
-        if new_pattern_vote == 1:
-            vote_data[vote.pattern.pattern_name] = new_pattern_vote
+        if vote_data.get(vote.pattern.pattern_name, False) == False:
+            vote_data[vote.pattern.pattern_name] = 1
         else:
             vote_data[vote.pattern.pattern_name] +=1
-
+        
     for pattern in group_patterns:
         if not vote_data.get(pattern.pattern_name, False):
             vote_data[pattern.pattern_name] = 0
@@ -664,6 +666,6 @@ if __name__ == "__main__":
     connect_to_db(app)
 
     # Use the DebugToolbar
-    DebugToolbarExtension(app)
+    # DebugToolbarExtension(app)
 
     app.run()

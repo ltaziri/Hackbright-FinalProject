@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
 
+<a href="/user"> <span class="glyphicon glyphicon-menu-left" aria-hidden="true"></span> Return to your homepage</a>
     <div class="row">
     <div class="col-xs-12 col-sm-12 col-md-9 col-lg-11  column col-sm-offset-0 col-md-offset-1 col-lg-offset-1">
 
@@ -135,8 +136,9 @@
                 <input id="group_img_upload" class="form-control" type="file" name="photo"><br>
                 </div>
             </div>
-            <button class="btn btn-default" type="submit">Create Your Group</button>
+            <button class="btn btn-default" type="submit">Create Your Group</button><a href="/user"> Cancel</a>
         </form>
+        
     </div>
 </div>
 <script>
