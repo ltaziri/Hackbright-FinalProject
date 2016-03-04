@@ -47,7 +47,7 @@ $("#comment_form").submit(function(event){
     htmlStr += "<i>" + results.comment_timestamp + "</i><br>"
     htmlStr += results.comment_text 
     if(results.comment_image) {
-      htmlStr += "<img src='/" + results.comment_image + "' width='300'><br>";
+      htmlStr += "<br><img src='/" + results.comment_image + "' width='300'><br>";
     }
     if (results.youtube_id){
       htmlStr +='<br><iframe width="300" height="300" src="http://www.youtube.com/embed/' + results.youtube_id + '?autoplay=0"></iframe><br>';

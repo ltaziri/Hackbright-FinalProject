@@ -294,7 +294,6 @@ $(document).ready(function(){
         if ({{ user }} == {{ group.admin_id }}) {
           $('#final_vote_confirm').show();
           $('.votes_complete').html('<h3> Everyone in your group has voted. Please confirm the winning pattern. </h3>')
-
        }
     }
     } else {
@@ -337,6 +336,11 @@ function handleVote(evt) {
     $('.pattern_select').hide();
     $( voteConfirmation ).insertAfter("#vote_form");
     $('#vote_submit').hide();
+    if ({{ user }} == {{ group.admin_id }}) {
+          $('#final_vote_confirm').show();
+          $('.votes_complete').html('<h3> Everyone in your group has voted. Please confirm the winning pattern. </h3>')
+
+       }
   })
 }
 $('#vote_form').on('submit', handleVote)
