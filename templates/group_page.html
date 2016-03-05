@@ -1,5 +1,9 @@
 {% extends 'base.html' %}
+{% block body %}
+<body id="group_home" class="overlay">
+{% endblock %}
 {% block content %}
+<div class="container" id="group_page">
 
 <a href="/user"> <span class="glyphicon glyphicon-menu-left" aria-hidden="true"></span> Return to your homepage</a>
 <div class = "row">
@@ -15,9 +19,9 @@
           {% if user == group.admin_id %}
             <a href="/group_profile_form/{{ group.group_id }}">Update the group information</a>
           {% endif %}
-                
+               
       </section>
-    
+
       {% if patterns|length > 1 %}
        
         <section>
@@ -32,11 +36,11 @@
     
       {% if patterns|length == 0 %}
         <section>
-            <p>
               {% if group.group_image %}
-                <img src= "/{{ group.group_image }}" width="80%">
+                <div class="group_photo">
+                  <img src= "/{{ group.group_image }}" width="100%">
+                </div>
               {% endif %} 
-            </p>  
         </section>
       {% endif %}
 
@@ -49,10 +53,13 @@
         </section>
         {% endif %}
       
-      <hr>
+      
       {% if patterns|length == 1 %}
         <section>
-            <img src= "/{{ group.group_image }}" width="80%">
+            <div class="group_photo">
+              <img src= "/{{ group.group_image }}" width="100%">
+            </div>
+            <div class="section_divider">
             <h3> This month we are working on {{ patterns[0].pattern_name }}</h3>
             <p>
               {% if patterns[0].pattern_pdf %}
@@ -61,7 +68,8 @@
               {% if patterns[0].pattern_link %}
                 Click <a href="{{ patterns[0].pattern_link }}" target="blank">here</a> to go to the pattern source.
               {% endif %} 
-            </p>  
+            </p> 
+            </div> 
         </section>
       {% endif %}   
 
@@ -109,25 +117,32 @@
       {% endif %}
       <div class ="row">
         <section class = "col-lg-10 col-lg-offset-1">
-            <div>
+            <!-- <div> -->
             <h3> Comments:</h3>
-           
+              <div class="section_divider">
                 <form id="comment_form" action="/comment_add.json" method="POST" enctype="multipart/form-data">
-                    Add a comment:
-                    <input type="hidden" name="group_id" id="group_id" value="{{group.group_id}}">
-                    <br>
-                    <input type="text" name="comment_text" id="comment_text" placeholder="comment">
-                    <br>Add a picture! <input type="file" id="comment_image" name="comment_image"><br>
-                    
-                    <button id="comment_submit" type="submit">Add your comment</button>
+                    <div class="row">
+                      <div class ="col-xs-12 col-sm-12 col-md-12 form-group">
+                        <label for="comment_text"><h4>Add a comment:</h4></label>
+                          
+                              <label for="comment_image" class="upload_label btn btn-default"> <span class="glyphicon glyphicon-camera" aria-hidden="true"></span>
+                              Include a picture</label>
+                              <input type="file" id="comment_image" name="comment_image"/>   
+                          
+                        <input type="hidden" name="group_id" id="group_id" value="{{group.group_id}}">
+                        <textarea class="form-control" row=1 name="comment_text" id="comment_text" placeholder="comment"></textarea>
+                        <br>
+                        <button class="btn btn-default" id="comment_submit" type="submit">Add your comment</button>
+                      </div>
+                    </div>  
                 </form>
-                <br>
-            </div>
+              </div>
+            <!-- </div> -->
 
             <div id="new_comment"></div>
 
             {% for comment in comments|sort(attribute="comment_id", reverse = True) %}
-            <div>
+            <div class="section_divider">
                 <img src="/{{ comment.user.user_photo }}" width="50">
                 <b>{{ comment.user.first_name }}</b><br>
                 <i>{{ comment.comment_timestamp.strftime("%m/%d/%y %X") }}</i><br>
@@ -136,9 +151,10 @@
                     <img src="/{{ comment.comment_image }}" width="300"><br>
                     {% endif %}
                     {% if comment.youtube_id %}
-                    <iframe width="300" height="300" src="http://www.youtube.com/embed/{{ comment.youtube_id }}?autoplay=0">
-                    </iframe><br>
-                    
+                    <div class="embed-responsive embed-responsive-16by9">
+                      <iframe class="embed-responsive-item" src="http://www.youtube.com/embed/{{ comment.youtube_id }}?autoplay=0">
+                      </iframe><br>
+                    </div>
                     {% endif %}     
             </div>
             {% endfor %}
@@ -236,7 +252,7 @@
       {% endif %} <!-- /row -->
       </section>
     </div>
-
+</div>
 
 {% block javascript %}
 <script src="../static/flipclock.min.js"></script>
@@ -246,6 +262,16 @@ var patternPoll
 var voteConfirmation = "<h4 class='text-success' style='margin-left:15px;' >Thanks for voting! Your vote has been recorded</h4>"
 
 $(document).ready(function(){
+
+  $('#comment_image').on('change', function() {
+        var commentFile = $('#comment_image').val();
+        if (commentFile.length > 1) {
+          commentFileName = commentFile.split('\\').pop();
+          $(this).prev('label.upload_label').html('selected file:' + commentFileName);
+        }
+        
+  })
+
    $.get('/group_twitter.json/{{ group.group_id }}', function(results) {
         var keys = Object.keys(results);
         for(var i=0;i<keys.length;i++) {

@@ -8,7 +8,7 @@
   <link href="/static/main.css" rel="stylesheet">
   
   <link href="../static/flipclock.css" rel="stylesheet">
-
+  <link href='https://fonts.googleapis.com/css?family=Roboto+Slab' rel='stylesheet' type='text/css'>
 
   <script src="http://code.jquery.com/jquery.js"></script>
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
@@ -21,8 +21,9 @@
     <!-- Latest compiled and minified JavaScript -->
  
 </head>
-
-<body>
+{% block body %}
+<!-- <body> -->
+{% endblock %}
     <nav class="navbar navbar-inverse navbar-static-top">
       <div class="container">
         <div class="navbar-header">
@@ -49,13 +50,13 @@
       
       {% endblock %}
       
-    <hr>
+    
       <ul>
         {% for message in get_flashed_messages() %}
             <li>{{ message }}</li>
         {% endfor %}
       </ul> 
-  </div>
+  <!-- </div> -->
 
 </body>
 </html>

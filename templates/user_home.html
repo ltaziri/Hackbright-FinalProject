@@ -1,45 +1,55 @@
 {% extends 'base.html' %}
+{% block body %}
+<body id="user_page" class="overlay">
+{% endblock %}
 {% block content %}
+<!-- <div class="container-fluid" id="user_page"> -->
 
 <section>
-  <h2>Welcome {{ user.first_name }} </h2>
+  <h1>Welcome {{ user.first_name }} </h1>
   <a href="/user_profile">Update/View Your profile</a> 
 </section>
 
-<hr>
+<hr class="divider">
 
 <section>
   <h3> Your craft groups:</h3>
         <div class="row">
           <div class ="col-xs-12 col-sm-12 col-md-8 col-lg-10">
           {% for group in groups %}
-              <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
+              <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
+                <div class="snapshot">
                   <a href="/group_home/{{ group.group_id }}">
-                  <h3>{{ group.group_name }}</h3>
-                  <img src="{{ group.group_image }}" width = "250"><br>
+                  <img src="{{ group.group_image }}" width = "250">
+                  <h3>{{ group.group_name }}</h3><br>
                   </a>
+                </div>
               </div>
           {% endfor %}
-          <div id="group_add"></div><hr>
-            <div class="row">
-              <div class="col-xs-12">
+          <div id="group_add"></div>
+          <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12">
                 <br>
-                 <a href="/group_form"> <button class="btn btn-default">Create a new group</button></a>
-              </div>
+                 <a href="/group_form"> <button class="btn btn-default new_group">Create a new group</button></a><br>
             </div>
           </div>
-          <div class ="col-xs-12 col-sm-12 col-md-4 col-lg-2">
-              <h3> Messages: </h3>
+        </div>    
+          <div class ="col-xs-10 col-sm-10 col-md-4 col-lg-2">
+            <div class="user_message">
+              <span class="circle">
+              <span class="glyphicon glyphicon-envelope envelope" aria-hidden="true"></span></span>
+              <h2> Messages: </h2>
+              <hr>
               <ul id="message">
               {% if open_invites %}
               {% for invite in open_invites %}
-                <li class="invite_msg"> {{ invite.user.first_name}} has invited you to join:<br> {{invite.group.group_name}}.<br>
+                <li class="invite_msg"> {{ invite.user.first_name}} has invited you to join:<br> <span>{{invite.group.group_name}}</span>.
                       <form class = "invite_confirm" method="POST">
                         <input type="hidden" name="invite_id" class="invite_id" value="{{invite.invite_id}}">
-                        <button type="submit" class = "btn btn-default">Join now</button>
+                        <button type="submit" class = "btn btn-default">Join now</button><hr>
                       </form>
                 </li>
-                <br>
+                
               {% endfor %}
               {% endif %}
               {% for groups, values in group_vote_messages.items() %} 
@@ -47,17 +57,18 @@
                     {% if values['pattern_chosen'] == False %}
                       {% if values['remaining_time'] != False %}
                         {% if values['remaining_time'] < 1 %} 
-                          <li> Voting time for {{ groups }} has run out!.
+                          <li> Voting time for <span>{{ groups }}</span> has run out!.
                               Please confirm the winning pattern!
                               <a href="/group_home/{{ values['group_id'] }}">
-                              <button class="btn btn-default"> Confirm now </button></a>
+                              <button class="btn btn-default"> Confirm now </button><hr></a>
+
                           </li>
                         {% endif %}                   
                         {% if values['vote_count'] == values['user_count'] %}
-                          <li> Everyone in {{ groups }} has voted.
+                          <li> Everyone in <span>{{ groups }}</span> has voted.
                               Please confirm the winning pattern!<br>
                               <a href="/group_home/{{ values['group_id'] }}">
-                              <button class="btn btn-default"> Confirm now </button></a>
+                              <button class="btn btn-default"> Confirm now </button><hr></a>
                           </li>
                         {% endif %}
                       {% endif %}        
@@ -65,11 +76,13 @@
                 {% endif %}
               {% endfor %} 
               </ul>
+             </div> <!-- messages div  -->
           </div>
         </div>
+
 </section>
-
-
+<hr class="divider">
+</div>
 <script>
 function addGroup(evt) {
   evt.preventDefault();
@@ -80,9 +93,9 @@ function addGroup(evt) {
 
   $.post('/invite_confirm.json', formInput, function(results) {
     var groupHtml ="";
-    groupHtml += "<a href='/group_home/" + results.group_id + "'>";
-    groupHtml += "<h3>" + results.group_name + "</h3>";
-    groupHtml += "<img src='" + results.group_image + "' width = '250'><br></a>";
+    groupHtml += "<div class='snapshot'><a href='/group_home/" + results.group_id + "'>";
+    groupHtml += "<img src='" + results.group_image + "' width = '250'>";
+    groupHtml += "<h3>" + results.group_name + "</h3><br></a></div>";
 
     $('#group_add').attr('class', 'col-xs-12 col-sm-12 col-md-6 col-lg-4');
     $('#group_add').prepend(groupHtml);

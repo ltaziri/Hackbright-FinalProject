@@ -1,9 +1,13 @@
 {% extends 'base.html' %}
+{% block body %}
+<body id="group_form" class="overlay">
+{% endblock %}
 {% block content %}
 
-<a href="/user"> <span class="glyphicon glyphicon-menu-left" aria-hidden="true"></span> Return to your homepage</a>
+<a href="/user" class="dark_link"> <span class="glyphicon glyphicon-menu-left" aria-hidden="true"></span> Return to your homepage</a>
+    <!-- <div id="group_form_background" class="overlay"> -->
     <div class="row">
-    <div class="col-xs-12 col-sm-12 col-md-9 col-lg-11  column col-sm-offset-0 col-md-offset-1 col-lg-offset-1">
+    <div id="group_form_background" class="col-xs-12 col-sm-12 col-md-9 col-lg-11  column col-sm-offset-0 col-md-offset-1 col-lg-offset-1 overlay">
 
         <form action="/create_group" id="new_group_form" enctype="multipart/form-data" method="POST">
             <h2>Create a Group!</h2>
@@ -139,8 +143,9 @@
             <button class="btn btn-default" type="submit">Create Your Group</button><a href="/user"> Cancel</a>
         </form>
         
+        </div>
     </div>
-</div>
+<!-- </div> -->
 <script>
 
 
