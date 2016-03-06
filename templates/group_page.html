@@ -3,13 +3,12 @@
 <body id="group_home" class="overlay">
 {% endblock %}
 {% block content %}
-<div class="container" id="group_page">
+
 
 <a href="/user"> <span class="glyphicon glyphicon-menu-left" aria-hidden="true"></span> Return to your homepage</a>
-<div class = "row">
-<section class = "col-xs-12">
-  <div class = "row">
-    <div class = "col-xs-12 col-sm-12 col-md-9">
+<div class = "row"> <!-- main page row -->
+  
+    <div class = "col-xs-12 col-sm-12 col-md-9"> <!-- Left side main body column -->
       <h2>Welcome to {{ group.group_name}}</h2>
       
       <section>   
@@ -18,65 +17,43 @@
           {% endif %}
           {% if user == group.admin_id %}
             <a href="/group_profile_form/{{ group.group_id }}">Update the group information</a>
-          {% endif %}
-               
+          {% endif %} 
+          <hr class="divider">  
       </section>
+      <br>
+
+      {% if patterns|length <= 1 %} <!-- no pattern chosen and no poll started -->
+      <section>
+            {% if group.group_image %}
+              <div class="group_photo">
+                <img src= "/{{ group.group_image }}" width="100%">
+              </div>
+            {% endif %}               
+      </section>
+      {% endif %}
+
+<!-- Active pattern poll is going on -->
 
       {% if patterns|length > 1 %}
-       
-        <section>
-          <div class="clock" ></div><br>
+
+        <div class='section_divider'>
+        <section>          
+          <div class="clock" style="margin-left:10%" ></div><br>
            <div class = "row">
-              <div class="col-xs-12 col-md-9 col-md-offset-3">
+              <div class="col-xs-12 col-md-8 col-md-offset-4">
               <h4> Days left to vote on a pattern </h4>
               </div>
            </div>
         </section>
-      {% endif %}
-    
-      {% if patterns|length == 0 %}
-        <section>
-              {% if group.group_image %}
-                <div class="group_photo">
-                  <img src= "/{{ group.group_image }}" width="100%">
-                </div>
-              {% endif %} 
-        </section>
-      {% endif %}
 
-     
-        {% if patterns|length > 1 %}
-        <section>
-            <div id = "myChart" class = "pattern_poll">
-              <canvas id = "pattern_bar_graph"></canvas>
-            <div id = "barLegend" class="chart-legend"></div>
+        <section class="well">
+              <div id = "myChart" class = "pattern_poll">
+                <canvas id = "pattern_bar_graph"></canvas>
+                <div id = "barLegend" class="chart-legend"></div>
+             </div>
         </section>
-        {% endif %}
-      
-      
-      {% if patterns|length == 1 %}
-        <section>
-            <div class="group_photo">
-              <img src= "/{{ group.group_image }}" width="100%">
-            </div>
-            <div class="section_divider">
-            <h3> This month we are working on {{ patterns[0].pattern_name }}</h3>
-            <p>
-              {% if patterns[0].pattern_pdf %}
-                Click<a href="/{{ patterns[0].pattern_pdf }}" target="blank"> here </a> to download the pattern.<br> 
-              {% endif %}
-              {% if patterns[0].pattern_link %}
-                Click <a href="{{ patterns[0].pattern_link }}" target="blank">here</a> to go to the pattern source.
-              {% endif %} 
-            </p> 
-            </div> 
-        </section>
-      {% endif %}   
-
-      {% if patterns|length > 1 %}
-        <div class ="row">
-          
         </div>
+
         <div id="final_vote_confirm">
           <div class="message"></div>
           <div class="votes_complete"> </div>
@@ -87,13 +64,17 @@
             {% endfor %}
             </form>
         </div>
-        <section style = "margin-left: 5%">
+
+        <section>
+          <div class='section_divider'>
             <h3>Your vote counts!</h3>
             <p> Here are the choices for the group's pattern.</p>
-            <div class = "row">
+            
               <form id ="vote_form" action="/poll.json/{{group.group_id}}" method="POST" style= "margin-bottom:20px">
-                  {% for pattern in patterns %}
+                  <div class = "row">
+                  {% for pattern in patterns %} 
                     <div class ="col-xs-12 col-sm-12 col-md-4">
+                      <div class ="well">
                       <b> {{ pattern.pattern_name }} </b>
                       <br>
                       {% if pattern.pattern_pdf %}
@@ -103,96 +84,164 @@
                         Click <a href="{{ pattern.pattern_link }}" target="blank">here</a> to go to the pattern source.<br>
                       {% endif %}
                       <input type="radio" class ="pattern_select" name="pattern_select" value="{{ pattern.pattern_id }}">
-                    </div>
+                      </div>
+                  </div>  
                   {% endfor %}
-                  <div class = "row">
-                  <div class = "col-xs-12 col-md-12">
-                  <input type="hidden" name="group_id" id="pattern_group" value="{{group.group_id}}"><br>
-                  <button class="btn btn-default" id="vote_submit" type="submit">Vote!</button>
-                </div>
-                </div>
+                  </div>
+
+                  <div class="row">
+                    <div class = "col-xs-12">
+                      <input type="hidden" name="group_id" id="pattern_group" value="{{group.group_id}}">
+                      <button class="btn btn-default" id="vote_submit" type="submit">Vote!</button>
+                    </div>
+                  </div>  
+              </form>
+          </div>  
+        </section>
+
+      {% endif %}
+
+<!-- End of pattern poll -->
+
+      <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-10 col-md-offset-1"> <!-- lower portion of left page -->
+          
+          {% if patterns|length == 1 %} <!-- one pattern chosen for group, no poll -->
+            <section>            
+              <div class="section_divider">
+                <h3 class="section_header"> This month we are working on {{ patterns[0].pattern_name }}</h3>
+                
+                  {% if patterns[0].pattern_pdf %}
+                  <span class="inline_circle">
+                  <span class="glyphicon glyphicon-open-file icon" aria-hidden="true"></span></span> 
+                  <h4>Click<a href="/{{ patterns[0].pattern_pdf }}" target="blank"> here </a> to download the pattern.</h4><br>
+                  {% endif %}
+                  {% if patterns[0].pattern_link %}
+                  <br>
+                  <span class="inline_circle">
+                  <span class="glyphicon glyphicon-log-in icon" aria-hidden="true"></span></span> 
+                  <h4> Click <a href="{{ patterns[0].pattern_link }}" target="blank">here</a> to go to the pattern source.</h4>
+                  {% endif %} 
+                
+              </div>   
+            </section>
+          {% endif %}  
+
+        <section>
+          <h3 class="section_header"> Comments:</h3>
+            <div class="section_divider">
+              <form id="comment_form" action="/comment_add.json" method="POST" enctype="multipart/form-data">
+                <div class="row">
+                  <div class ="col-xs-12 col-sm-12 col-md-12 form-group">
+                    <label for="comment_text">
+                      <span class="inline_circle">
+                      <span class="glyphicon glyphicon-comment icon" aria-hidden="true"></span></span> 
+                      <h4 style=" display: inline">Add a comment: </h4></label>
+                      <label for="comment_image" class="upload_label btn btn-default"> <span class="glyphicon glyphicon-camera" aria-hidden="true"></span>
+                      Include a picture</label>
+                      <input type="file" id="comment_image" name="comment_image"/>   
+                    <input type="hidden" name="group_id" id="group_id" value="{{group.group_id}}">
+                    <textarea class="form-control" row=1 name="comment_text" id="comment_text" placeholder="comment"></textarea>
+                    <br>
+                    <button class="btn btn-default" id="comment_submit" type="submit">Add your comment</button>
+                  </div>
+                </div>  
               </form>
             </div>
-        </section>
-      {% endif %}
-      <div class ="row">
-        <section class = "col-lg-10 col-lg-offset-1">
-            <!-- <div> -->
-            <h3> Comments:</h3>
-              <div class="section_divider">
-                <form id="comment_form" action="/comment_add.json" method="POST" enctype="multipart/form-data">
-                    <div class="row">
-                      <div class ="col-xs-12 col-sm-12 col-md-12 form-group">
-                        <label for="comment_text"><h4>Add a comment:</h4></label>
-                          
-                              <label for="comment_image" class="upload_label btn btn-default"> <span class="glyphicon glyphicon-camera" aria-hidden="true"></span>
-                              Include a picture</label>
-                              <input type="file" id="comment_image" name="comment_image"/>   
-                          
-                        <input type="hidden" name="group_id" id="group_id" value="{{group.group_id}}">
-                        <textarea class="form-control" row=1 name="comment_text" id="comment_text" placeholder="comment"></textarea>
-                        <br>
-                        <button class="btn btn-default" id="comment_submit" type="submit">Add your comment</button>
-                      </div>
-                    </div>  
-                </form>
+        </section>  
+
+        <section>
+          <div id="new_comment"></div> <!-- ajax div for initial comment -->
+
+          {% for comment in comments|sort(attribute="comment_id", reverse = True) %}
+          <div class="section_divider comments">
+
+            <div class="row"> <!-- user comment information -->
+              <div class="col-xs-2 col-lg-1">
+                <img src="/{{ comment.user.user_photo }}" width="50px">
               </div>
-            <!-- </div> -->
-
-            <div id="new_comment"></div>
-
-            {% for comment in comments|sort(attribute="comment_id", reverse = True) %}
-            <div class="section_divider">
-                <img src="/{{ comment.user.user_photo }}" width="50">
-                <b>{{ comment.user.first_name }}</b><br>
-                <i>{{ comment.comment_timestamp.strftime("%m/%d/%y %X") }}</i><br>
-                    <div class="comment_text" data-linkify="this">{{ comment.comment_text }}</div>
-                    {% if comment.comment_image %}
-                    <img src="/{{ comment.comment_image }}" width="300"><br>
-                    {% endif %}
-                    {% if comment.youtube_id %}
-                    <div class="embed-responsive embed-responsive-16by9">
-                      <iframe class="embed-responsive-item" src="http://www.youtube.com/embed/{{ comment.youtube_id }}?autoplay=0">
-                      </iframe><br>
-                    </div>
-                    {% endif %}     
+              <div class="col-xs-10 col-lg-11">  
+                <p><h4>{{ comment.user.first_name }}</h4><br>
+                <i>{{ comment.comment_timestamp.strftime("%m/%d/%y %X") }}</i></p>
+              </div>
             </div>
-            {% endfor %}
+
+            <div class=" well"><!-- comment body -->
+
+                <div class="comment_text" data-linkify="this">
+                  {{ comment.comment_text }}
+                </div>
+
+                {% if comment.comment_image %}
+                <br> 
+                <div class="row">
+                  <div class="col-xs-12 col-sm-6 col-md-6 col-sm-offset-3 col-md-offset-3">
+                    <img class="comment_image" src="/{{ comment.comment_image }}">
+                  </div>
+                </div>
+                {% endif %}
+
+                {% if comment.youtube_id %}
+                <br>
+                <div class="embed-responsive embed-responsive-16by9">
+                  <iframe class="embed-responsive-item" src="http://www.youtube.com/embed/{{ comment.youtube_id }}?autoplay=0">
+                  </iframe><br>
+                </div>
+                {% endif %}
+
+            </div> <!-- end of body -->         
+          </div> <!-- end of comment -->
+          {% endfor %}
+
         </section>
-      </div>
-    </div>
-    <div class = "col-xs-12 col-sm-12 col-md-3">
+
+      </div> <!-- end of lower section of left side -->
+    </div> <!-- end of left side -->
+    </div> <!-- left side row -->
+
+    <div class = "col-xs-12 col-sm-12 col-md-3"> <!-- left hand side bar -->
+      <div class="section_divider">
       <section>
-              <h3>Users in this group are:</h3>
+              <span class="circle">
+              <span class="glyphicon glyphicon-user icon" aria-hidden="true"></span></span>
+              <h3 class="sidebar_header">Users in this group are:</h3>
                 <div class = "row">
                 {% for group_user in group_users %}
                   <div class = "col-xs-6">          
                     <div class="pop-up">       
-                      <h2>{{ group_user.first_name }} {{ group_user.last_name }}</h2>
-                      <img src="/{{ group_user.user_photo }}" width="200">
+                      <h3>{{ group_user.first_name }} {{ group_user.last_name }}</h3>
+                      <img src="/{{ group_user.user_photo }}" width="100%">
                       <p data-linkify="this"> {{ group_user.user_descrip }}</p>
                       <button>close</button>
                     </div>
                     <div class = "show_user">
-                    <img src="/{{ group_user.user_photo }}" width="50" class="img-circle" height="50">
-                    <p> {{ group_user.first_name }} {{ group_user.last_name }}</p>
+                      <img src="/{{ group_user.user_photo }}" width="50" class="img-circle" height="50">
+                      <p> {{ group_user.first_name }} {{ group_user.last_name }}</p>
                     </div>
                   </div>  
                 {% endfor %}
+                </div> 
                 <div class = "row">
                   <div class = "col-xs-12">
-                    <h4><a href ="/invite_form/{{ group.group_id }}"> Invite people to join your group! </a></h4>
+                  <h4><a href ="/invite_form/{{ group.group_id }}"> Invite people to join your group! </a></h4>
                   </div>
                 </div>
       </section>
+      <hr>
       <section>
-          <h3>Latest tweets:</h3>
-          <p>{{ group.hashtag}}</p>
-          <div id="twitter" data-linkify="this"></div>
+          <span class="circle">
+          <img class="twitter_icon" src="../static/images/twitter-solid.png"></span>
+          <h3 class="sidebar_header">Latest tweets:</h3>
+          <p>{{ group.hashtag}}</p>          
+          <div id="twitter"></div>
       </section>
-      <section >
-        
-        <h3>Photo gallery:</h3>
+      
+      <hr>
+      <section class='gallery'>
+        <span class="circle">
+        <span class="glyphicon glyphicon-picture icon" aria-hidden="true"></span>
+      </span>
+        <h3 class="sidebar_header">Photo gallery:</h3>
         {% if comment_pics|length > 1 %}
         <div class="row">
             <div id="photo_height_fix">
@@ -215,17 +264,14 @@
                   <div class="item active">
                       
                       {% if comment_pics|length < 4 %}
-                          
                           {% for pic in comment_pics %}
                           <div data-target="#carousel" data-slide-to="{{ loop.index0 }}" class="thumb"><img src="/{{ pic }}"></div>
-                          
                           {% endfor %}
                       {% endif %}
+
                       {% if comment_pics|length >= 4 %}
-                          
                           {% for pic in comment_pics[:4] %}
                           <div data-target="#carousel" data-slide-to="{{ loop.index0 }}" class="thumb"><img src="/{{ pic }}"></div>
-                          
                           {% endfor %}
                       {% endif %}
                   </div><!-- /item -->
@@ -246,15 +292,17 @@
                   <span class="glyphicon glyphicon-chevron-right"></span>
                 </a>
                 {% endif %}
-            </div> <!-- /thumbcarousel -->
-          </div><!-- /clearfix -->
-      </div>
+              </div> <!-- /thumbcarousel -->
+            </div><!-- /clearfix -->
+          </div>
       {% endif %} <!-- /row -->
       </section>
-    </div>
-</div>
+</div> <!-- main row -->
+
+
 
 {% block javascript %}
+<script src="../static/group_page.js"></script>
 <script src="../static/flipclock.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.js"></script>
 <script type="text/javascript">
@@ -263,15 +311,8 @@ var voteConfirmation = "<h4 class='text-success' style='margin-left:15px;' >Than
 
 $(document).ready(function(){
 
-  $('#comment_image').on('change', function() {
-        var commentFile = $('#comment_image').val();
-        if (commentFile.length > 1) {
-          commentFileName = commentFile.split('\\').pop();
-          $(this).prev('label.upload_label').html('selected file:' + commentFileName);
-        }
-        
-  })
 
+// twitter ajax call to get feed information
    $.get('/group_twitter.json/{{ group.group_id }}', function(results) {
         var keys = Object.keys(results);
         for(var i=0;i<keys.length;i++) {
@@ -282,6 +323,7 @@ $(document).ready(function(){
             if(results[keys[i]].image_url) {
             twitter_div += "<img src='" + results[keys[i]].image_url + "' width='300'><br>";
             }
+            twitter_div += "<hr>"
         $("#twitter").append(twitter_div);
         }
     })
@@ -374,7 +416,7 @@ $('#vote_form').on('submit', handleVote)
 </script>
 
 {% endblock %}
-<script src="../static/group_page.js"></script>
+
 
 
 

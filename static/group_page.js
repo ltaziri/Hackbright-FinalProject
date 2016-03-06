@@ -1,7 +1,21 @@
 
 "use strict";
+
+$(document).ready(function(){
+
+// changing value of comment image button to the file selected so there is an indication to the user
+  $('#comment_image').on('change', function() {
+        var commentFile = $('#comment_image').val();
+        if (commentFile.length > 1) {
+          var commentFileName = commentFile.split('\\').pop();
+          $(this).prev('label.upload_label').html('selected file:' + commentFileName);
+        } else {
+          $(this).prev('label.upload_label').html('<span class="glyphicon glyphicon-camera" aria-hidden="true"></span> Include a picture</label>');
+        } 
+  })
+ 
 // for linkify to work in ajax call
-var options = {
+var linkOptions = {
       defaultProtocol: 'http',
       events: null,
       format: function (value, type) {
@@ -18,8 +32,8 @@ var options = {
         return type === 'url' ? '_blank' : null;
       }
     };
-
-
+}) 
+// Comment AJAX call //
 $("#comment_form").submit(function(event){
   
   event.preventDefault();
@@ -38,8 +52,8 @@ $("#comment_form").submit(function(event){
       });
     
   });
-  
-
+ 
+// success function after ajax results returned from server 
     function showComment(results) {
     var htmlStr = "";
     htmlStr += "<div class='section_divider'>"
@@ -56,11 +70,13 @@ $("#comment_form").submit(function(event){
     htmlStr += "</div>"
 
     $("#new_comment").prepend(htmlStr);
-    $("#new_comment").linkify(options);
+    $("#new_comment").linkify(linkOptions);
     $("#comment_text").val('');
     $("#comment_image").val('');
+    $('label.upload_label').html('<span class="glyphicon glyphicon-camera" aria-hidden="true"></span> Include a picture</label>');
 }
 
+// show group users info on click
   function showUserInfo(evt) {
       $(this).prev('div.pop-up').css('z-index', 2);
       $(this).prev('div.pop-up').siblings('div').css('z-index', 1);
