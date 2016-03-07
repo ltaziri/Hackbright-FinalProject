@@ -396,9 +396,9 @@ $(document).ready(function(){
         var keys = Object.keys(results);
         for(var i=0;i<keys.length;i++) {
             var twitter_div = "";
+            twitter_div += "<img src='" + results[keys[i]].user_profile_pic + "' width='50px'><br>";
             twitter_div += "<b>"+ results[keys[i]].screen_name + "</b>";
-            twitter_div += "<img src='" + results[keys[i]].user_profile_pic + "' width='50'>";
-            twitter_div += "<p><i>" + results[keys[i]].text + "</i></p><br>";
+            twitter_div += "<p><i>" + results[keys[i]].text + "</i></p>";
             if(results[keys[i]].image_url) {
             twitter_div += "<img src='" + results[keys[i]].image_url + "' width='300'>";
             }

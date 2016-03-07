@@ -69,7 +69,7 @@
                      <div class ="col-xs-12 col-sm-12 col-md-6 form-group">
                         <h3>PDF Pattern: </h3>
                         {% if patterns[0].pattern_pdf %}
-                        <p>Currently: <a href="/{{ patterns[0].pattern_pdf }}" target="blank"> {{ patterns[0].pattern_pdf[12:] }} <a> </p>
+                        <p>Currently: <a href="/{{ patterns[0].pattern_pdf }}" target="blank"> {{ patterns[0].pattern_pdf[12:] }} </a> </p>
                         {% endif %}
                         <label>Update:</label><br>
                          <input type="file" class="form-control" name="update_pattern_pdf">  
@@ -79,7 +79,7 @@
                      <div class ="col-xs-12 col-sm-12 col-md-6 form-group">
                         <h3>Pattern Link:</h3>
                         {% if patterns[0].pattern_link %}
-                        <p>Currently: <a href="{{ patterns[0].pattern_link }}" target="blank"> {{ patterns[0].pattern_link }} <a> </p>
+                        <p>Currently: <a href="{{ patterns[0].pattern_link }}" target="blank"> {{ patterns[0].pattern_link }} </a> </p>
                         <br>
                         {% endif %}
                         <label>Update:</label>

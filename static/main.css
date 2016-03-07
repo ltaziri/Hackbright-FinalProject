@@ -13,13 +13,16 @@
 /*homepage styling*/
 #homepage {
      margin: 0;
-     background-image: url('test_imgs/AdobeStock_100447996_WM.jpeg');
+     /*background-image: url('test_imgs/AdobeStock_100447996_WM.jpeg');*/
+     /*background-image: url('test_imgs/AdobeStock_79312754_WM.jpeg');*/
+     background-image: url('images/homepage_scaled.jpg');
      background-size: cover;
      background-attachment: fixed;
      background-position: left top; 
      background-repeat:no-repeat;
      font-family: "Roboto Slab", sans-serif;
-     color:#4c5057;
+     color:#E0E0E0;
+     /*min-height: 900px;*/
 }
 
 
@@ -28,20 +31,27 @@
   font: 18px/20px "Bazar-Medium", sans-serif;
   font-size: 500%;
   margin-top: 60px;
+  font-weight: 700;
 }
 
 #homepage h3{
   text-transform: uppercase;
   font-size:150%;
   margin-top: 40px;
-  font-weight: 800;
+  color:#E0E0E0;
+  letter-spacing: 1.5px;
 }
-#homepage h4, p {
-  font-weight: 800;
+
+#homepage a {
+  color:#37474F;
+}
+
+#homepage h4 {
+  letter-spacing: .5px;
 }
 
 .retro-borders {
-    text-shadow: 1px 2px #FCFAF7, 3px 4px #4c5057;
+    text-shadow: 1px 2px black, 3px 4px gray;
 }
 
 
@@ -66,8 +76,8 @@ hr.divider{
   text-transform: uppercase;
   font-size: 300%;
   text-decoration: none;
-/*  margin-top: 60px;
-*/}
+}
+
 .logo_link {
   text-decoration: none !important;
 }
@@ -174,6 +184,11 @@ h3.section_header {
 #user_page span{
   font-weight: bold;
   text-transform: uppercase;
+}
+
+#logo span {
+  font-size: 125%;
+  font-weight: normal;
 }
 
 #message li{
@@ -440,9 +455,9 @@ div#twitter {
 .clock {
 position: relative !important;
 padding-top: 0px;
-/*margin-left: 20%;*/
+margin-left: 5%;
 height:50px;
-width: 500px;
+width: 700px;
 /zoom: .6;/ 
 transform: scale(.75);
 -ms-transform: scale(.75); /* IE 9 /*/
