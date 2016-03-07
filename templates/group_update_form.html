@@ -1,8 +1,11 @@
 {% extends 'base.html' %}
+{% block body %}
+<body class="form_body overlay">
+{% endblock %}
 {% block content %}
 <div class="row">
-    <div class="col-xs-12 col-sm-12 col-md-9 col-lg-11  column col-sm-offset-0 col-md-offset-1 col-lg-offset-1">
-        <h2>Make updates to the {{ group.group_name }} group </h2>
+    <div class="form_background overlay col-xs-12 col-sm-12 col-md-9 col-lg-10 column col-sm-offset-0 col-md-offset-1 col-lg-offset-1 ">
+        <h2>Make updates to {{ group.group_name }}</h2>
 
         <form action="/group_profile_update/{{ group.group_id }}" id="update_group_submit" method="POST" enctype="multipart/form-data">
             
@@ -124,10 +127,10 @@
                     </div>
                     <div class = "row">
                         <div class ="col-xs-12 col-sm-12 col-lg-3 poll-setup">
-                            <b>Option 1</b></br>
+                            <h4>Option 1</h4>
                             <div class ="form-group"> 
                                 <label>First Pattern's Name:</label><br>
-                                <input type="text" class="form-control pattern_name_a" name="pattern_name_a" placeholder="pattern name">
+                                <input type="text" class="form-control pattern_name_a" name="pattern_name_a" maxlength="36" placeholder="pattern name">
                             </div>
                             <div class ="form-group">
                                 <label>Upload a PDF Pattern(optional):</label> <br>
@@ -139,10 +142,10 @@
                             </div>
                         </div>
                         <div class ="col-xs-12 col-sm-12 col-lg-3 poll-setup">
-                            <b>Option 2</b></br>
+                            <h4>Option 2</h4>
                             <div class ="form-group"> 
                                 <label>Second Pattern's Name:</label><br>
-                                <input type="text" class="form-control pattern_name_b" name="pattern_name_b" placeholder="pattern name">
+                                <input type="text" class="form-control pattern_name_b" name="pattern_name_b" maxlength="36" placeholder="pattern name">
                             </div>
                             <div class ="form-group">
                                 <label>Upload a PDF Pattern(optional):</label> <br>
@@ -154,10 +157,10 @@
                             </div>
                         </div>
                         <div class ="col-xs-12 col-sm-12 col-lg-3 poll-setup">
-                            <b>Option 3</b></br>
+                            <h4>Option 3</h4>
                              <div class ="form-group"> 
                                 <label>Third Pattern's Name:</label><br>
-                                <input type="text" class="form-control pattern_name_c" name="pattern_name_c" placeholder="pattern name">
+                                <input type="text" class="form-control pattern_name_c" name="pattern_name_c" maxlength="36"  placeholder="pattern name">
                             </div>
                             <div class ="form-group">
                                 <label>Upload a PDF Pattern(optional):</label> <br>
@@ -171,7 +174,7 @@
                     </div>
                 </div>       
             {% endif %}          
-           <button class="btn btn-default" type="submit">"Update Your Profile"</button>
+           <button class="btn btn-default" type="submit">"Update Your Profile"</button><a href="/group_home/{{group.group_id}}"> Cancel</a>
         </form>
     </div>
 </div>

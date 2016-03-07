@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
+
 <div class="row">
     <div class="col-xs-12 col-md-6 col-lg-5">
         <h3>Invite people to join: </h3>
@@ -8,27 +9,53 @@
         <img src="/{{ group.group_image}}" width="100%">
     </div>
 </div>
-<div class="row">
-    <div class="col-xs-12 col-md-6 col-lg-5 form-group">
-        <form action="/send_invite/{{ group.group_id }}" method="POST">
-            <div class="row">
-               <div class ="col-xs-12 col-sm-12 col-md-6 form-group">
-                    <label>Your friend's email:</label>
-                    <input type="email" class="form-control" name="email" value="ltaziri@gmail.com" placeholder="email">
-                </div>
-            </div>
-            <div class="row">
-               <div class ="col-xs-12 col-sm-12 col-md-6 form-group">
-                    <label>Friend's name:</label>
-                    <input type="text" class="form-control"  name="name" value="Leilani Taziri" placeholder="name">
-                </div>
-            </div>
-            <label>Include a note(optional):</label>
-            <textarea class="form-control" rows=3 name="text" placeholder="Write your friend a note!">This is an awesome group! Would love for you to join!</textarea>
-            <br>
-            <br>
-            <button class="btn btn-default" type="submit">Send Invite</button>
-        </form>
-    </div>
-</div>
+<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#invite">
+  Launch invite
+</button>
+
+
+<!-- Modal -->
+<div class="modal fade" id="invite" tabindex="-1" role="dialog" aria-labelledby="invite_label">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="invite_label">Invite people to join: {{ group.group_name }} </h4>
+      </div>
+
+      <div class="modal-body">
+        <div class="row">
+            <div class="col-xs-12 form-group">
+
+                <form action="/send_invite/{{ group.group_id }}" method="POST">
+
+                    <div class="row">
+                       <div class ="col-xs-12 col-sm-12 col-md-6 form-group">
+                            <label>Your friend's email:</label>
+                            <input type="email" class="form-control" name="email" value="ltaziri@gmail.com" placeholder="email">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                       <div class ="col-xs-12 col-sm-12 col-md-6 form-group">
+                            <label>Friend's name:</label>
+                            <input type="text" class="form-control"  name="name" value="Leilani Taziri" placeholder="name">
+                        </div>
+                    </div>
+
+                    <label>Include a note(optional):</label>
+                        <textarea class="form-control" rows=3 name="text" placeholder="Write your friend a note!">This is an awesome group! Would love for you to join!</textarea>
+                        <br>
+                    <button class="btn btn-default" type="submit">Send Invite</button>
+                    <a data-dismiss="modal" aria-label="Close" class="invite_cancel">Cancel</a>
+
+                </form>
+            </div> <!-- form group -->
+        </div> <!-- row -->
+      </div> <!-- modal-body  -->
+    </div><!--  modal content -->
+  </div> <!-- modal dialog -->
+</div>  <!-- end of modal -->
+
 {% endblock %}

@@ -56,18 +56,23 @@ $("#comment_form").submit(function(event){
 // success function after ajax results returned from server 
     function showComment(results) {
     var htmlStr = "";
-    htmlStr += "<div class='section_divider'>"
-    htmlStr += "<img src='/" + results.comment_user_photo + "' width='50'>";
-    htmlStr += "<b>"+ results.comment_user_name + "</b><br>"
-    htmlStr += "<i>" + results.comment_timestamp + "</i><br>"
-    htmlStr += results.comment_text 
+    htmlStr += "<div class='section_divider comments'>";
+    htmlStr += "<div class='row'><div class='col-xs-2 col-lg-1'>";
+    htmlStr += "<img src='/" + results.comment_user_photo + "' width='50px'></div>";
+    htmlStr += "<div class='col-xs-10 col-lg-11'>";
+    htmlStr += "<p><h4>"+ results.comment_user_name + "</h4><br>";
+    htmlStr += "<i>" + results.comment_timestamp + "</i></p></div></div>";
+    htmlStr += "<div class='well'><div class='comment_text'>" + results.comment_text + "</div>";
     if(results.comment_image) {
-      htmlStr += "<img src='/" + results.comment_image + "' width='300'><br>";
+      htmlStr += "<br><div class='row'><div class='col-xs-12 col-sm-6 col-md-6 col-sm-offset-3 col-md-offset-3'>";
+      htmlStr += "<img class='comment_image' src='/" + results.comment_image + "></div></div>";
     }
     if (results.youtube_id){
-      htmlStr +='<br><div class="embed-responsive embed-responsive-16by9"><iframe width="300" height="300" src="http://www.youtube.com/embed/' + results.youtube_id + '?autoplay=0"></iframe><br></div>';
+      htmlStr +="<br><div class='embed-responsive embed-responsive-16by9'>";
+      htmlStr += "<iframe width='300' height='300' src='http://www.youtube.com/embed/"; 
+      htmlStr += results.youtube_id + "?autoplay=0'></iframe><br></div>";
     }
-    htmlStr += "</div>"
+    htmlStr += "</div></div>"
 
     $("#new_comment").prepend(htmlStr);
     $("#new_comment").linkify(linkOptions);

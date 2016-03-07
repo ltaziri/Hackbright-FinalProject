@@ -141,13 +141,12 @@ def show_user_home():
 
     open_invites = Invite.query.filter(Invite.invite_email == user.email, 
                                        Invite.invite_confirm == False).all()
-    groups = user.groups
 
+    groups = user.groups
+        
     group_vote_messages = {}
     for group in groups:
         group_vote_messages[group.group_name] = helper.create_group_messages(group)
-
-    print "GROUP VOTE MESSAGES!!!!!!!!!!!!!!!!!!", group_vote_messages
 
     return render_template("user_home.html", 
                             user=user, 
@@ -183,23 +182,23 @@ def add_group_to_user():
     return jsonify(group_dict)
 
 
-@app.route('/user_profile')
-def show_user_profile(): 
-    """Show users profile page"""
+# @app.route('/user_profile')
+# def show_user_profile(): 
+#     """Show users profile page"""
 
 
-    user = User.query.get(session["user_id"])
+#     user = User.query.get(session["user_id"])
 
-    return render_template("user_profile.html", user=user)
+#     return render_template("user_profile.html", user=user)
 
 
-@app.route('/user_profile_form')
-def show_user_profile_form(): 
-    """Show users profile form so they can update information"""
+# @app.route('/user_profile_form')
+# def show_user_profile_form(): 
+#     """Show users profile form so they can update information"""
 
-    user = User.query.get(session["user_id"])
+#     user = User.query.get(session["user_id"])
 
-    return render_template("user_profile_form.html", user=user)
+#     return render_template("user_profile_form.html", user=user)
 
 
 @app.route('/user_profile_update',methods=['POST'])
@@ -220,7 +219,9 @@ def user_profile_update():
         user.user_descrip = new_user_descrip
         db.session.commit()
 
-    return redirect("/user_profile")
+    flash("Your profile has been updated!")
+
+    return redirect("/user")
 
 
 @app.route('/group_form')
@@ -616,16 +617,16 @@ def add_comment():
     return jsonify(comment_dict)
 
 
-@app.route('/invite_form/<int:group_id>')
-def show_invite_form(group_id):
-    """Show group invite form"""
+# @app.route('/invite_form/<int:group_id>')
+# def show_invite_form(group_id):
+#     """Show group invite form"""
 
-    group = Group.query.get(group_id)
+#     group = Group.query.get(group_id)
 
-    if group.is_user_in_group(session["user_id"])==False:
-        return redirect("/user") 
-    else:
-        return render_template("invite_form.html", group=group)
+#     if group.is_user_in_group(session["user_id"])==False:
+#         return redirect("/user") 
+#     else:
+#         return render_template("invite_form.html", group=group)
     
 
 @app.route('/send_invite/<int:group_id>', methods=['POST'])

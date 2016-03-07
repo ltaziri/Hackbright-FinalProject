@@ -1,38 +1,41 @@
 {% extends 'base.html' %}
+{% block body %}
+<body class="form_body overlay">
+{% endblock %}
 {% block content %}
 
  <div class="row">
-    <div class="col-xs-12 col-sm-12 col-md-9 col-lg-11  column col-sm-offset-0 col-md-offset-1 col-lg-offset-1">
+    <div class="form_background col-xs-12 col-sm-12 col-md-6 col-lg-6  column col-sm-offset-0 col-md-offset-3 col-lg-offset-3">
         <h2>Sign Up!</h2>
 
         <form enctype ="multipart/form-data" id="sign_up" action="/sign_up" method="POST">
             <div class="row">
-                <div class ="col-xs-12 col-sm-12 col-md-3 form-group">
+                <div class ="col-xs-12 col-sm-12 col-md-6 form-group">
                     <label>Email:</label>
                     <input type="email" class="form-control" id="new_user_email" name="email" placeholder="email" required>
                 </div>
             </div>
             <div class="row">
-               <div class ="col-xs-12 col-sm-12 col-md-3 form-group">
+               <div class ="col-xs-12 col-sm-12 col-md-6 form-group">
                     <label>Password:</label>
                     <input type="text" class="form-control" id="new_user_password" name="password" placeholder="password" required>
                 </div>
             </div>
             <div class="row">
-               <div class ="col-xs-12 col-sm-12 col-md-3 form-group">
+               <div class ="col-xs-12 col-sm-12 col-md-6 form-group">
                     <label>First Name:</label>
                     <input type="text" class="form-control" id="new_user_first" name="first_name" placeholder="first name" required>
                 </div>
             </div>
             <div class="row">
-               <div class ="col-xs-12 col-sm-12 col-md-3 form-group">
+               <div class ="col-xs-12 col-sm-12 col-md-6 form-group">
                     <label>Last Name:</label>
                     <input type="text" id="new_user_last" class="form-control" name="last_name" placeholder="last name" required>
                 </div>
             </div>
 
             <div class = "row">
-                 <div class ="form-group col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                 <div class ="form-group col-xs-12 col-sm-12" id="sign_up_image">
                     <label>Choose a user photo or upload your own:</label>
                     <div class = "row">
                          <div class="form-group col-xs-12 col-sm-12 col-md-6 col-lg-3">
@@ -47,15 +50,20 @@
                             <input type='radio' class="form-control" name="user_photo" value="static/images/sewing_machine.jpg">
                             <img src="/static/images/sewing_machine.jpg" width="100">
                         </div>
-                        <div class ="form-group col-xs-12 col-sm-12 col-md-6 col-lg-3"> 
+                        <div class ="form-group col-xs-12 col-sm-12 col-md-6 col-lg-3">
                             <input type='radio' class="form-control" name="user_photo" value=" " id="upload_radio">
+                            <label for="upload_file" class="upload_label btn btn-default">
+                            <span class="glyphicon glyphicon-camera" aria-hidden="true"></span>
+                            Upload</label>
                             <input id="upload_file" class="form-control"  type="file" name="photo"><br>
                         </div>
+                    </div>    
                 </div>
             </div>
+
             <div class = "row">
                 <div class ="col-xs-12">
-                <input type="submit" value="Sign Up">
+                    <button class="btn btn-default" type="submit">Sign Up</button><a href="/"> Cancel</a>
                 </div>
             </div>
         </form>
@@ -68,6 +76,11 @@
 $("#upload_file").click(function(){
     $("#upload_radio").prop("checked", true);
 });
+
+$("#upload_radio").click(function(){
+    $("#upload_file").trigger("click");
+});
+
 $('#sign_up').on('submit', function(evt){
     if ($("#new_user_email").val().length < 1 ||
        $("#new_user_password").val().length < 1 ||

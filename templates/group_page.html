@@ -37,11 +37,15 @@
       {% if patterns|length > 1 %}
 
         <div class='section_divider'>
-        <section>          
-          <div class="clock" style="margin-left:10%" ></div><br>
+        <section>
+          <div class = "row">
+              <div class="col-sm-12 col-md-11 col-md-offset-1 hidden-xs">          
+                <div class="clock"></div>
+              </div>
+          </div>        
            <div class = "row">
-              <div class="col-xs-12 col-md-8 col-md-offset-4">
-              <h4> Days left to vote on a pattern </h4>
+              <div class="col-sm-12 hidden-xs text-center">
+              <h4 style="margin:0"> Days Left to Vote on a Pattern </h4>
               </div>
            </div>
         </section>
@@ -58,32 +62,56 @@
           <div class="message"></div>
           <div class="votes_complete"> </div>
             <form id= "final_vote_form" action = "/final_vote/{{ group.group_id }}" method="POST">
+              <div class="row">
             {% for pattern in patterns %}
-              <label>{{ pattern.pattern_name}}</label>
-              <button name="final_vote_submit" type="submit" value ="{{ pattern.pattern_id }}">Select</button>
+              
+                <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                  <label><b>{{ pattern.pattern_name}}</label></b></br>
+                  <button class="btn btn-default" name="final_vote_submit" type="submit" value ="{{ pattern.pattern_id }}">Select</button>
+                </div>
+                
             {% endfor %}
+              </div>  
             </form>
         </div>
 
         <section>
-          <div class='section_divider'>
+          <div class='section_divider'> <!-- pattern options for poll voting -->
             <h3>Your vote counts!</h3>
             <p> Here are the choices for the group's pattern.</p>
             
-              <form id ="vote_form" action="/poll.json/{{group.group_id}}" method="POST" style= "margin-bottom:20px">
+              <form id ="vote_form" action="/poll.json/{{group.group_id}}" method="POST">
                   <div class = "row">
                   {% for pattern in patterns %} 
                     <div class ="col-xs-12 col-sm-12 col-md-4">
-                      <div class ="well">
-                      <b> {{ pattern.pattern_name }} </b>
-                      <br>
-                      {% if pattern.pattern_pdf %}
-                        Click<a href="/{{ pattern.pattern_pdf }}" target="blank"> here </a> to get the pdf pattern.<br> 
-                      {% endif %}
-                      {% if pattern.pattern_link %}
-                        Click <a href="{{ pattern.pattern_link }}" target="blank">here</a> to go to the pattern source.<br>
-                      {% endif %}
-                      <input type="radio" class ="pattern_select" name="pattern_select" value="{{ pattern.pattern_id }}">
+                      <div class ="well pattern_well">
+
+                        <div class = "row">
+                          <div class ="col-xs-12 pattern_title">
+                            <h4> {{ pattern.pattern_name }} </h4>
+                          </div>
+                        </div>
+                        <hr class="inline_hr">
+
+                        {% if pattern.pattern_pdf %}
+                          <a href="/{{ pattern.pattern_pdf }}" target="blank">
+                          <span class="poll_circle">
+                          <span class="glyphicon glyphicon-open-file icon" aria-hidden="true"></span></span> 
+                          View the pdf pattern.</a> <br>
+                        {% endif %}
+
+                        {% if pattern.pattern_link %}
+                          <a href="{{ pattern.pattern_link }}" target="blank">
+                          <span class="poll_circle">
+                          <span class="glyphicon glyphicon-log-in icon" aria-hidden="true"></span></span> 
+                          Go to the pattern source.</a> <br>
+                        {% endif %}
+
+                        <div class="pattern_input">
+                          <input type="radio" class ="pattern_select" name="pattern_select" value="{{ pattern.pattern_id }}">
+                          <label for="pattern_select" class="pattern_input_label">Choose this pattern</label>
+                        </div>
+
                       </div>
                   </div>  
                   {% endfor %}
@@ -112,15 +140,15 @@
                 <h3 class="section_header"> This month we are working on {{ patterns[0].pattern_name }}</h3>
                 
                   {% if patterns[0].pattern_pdf %}
-                  <span class="inline_circle">
+                  <a href="/{{ patterns[0].pattern_pdf }}" target="blank"><span class="inline_circle">
                   <span class="glyphicon glyphicon-open-file icon" aria-hidden="true"></span></span> 
-                  <h4>Click<a href="/{{ patterns[0].pattern_pdf }}" target="blank"> here </a> to download the pattern.</h4><br>
+                  <h4>Download the pattern pdf.</h4> </a>
                   {% endif %}
                   {% if patterns[0].pattern_link %}
-                  <br>
+                  <a href="{{ patterns[0].pattern_link }}" target="blank">
                   <span class="inline_circle">
                   <span class="glyphicon glyphicon-log-in icon" aria-hidden="true"></span></span> 
-                  <h4> Click <a href="{{ patterns[0].pattern_link }}" target="blank">here</a> to go to the pattern source.</h4>
+                  <h4> Go to the pattern source.</h4></a>
                   {% endif %} 
                 
               </div>   
@@ -208,13 +236,15 @@
                 <div class = "row">
                 {% for group_user in group_users %}
                   <div class = "col-xs-6">          
-                    <div class="pop-up">       
+                    <div class="pop-up overlay">       
                       <h3>{{ group_user.first_name }} {{ group_user.last_name }}</h3>
-                      <img src="/{{ group_user.user_photo }}" width="100%">
+                      <div class="user_snapshot">
+                        <img src="/{{ group_user.user_photo }}" width="100%">
+                      </div>
                       <p data-linkify="this"> {{ group_user.user_descrip }}</p>
-                      <button>close</button>
+                      <button class='btn btn-default'>close</button>
                     </div>
-                    <div class = "show_user">
+                    <div class = "show_user">                        
                       <img src="/{{ group_user.user_photo }}" width="50" class="img-circle" height="50">
                       <p> {{ group_user.first_name }} {{ group_user.last_name }}</p>
                     </div>
@@ -222,17 +252,66 @@
                 {% endfor %}
                 </div> 
                 <div class = "row">
-                  <div class = "col-xs-12">
-                  <h4><a href ="/invite_form/{{ group.group_id }}"> Invite people to join your group! </a></h4>
+                  <div class = "col-xs-12 text-center">
+                    <button type="button" class="btn btn-default" data-toggle="modal" data-target="#invite">
+                    Invite people to join your group!
+                    </button>  
                   </div>
                 </div>
+
+                <!-- Modal Window for invite form -->
+                <div class="modal fade" id="invite" tabindex="-1" role="dialog" aria-labelledby="invite_label">
+                  <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+
+                      <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="invite_label">Invite people to join: {{ group.group_name }} </h4>
+                      </div>
+
+                      <div class="modal-body">
+                        <div class="row">
+                            <div class="col-xs-12 form-group">
+
+                                <form action="/send_invite/{{ group.group_id }}" method="POST">
+
+                                    <div class="row">
+                                       <div class ="col-xs-12 col-sm-12 col-md-6 form-group">
+                                            <label>Your friend's email:</label>
+                                            <input type="email" class="form-control" name="email" value="ltaziri@gmail.com" placeholder="email">
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                       <div class ="col-xs-12 col-sm-12 col-md-6 form-group">
+                                            <label>Friend's name:</label>
+                                            <input type="text" class="form-control"  name="name" value="Leilani Taziri" placeholder="name">
+                                        </div>
+                                    </div>
+
+                                    <label>Include a note(optional):</label>
+                                        <textarea class="form-control" rows=3 name="text" placeholder="Write your friend a note!">This is an awesome group! Would love for you to join!</textarea>
+                                        <br>
+                                    <button class="btn btn-default" type="submit">Send Invite</button>
+                                    <a data-dismiss="modal" aria-label="Close" class="invite_cancel">Cancel</a>
+
+                                </form>
+                            </div> <!-- form group -->
+                        </div> <!-- row -->
+                      </div> <!-- modal-body  -->
+                    </div><!--  modal content -->
+                  </div> <!-- modal dialog -->
+                </div>  <!-- end of modal -->
+
       </section>
       <hr>
       <section>
           <span class="circle">
           <img class="twitter_icon" src="../static/images/twitter-solid.png"></span>
           <h3 class="sidebar_header">Latest tweets:</h3>
-          <p>{{ group.hashtag}}</p>          
+          {% if group.hashtag %}
+            <p>{{ group.hashtag}}</p> 
+          {% endif %}         
           <div id="twitter"></div>
       </section>
       
@@ -317,13 +396,13 @@ $(document).ready(function(){
         var keys = Object.keys(results);
         for(var i=0;i<keys.length;i++) {
             var twitter_div = "";
-            twitter_div += "<b>"+ results[keys[i]].screen_name + "</b><br>";
+            twitter_div += "<b>"+ results[keys[i]].screen_name + "</b>";
             twitter_div += "<img src='" + results[keys[i]].user_profile_pic + "' width='50'>";
             twitter_div += "<p><i>" + results[keys[i]].text + "</i></p><br>";
             if(results[keys[i]].image_url) {
-            twitter_div += "<img src='" + results[keys[i]].image_url + "' width='300'><br>";
+            twitter_div += "<img src='" + results[keys[i]].image_url + "' width='300'>";
             }
-            twitter_div += "<hr>"
+            twitter_div += "<hr class='inline_hr'>"
         $("#twitter").append(twitter_div);
         }
     })
@@ -377,6 +456,7 @@ $(document).ready(function(){
 for(var i=0;i<{{votes}}.length;i++) {
     if({{ votes }}[i]==={{ user }} ){
       $('.pattern_select').hide();
+      $('.pattern_input_label').hide();
       $( voteConfirmation ).insertAfter("#vote_form");
       $('#vote_submit').hide();
   }}
@@ -402,6 +482,7 @@ function handleVote(evt) {
         } 
       }
     $('.pattern_select').hide();
+    $('.pattern_input_label').hide();
     $( voteConfirmation ).insertAfter("#vote_form");
     $('#vote_submit').hide();
     if ({{ user }} == {{ group.admin_id }}) {

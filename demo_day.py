@@ -34,6 +34,12 @@ def reset_sew_page():
 
     db.session.commit()
 
+def reset_knit_page():
+    """Reset comments on knit page"""
+    
+    Comment.query.filter(Comment.group_id==1, Comment.comment_id > 27).delete()
+
+    db.session.commit()
 # def reset_wood_pattern():
 #     """Update wood group to not have a chosen pattern"""
 
@@ -48,5 +54,6 @@ if __name__ == "__main__":
 
     remove_invite()
     reset_sew_page()
+    reset_knit_page()
     # reset_wood_pattern()
 
