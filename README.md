@@ -50,19 +50,15 @@ The goal of MakeAlong is to create an interactive experience that promotes and e
 
 
 * Advanced comment handling on the group page. Users can input both text and photos in the comments section. Additionally, text is parsed through to find all of the links in the text and convert them into clickable links. Lastly, YouTube links are identified and rendered in an embedded iframe. All of this is done via an AJAX call that sends the comment to the database and renders it in the browser.  
-
 ![Youtube](https://github.com/ltaziri/Hackbright-FinalProject/blob/master/static/README_Images/Youtube.gif?raw=true)
 
 
 * Modal windows for the user profile/profile update as well as the invite form allowing the user to view and update information without needing to navigate to a new window. 
-
 ![Update Profile](https://github.com/ltaziri/Hackbright-FinalProject/blob/master/static/README_Images/Update_profile.gif?raw=true)
-
 ![Send Email](https://github.com/ltaziri/Hackbright-FinalProject/blob/master/static/README_Images/Send_invite.gif?raw=true)
 
 
 * Use of an AJAX call on the user homepage when a user accepts an invite. This AJAX call updates the database on the server side and renders the new group in the browser without requiring a page refresh. 
-
 ![Add Group](https://github.com/ltaziri/Hackbright-FinalProject/blob/master/static/README_Images/Accept_invite.gif?raw=true)
 
 
