@@ -24,7 +24,7 @@ Python, Flask, Jinja, SQLAlchemy, PostgresSQL, Javascript, JQuery, AJAX, Bootstr
 
 ### <a name="user"></a>User Homepage
 ---
-Crafters can opt into numerous groups based on their interests. Their homepage serves as a dashboard to view all participating groups. There is also a message board on the right that shows pending group invites and user admin messages. All of this information is retrieved from the PostgressSQL database via multiple SQLAlchemy database queries in Flask. 
+Crafters can opt into numerous groups based on their interests. Their homepage serves as a dashboard to view all the groups they are participating in. There is also a message board that shows pending group invites and user admin messages. All of this information is retrieved from the PostgressSQL database via multiple SQLAlchemy database queries in Flask. 
 
 ![User Homepage](https://raw.githubusercontent.com/ltaziri/Hackbright-FinalProject/master/static/README_Images/User.png)
 
@@ -49,19 +49,19 @@ From the group page, more users can easily be invited using the invite form. Upo
 The goal of MakeAlong is to create an interactive experience that promotes and encouranges participants to participate in groups. In order to improve the user's experience, a number of javascript enhancements have been added to make interaction seamless. 
 
 
-1. Advanced comment handling on the group page. Users can input both text and photos in the comments section. Additionally, text is parsed through to find all of the links in the text and convert them into clickable links. Lastly, YouTube links are identified and rendered in an embedded iframe. All of this is done via an AJAX call that sends the comment to the database and renders it in the browser.  
+* Advanced comment handling on the group page. Users can input both text and photos in the comments section. Additionally, text is parsed through to find all of the links in the text and convert them into clickable links. Lastly, YouTube links are identified and rendered in an embedded iframe. All of this is done via an AJAX call that sends the comment to the database and renders it in the browser.  
 
 ![Youtube](https://github.com/ltaziri/Hackbright-FinalProject/blob/master/static/README_Images/Youtube.gif?raw=true)
 
 
-2. Modal windows for the user profile/profile update as well as the invite form allowing the user to view and update information without needing to navigate to a new window. 
+* Modal windows for the user profile/profile update as well as the invite form allowing the user to view and update information without needing to navigate to a new window. 
 
 ![Update Profile](https://github.com/ltaziri/Hackbright-FinalProject/blob/master/static/README_Images/Update_profile.gif?raw=true)
 
 ![Send Email](https://github.com/ltaziri/Hackbright-FinalProject/blob/master/static/README_Images/Send_invite.gif?raw=true)
 
 
-3. Use of an AJAX call on the user homepage when a user accepts an invite. This AJAX call updates the database on the server side and renders the new group in the browser without requiring a page refresh. 
+* Use of an AJAX call on the user homepage when a user accepts an invite. This AJAX call updates the database on the server side and renders the new group in the browser without requiring a page refresh. 
 
 ![Add Group](https://github.com/ltaziri/Hackbright-FinalProject/blob/master/static/README_Images/Accept_invite.gif?raw=true)
 
