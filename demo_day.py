@@ -26,7 +26,7 @@ def reset_sew_page():
 
     Vote.query.filter(Vote.user_id==1, Vote.group_id==2).delete()
 
-    Comment.query.filter(Comment.group_id==2).delete()
+    # Comment.query.filter(Comment.group_id==2).delete()
 
     pattern = Pattern.query.filter(Pattern.group_id==2, Pattern.chosen == True).first()
 

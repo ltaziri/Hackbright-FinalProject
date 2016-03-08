@@ -143,6 +143,9 @@ h3.section_header {
 #user_page {
   background-color: #e3e0dd;
 }
+#user_page a {
+  cursor: pointer;
+}
 
 .snapshot {
   border: 4px solid #FCFAF7;

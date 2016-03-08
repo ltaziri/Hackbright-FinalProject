@@ -148,7 +148,7 @@ def send_email(invite_email, invite_name, user_name, group_name, invite_text):
           <table>
             <tr>
               <td>
-                <img src="http://uvmbored.com/wp-content/uploads/2016/01/KnittingBasket.jpg" width="90%%">
+                <img src="http://uvmbored.com/wp-content/uploads/2016/01/KnittingBasket.jpg" width="80%%">
                 <h1>Hi %s!</h1>
                 <p>%s has sent you the following invite for %s:</p>
                 <p><i>%s</i><br>

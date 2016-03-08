@@ -550,10 +550,10 @@ def get_pattern_poll_data(group_id):
         data.append(vote_data[key])
         
     data_set = {'label': "Votes",
-                'fillColor': "rgba(220,220,220,0.5)",
-                'strokeColor': "rgba(220,220,220,0.8)",
-                'highlightFill': "rgba(220,220,220,0.75)",
-                'highlightStroke': "rgba(220,220,220,1)"}
+                'fillColor': "rgba(127,89,89,0.5)",
+                # 'strokeColor': "rgba(127,89,89,0.8)",
+                'highlightFill': "rgba(127,89,89,0.75)",
+                'highlightStroke': "rgba(140,98,98,1)"}
 
     data_set['data'] = data            
 

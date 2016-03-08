@@ -64,8 +64,8 @@ $("#comment_form").submit(function(event){
     htmlStr += "<i>" + results.comment_timestamp + "</i></p></div></div>";
     htmlStr += "<div class='well'><div class='comment_text'>" + results.comment_text + "</div>";
     if(results.comment_image) {
-      htmlStr += "<br><div class='row'><div class='col-xs-12 col-sm-6 col-md-6 col-sm-offset-3 col-md-offset-3'>";
-      htmlStr += "<img class='comment_image' src='/" + results.comment_image + "></div></div>";
+      htmlStr += "<br><div class='row'><div class='col-xs-12 col-sm-6 col-md-6 col-sm-offset-3 col-md-offset-3'>;"
+      htmlStr += "<img class='comment_image' src='/" + results.comment_image + "'></div></div>";
     }
     if (results.youtube_id){
       htmlStr +="<br><div class='embed-responsive embed-responsive-16by9'>";
@@ -76,9 +76,9 @@ $("#comment_form").submit(function(event){
 
     $("#new_comment").prepend(htmlStr);
     $("#new_comment").linkify(linkOptions);
-    $("#comment_text").val('');
-    $("#comment_image").val('');
-    $('label.upload_label').html('<span class="glyphicon glyphicon-camera" aria-hidden="true"></span> Include a picture</label>');
+    $(".comment_text").val('');
+    $(".comment_image").val('');
+    $("label.upload_label").html('<span class="glyphicon glyphicon-camera" aria-hidden="true"></span> Include a picture</label>');
 }
 
 // show group users info on click
