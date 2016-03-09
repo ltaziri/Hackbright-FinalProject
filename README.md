@@ -24,13 +24,13 @@ Python, Flask, Jinja, SQLAlchemy, PostgresSQL, Javascript, JQuery, AJAX, Bootstr
 
 ### <a name="user"></a>User Homepage
 ---
-Crafters can opt into numerous groups based on their interests. Their homepage serves as a dashboard to view all the groups they are participating in. There is also a message board that shows pending group invites and user admin messages. All of this information is retrieved from the PostgressSQL database via multiple SQLAlchemy database queries in Flask. 
+Crafters can opt into numerous groups based on their interests. Their homepage serves as a dashboard to view all the groups they are participating in. There is also a message board that shows pending group invites and user admin messages. All of this information is retrieved from the PostgresSQL database via multiple SQLAlchemy database queries in Flask. 
 
 ![User Homepage](https://raw.githubusercontent.com/ltaziri/Hackbright-FinalProject/master/static/README_Images/User.png)
 
 ### <a name="group"></a>Group Homepage
 ---
-Once on the group’s page, users can get information about the pattern that the group is working on (either via a link or a downloadable PDF) and information about other users in the group. As users progress through a pattern they can post comments, photos and videos to the comment area of the group page. The contents of each comment are stored to the PostgressSQL database so they will be shown for the duration of the group. Users can also see a Twitter feed of the group's hashtag which is achieved via an API call to the Twitter API. 
+Once on the group’s page, users can get information about the pattern that the group is working on (either via a link or a downloadable PDF) and information about other users in the group. As users progress through a pattern they can post comments, photos and videos to the comment area of the group page. The contents of each comment are stored to the PostgresSQL database so they will be shown for the duration of the group. Users can also see a Twitter feed of the group's hashtag which is achieved via an API call to the Twitter API. 
 
 ![Group Homepage](https://raw.githubusercontent.com/ltaziri/Hackbright-FinalProject/master/static/README_Images/group.png)
 
@@ -49,7 +49,7 @@ From the group page, more users can easily be invited using the invite form. Upo
 The goal of MakeAlong is to create an interactive experience that promotes and encouranges participants to participate in groups. In order to improve the user's experience, a number of javascript enhancements have been added to make interaction seamless. 
 
 
-* Advanced comment handling on the group page. Users can input both text and photos in the comments section. Additionally, text is parsed through to find all of the links in the text and convert them into clickable links. Lastly, YouTube links are identified and rendered in an embedded iframe. All of this is done via an AJAX call that sends the comment to the database and renders it in the browser.  
+* Advanced comment handling on the group page. Users can input both text and photos in the comments section. Links in the text are parsed and converted into clickable links, and an embedded iframe preview of any YouTube links is rendered. All of this is done via an AJAX call that sends the comment to the database and renders it in the browser.  
 ![Youtube](https://github.com/ltaziri/Hackbright-FinalProject/blob/master/static/README_Images/Youtube.gif?raw=true)
 
 
@@ -72,4 +72,5 @@ Ideas for the next version of a MakeAlong include implementing a friend's graph 
 Leilani Taziri is a Software Engineering Fellow at Hackbright Academy. 
 
 **GitHub** http://github.com/ltaziri   
+
 **Linkedin** https://www.linkedin.com/in/leilanitaziri
