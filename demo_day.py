@@ -13,7 +13,7 @@ from server import app
 def remove_invite():
     """Remove invite to Cricut Crafters Group."""
 
-    UserGroup.query.filter(UserGroup.user_id==1, UserGroup.group_id==3).delete()
+    UserGroup.query.filter(UserGroup.user_id==1, UserGroup.group_id==9).delete()
 
     invite = Invite.query.filter(Invite.invite_email=='leilani@hbmail.com').first();
 

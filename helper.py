@@ -3,7 +3,7 @@ from delorean import Delorean
 from datetime import datetime, timedelta
 from model import User, Group, UserGroup, Comment, Invite, Pattern, Vote, connect_to_db, db
 from flask import request
-# from server import photos, manuals
+from server import photos, manuals
 from flask.ext.uploads import UploadSet, configure_uploads, IMAGES, patch_request_class
 import re
 from urlparse import urlparse
