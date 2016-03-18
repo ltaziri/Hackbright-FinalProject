@@ -196,8 +196,8 @@
 
             <div class=" well"><!-- comment body -->
 
-                <div class="comment_text" data-linkify="this">
-                  {{ comment.comment_text }}
+                <div class="comment_text" >
+                  {{ comment.comment_text|safe }}
                 </div>
 
                 {% if comment.comment_image %}

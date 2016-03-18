@@ -2,7 +2,7 @@
 
 from jinja2 import StrictUndefined
 from flask import Flask, render_template, redirect, request, flash, session, jsonify
-from flask_debugtoolbar import DebugToolbarExtension
+# from flask_debugtoolbar import DebugToolbarExtension
 from flask.ext.uploads import UploadSet, configure_uploads, IMAGES, patch_request_class
 from model import User, Group, UserGroup, Comment, Invite, Pattern, Vote, connect_to_db, db
 from datetime import datetime, timedelta
@@ -698,9 +698,11 @@ def add_comment():
 
     # Use helper function to parse text and find YouTube links.
 
-    youtube_id = helper.find_comment_youtube(comment_text)
+    linked_comment = helper.find_comment_url(comment_text)
+    comment_text = linked_comment[0]
+    youtube_id = linked_comment[1]
     
-    # Check if comment photo exsists in form object.
+    # Check if comment photo exists in form object.
 
     if 'comment_image' in request.files and request.files['comment_image'].filename:
         comment_img_filename = photos.save(request.files['comment_image'])
@@ -776,6 +778,6 @@ if __name__ == "__main__":
     connect_to_db(app)
 
     # Use the DebugToolbar
-    DebugToolbarExtension(app)
+    # DebugToolbarExtension(app)
 
     app.run()

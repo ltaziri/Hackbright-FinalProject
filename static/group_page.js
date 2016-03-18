@@ -14,24 +14,6 @@ $(document).ready(function(){
         } 
   })
  
-// for linkify to work in ajax call
-// var linkOptions = {
-//       defaultProtocol: 'http',
-//       events: null,
-//       format: function (value, type) {
-//         return value;
-//       },
-//       formatHref: function (href, type) {
-//         return href;
-//       },
-//       linkAttributes: null,
-//       linkClass: null,
-//       nl2br: false,
-//       tagName: 'a',
-//       target: function (href, type) {
-//         return type === 'url' ? '_blank' : null;
-//       }
-//     };
 }) 
 // Comment AJAX call //
 $("#comment_form").submit(function(event){
@@ -91,7 +73,6 @@ $("#comment_form").submit(function(event){
     htmlStr += "</div></div>"
 
     $("#new_comment").prepend(htmlStr);
-    $("#new_comment").linkify(linkOptions);
     $("#comment_text").val('');
     $("#comment_image").val('');
     $("label.upload_label").html('<span class="glyphicon glyphicon-camera" aria-hidden="true"></span> Include a picture</label>');

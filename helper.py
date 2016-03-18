@@ -3,7 +3,7 @@ from delorean import Delorean
 from datetime import datetime, timedelta
 from model import User, Group, UserGroup, Comment, Invite, Pattern, Vote, connect_to_db, db
 from flask import request
-from server import photos, manuals
+# from server import photos, manuals
 from flask.ext.uploads import UploadSet, configure_uploads, IMAGES, patch_request_class
 import re
 from urlparse import urlparse
@@ -111,18 +111,52 @@ def create_patterns_for_poll(group_id):
         add_poll_pattern("pattern_name_c", "pattern_link_c","pattern_pdf_c", group_id)
 
 
-def find_comment_youtube(comment_text):
-    """Parse through text inputs to find youtube links"""
-    
+
+def find_comment_url(comment_text):
+    """Parse through text inputs to find links and video ids"""
+
     url = re.findall('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', comment_text)
 
     if url:
-        parsed_url = urlparse(url[0])
+        video_id = find_youtube(url)
+        position = comment_text.index(url[0])
+        link_length = len(url[0])
+        new_comment = comment_text[0:position]+"<a href='" + url[0] + "'>" + comment_text[position:position+link_length] + "</a>" + comment_text[position+link_length:] 
+
+        if len(url) > 1:
+            for u in url[1:]:
+                position = new_comment.index(u)
+                link_length = len(u)
+                new_comment = new_comment[0:position]+"<a href='" + u + "'>" + new_comment[position:position+link_length] + "</a>" + new_comment[position+link_length:] 
+    else:
+        new_comment = comment_text
+        video_id = None
+
+    result = [new_comment, video_id]
+
+    return result
+
+
+def find_youtube(url_list):
+    """Identify youtube ids"""
+
+    if len(url_list) == 1:
+        parsed_url = urlparse(url_list[0])
         if parsed_url.netloc == 'www.youtube.com':
             video_id = parsed_url.query[2:]
         else:
             video_id = None
-    else:
-        video_id= None
-            
+    elif len(url_list) > 1:
+        for i in range(0,len(url_list),2):
+            parsed_url = urlparse(url_list[i])
+            if parsed_url.netloc == 'www.youtube.com':
+                video_id = parsed_url.query[2:]
+                break
+            else:
+                video_id = None
+
     return video_id
+
+
+
+
