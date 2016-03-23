@@ -163,8 +163,8 @@ def show_user_home():
     user = User.query.get(session["user_id"])
 
     # Use foreign key, groups, in users table to get the groups that the user is
-    # in. Use a lambda expression to sort the list of Group objects that is 
-    # returned so the groups will appear in group_id order on user homepage.
+    # in. Sort the list of Group objects that is returned so the groups will 
+    # appear in group_id order on user homepage.
 
     groups = user.groups
     groups.sort(key=lambda x: x.group_id)
@@ -231,9 +231,9 @@ def user_profile_update():
 
     user = User.query.get(session["user_id"])
 
-    # Check if request files contains a user photo key and a filename. If there
-    # is no filename, no photo was uploaded. If a photo was uploaded, add it 
-    # to the photo folder and save the photo file path to the database.
+    # Check if request files contains a user photo key by checking for the 
+    # filename property. If a photo was uploaded, add it to the photo folder 
+    # and save the photo file path to the database.
 
     if 'user_photo' in request.files and request.files['user_photo'].filename:
         user_photo_filename = photos.save(request.files['user_photo'])
@@ -269,7 +269,7 @@ def show_group_form():
 def create_group():
     """Handle submission of new group form"""
 
-    # Get form inputs
+    # form inputs
     group_name = request.form.get("group_name")
     group_descrip = request.form.get("group_descrip")
     hashtag = request.form.get("hashtag")
@@ -281,9 +281,9 @@ def create_group():
         hashtag = None
 
     # If upload your own photo radio button was selected save the photo from 
-    # request files to the photo folder and set group_image to equal the 
-    # photo file path. If one of the default photos was selected, set group_image 
-    # to the photo path for the default photo selected.
+    # request files to the photo folder and save the photo path in database. 
+    # If one of the default photos was selected, set group_image to the photo 
+    # path for the default photo selected.
 
     if request.form.get("group_image") == " ":
         filename = photos.save(request.files['photo'])
@@ -349,7 +349,7 @@ def show_group_page(group_id):
     group = Group.query.get(group_id)
     group_users = group.users
 
-    # Use instance method on the class to check if the user id in the session
+    # Use instance method on the Group class to check if the user id in the session
     # is in the group. If not, redirect to the user homepage. If so render
     # group page template.
 
@@ -465,23 +465,26 @@ def show_group_profile_form(group_id):
 
     # Use instance method on the class to check if the user id in the session
     # is in the group. 
-
     if group.is_user_in_group(session["user_id"])==False:
         return redirect("/user") 
 
-    # If user is in group, get the group's patterns, check if one is marked 
-    # chosen. Render form template with pattern or poll patterns.
+    # If user is the group admin, get the group's patterns, check if one is marked 
+    # chosen. Render form template with pattern or poll patterns. If user is not 
+    # admin, just redirect to grouppage
 
-    else: 
-        user = session["user_id"]
-        patterns = Pattern.query.filter_by(group_id=group_id).all()
-        chosen_pattern = Pattern.query.filter(Pattern.group_id == group_id, Pattern.chosen == True).all()
+    else:
+        if group.admin_id == session["user_id"]: 
+            user = session["user_id"]
+            patterns = Pattern.query.filter_by(group_id=group_id).all()
+            chosen_pattern = Pattern.query.filter(Pattern.group_id == group_id, Pattern.chosen == True).all()
 
-        if chosen_pattern:
-            return render_template("group_update_form.html", group=group, patterns=chosen_pattern)
+            if chosen_pattern:
+                return render_template("group_update_form.html", group=group, patterns=chosen_pattern)
+            else:
+                return render_template("group_update_form.html", group=group, patterns=patterns)
         else:
-            return render_template("group_update_form.html", group=group, patterns=patterns)
-    
+            return redirect("/group_home/%d" % (group.group_id))
+
 
 @app.route('/group_profile_update/<int:group_id>', methods=['POST'])
 def update_group_profile(group_id):
@@ -496,72 +499,74 @@ def update_group_profile(group_id):
         return redirect("/user") 
 
     # Get form inputs
-    else: 
-        chosen_pattern = Pattern.query.filter(Pattern.group_id == group_id, Pattern.chosen == True)
+    else:
+        if group.admin_id == session["user_id"]: 
+            chosen_pattern = Pattern.query.filter(Pattern.group_id == group_id, Pattern.chosen == True)
 
-        update_group_name = request.form.get("group_name")
-        
-        update_group_descrip = request.form.get("group_descrip")
-        update_group_hashtag = request.form.get("hashtag")
-        
-        update_group_pattern_name = request.form.get("update_pattern_name")
-        update_group_pattern_link = request.form.get("update_pattern_link")
-        
-    #Handle basic user name, description, hashtag and image updates from inputs
-        if update_group_name != "":
-            group.group_name = update_group_name
-            db.session.commit()
+            update_group_name = request.form.get("group_name")
+            
+            update_group_descrip = request.form.get("group_descrip")
+            update_group_hashtag = request.form.get("hashtag")
+            
+            update_group_pattern_name = request.form.get("update_pattern_name")
+            update_group_pattern_link = request.form.get("update_pattern_link")
+            
+        #Handle basic user name, description, hashtag and image updates from inputs
+            if update_group_name != "":
+                group.group_name = update_group_name
+                db.session.commit()
 
-        if update_group_descrip != "":
-            group.group_descrip = update_group_descrip
-            db.session.commit()
+            if update_group_descrip != "":
+                group.group_descrip = update_group_descrip
+                db.session.commit()
 
-        if update_group_hashtag != "":
-            group.hashtag = update_group_hashtag
-            db.session.commit()
+            if update_group_hashtag != "":
+                group.hashtag = update_group_hashtag
+                db.session.commit()
 
-        if "group_img" in request.files and request.files['group_img'].filename:
-            group_photo_filename = photos.save(request.files["group_img"])
-            update_group_image = str(photos.path(group_photo_filename))
-            group.group_image = update_group_image
-            db.session.commit()
+            if "group_img" in request.files and request.files['group_img'].filename:
+                group_photo_filename = photos.save(request.files["group_img"])
+                update_group_image = str(photos.path(group_photo_filename))
+                group.group_image = update_group_image
+                db.session.commit()
 
-    #Update if group had a pattern, and is just changing info about it.
-        if update_group_pattern_name != "":
-            chosen_pattern.pattern_name = update_group_pattern_name
-            db.session.commit()
+        #Update if group had a pattern, and is just changing info about it.
+            if update_group_pattern_name != "":
+                chosen_pattern.pattern_name = update_group_pattern_name
+                db.session.commit()
 
-        if update_group_pattern_link != "":
-            chosen_pattern.pattern_link = update_group_pattern_link
-            db.session.commit()
+            if update_group_pattern_link != "":
+                chosen_pattern.pattern_link = update_group_pattern_link
+                db.session.commit()
 
-        if "update_pattern_pdf" in request.files and request.files['update_pattern_pdf'].filename:
-            pattern_pdf_filename = manuals.save(request.files['update_pattern_pdf'])
-            new_group_pattern_pdf = str(manuals.path(pattern_pdf_filename))
-            chosen_pattern.pattern_pdf = new_group_pattern_pdf
-            db.session.commit()
+            if "update_pattern_pdf" in request.files and request.files['update_pattern_pdf'].filename:
+                pattern_pdf_filename = manuals.save(request.files['update_pattern_pdf'])
+                new_group_pattern_pdf = str(manuals.path(pattern_pdf_filename))
+                chosen_pattern.pattern_pdf = new_group_pattern_pdf
+                db.session.commit()
 
-    # Add a pattern to database using helper function if a pattern was inputed
-    # on the form and a poll was not created.
+        # Add a pattern to database using helper function if a pattern was inputed
+        # on the form and a poll was not created.
 
-        if (request.form.get("new_pattern_name") 
-            or request.form.get("new_pattern_link") 
-            or ("new_pattern_pdf" in request.files and request.files['new_pattern_pdf'].filename)):
+            if (request.form.get("new_pattern_name") 
+                or request.form.get("new_pattern_link") 
+                or ("new_pattern_pdf" in request.files and request.files['new_pattern_pdf'].filename)):
 
-            helper.add_chosen_pattern("new_pattern_name", "new_pattern_link","new_pattern_pdf", group.group_id)
+                helper.add_chosen_pattern("new_pattern_name", "new_pattern_link","new_pattern_pdf", group.group_id)
 
-    # If vote days was entered in table, a pattern poll was created. Update fields
-    # in group table for poll and use pattern poll helper function to instantiate
-    # pattern objects in database.
-        
-        if request.form.get("vote_days"):
-            vote_days = request.form.get("vote_days")
-            vote_timestamp = datetime.now()
-            group.vote_days = vote_days
-            group.vote_timestamp = vote_timestamp
-            db.session.commit()
+        # If vote days was entered in table, a pattern poll was created. Update fields
+        # in group table for poll and use pattern poll helper function to instantiate
+        # pattern objects in database.
+            
+            if request.form.get("vote_days"):
+                vote_days = request.form.get("vote_days")
+                vote_timestamp = datetime.now()
+                group.vote_days = vote_days
+                group.vote_timestamp = vote_timestamp
+                db.session.commit()
 
-            helper.create_patterns_for_poll(group.group_id)
+                helper.create_patterns_for_poll(group.group_id)
+                
 
     return redirect("/group_home/%d" % (group.group_id))
 

@@ -1,3 +1,5 @@
 1|Knitters to the rescue!|This month I have chosen three fun patterns for us to vote on.|static/images/knitting_group_default.jpg|1|01-March-2016|7|#makealongknittersrescue
 2|Super Sewers||static/images/sewing_group_default.jpg|1|||#makealongsupersewers
 3|Cricut Crafters - Earrings||static/images/craft_group_default.jpg|1|||#makealongcricutcraftersfeb
+4|Crocheters Unite||static/images/craft_group_default.jpg|3|||#makealongcrochetunite
+5|Modern Quilters||static/images/sewing_group_default.jpg|2|||#makealongmodquilt

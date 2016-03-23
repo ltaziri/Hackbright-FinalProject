@@ -34,22 +34,22 @@ $("#comment_form").submit(function(event){
       });
     
   });
-    var linkOptions = {
-      defaultProtocol: 'http',
-      events: null,
-      format: function (value, type) {
-        return value;
-      },
-      formatHref: function (href, type) {
-        return href;
-      },
-      linkAttributes: null,
-      linkClass: null,
-      nl2br: false,
-      tagName: 'a',
-      target: function (href, type) {
-        return type === 'url' ? '_blank' : null;
-      }
+    // var linkOptions = {
+    //   defaultProtocol: 'http',
+    //   events: null,
+    //   format: function (value, type) {
+    //     return value;
+    //   },
+    //   formatHref: function (href, type) {
+    //     return href;
+    //   },
+    //   linkAttributes: null,
+    //   linkClass: null,
+    //   nl2br: false,
+    //   tagName: 'a',
+    //   target: function (href, type) {
+    //     return type === 'url' ? '_blank' : null;
+    //   }
     };
 // success function after ajax results returned from server 
     function showComment(results) {

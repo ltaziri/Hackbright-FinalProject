@@ -13,7 +13,7 @@
       
       <section>   
           {% if group.group_descrip %}
-            <p data-linkify="this">{{ group.group_descrip }}</p>
+            <p>{{ group.group_descrip }}</p>
           {% endif %}
           {% if user == group.admin_id %}
             <a href="/group_profile_form/{{ group.group_id }}">Update the group information</a>
@@ -241,7 +241,7 @@
                       <div class="user_snapshot">
                         <img src="/{{ group_user.user_photo }}" width="100%">
                       </div>
-                      <p data-linkify="this"> {{ group_user.user_descrip }}</p>
+                      <p> {{ group_user.user_descrip }}</p>
                       <button class='btn btn-default'>close</button>
                     </div>
                     <div class = "show_user">                        

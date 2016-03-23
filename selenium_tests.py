@@ -7,24 +7,14 @@ class MakeAlongBrowserTest(unittest.TestCase):
 
     def setUp(self):
         self.browser = webdriver.Firefox()
-        
 
-    def test_correct_login(self):
-        
+    
+    def test_signup_form(self):
+
         browser= self.browser
-        browser.get('http://localhost:5000')
-        assert browser.title == 'MakeAlong - Bringing the World Together, One Project at a Time'
+        browser.get('http://localhost:5000/sign_up_form')
 
-        email = browser.find_element_by_name('email')
-        email.send_keys("leilani@hbmail.com")
-        password = browser.find_element_by_name('password')
-        password.send_keys("test")
-
-        btn = browser.find_element_by_tag_name('button')
-
-        btn.click()
-
-        assert browser.find_element_by_id('group_add')
+        assert browser.find_element_by_id('new_user_email')
 
 
     def test_existing_user_incorrect_pass(self):
@@ -61,6 +51,24 @@ class MakeAlongBrowserTest(unittest.TestCase):
 
         assert browser.find_element_by_id('new_user_email')
 
+
+    def test_correct_login(self):
+        
+        browser= self.browser
+        browser.get('http://localhost:5000')
+        assert browser.title == 'MakeAlong - Bringing the World Together, One Project at a Time'
+
+        email = browser.find_element_by_name('email')
+        email.send_keys("leilani@hbmail.com")
+        password = browser.find_element_by_name('password')
+        password.send_keys("test")
+
+        btn = browser.find_element_by_tag_name('button')
+
+        btn.click()
+
+        assert browser.find_element_by_id('group_add')
+
     def test_log_out(self):
 
         browser= self.browser
@@ -78,14 +86,6 @@ class MakeAlongBrowserTest(unittest.TestCase):
         log_out.click()
 
         assert browser.find_element_by_name('password')
-
-
-    def test_signup_form(self):
-
-        browser= self.browser
-        browser.get('http://localhost:5000/sign_up_form')
-
-        assert browser.find_element_by_id('new_user_email')
 
 
 

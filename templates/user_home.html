@@ -24,7 +24,7 @@
               <div class= "row">
                   <div class ="col-xs-12 col-sm-12 col-md-8">
                       {% if user.user_descrip %}
-                      <h3> About me:</h3><h4 data-linkify="this">{{ user.user_descrip }}</h4></br>
+                      <h3> About me:</h3><h4>{{ user.user_descrip }}</h4></br>
                       {% endif %}
                       <div class ="user_snapshot">
                         <img class="img-rounded" src="/{{ user.user_photo }}" width="100%"><br>

@@ -3,6 +3,7 @@ from model import User
 from model import Group
 from model import UserGroup
 from model import Pattern
+from model import Invite
 from datetime import datetime
 from model import connect_to_db, db
 from server import app, photos, manuals
@@ -105,6 +106,29 @@ def load_patterns():
 
     db.session.commit()
 
+def load_invites():
+    """Load invites from invites.txt into database."""
+
+    print "Invites"
+
+    Invite.query.delete()
+
+    for row in open("seed_data/invites.txt"):
+        row = row.rstrip()
+        invite_id, invite_email, invite_text, invite_timestamp, invite_confirm, group_id, user_id = row.split("|")
+
+        invite = Invite(invite_id=invite_id,
+                        invite_email=invite_email,
+                        invite_text=invite_text,
+                        invite_timestamp=invite_timestamp,
+                        invite_confirm=invite_confirm,
+                        group_id=group_id,
+                        user_id=user_id)
+
+        db.session.add(invite)
+
+    db.session.commit()
+
 
 def set_val_user_id():
     """Set value for the next user_id after seeding database"""
@@ -122,11 +146,11 @@ def set_val_user_id():
 def set_val_group_id():
     """Set value for the next group_id after seeding database"""
 
-    # Get the Max user_id in the database
+    # Get the Max group_id in the database
     result = db.session.query(func.max(Group.group_id)).one()
     max_id = int(result[0])
 
-    # Set the value for the next user_id to be max_id + 1
+    # Set the value for the next group_id to be max_id + 1
     query = "SELECT setval('groups_group_id_seq', :new_id)"
     db.session.execute(query, {'new_id': max_id + 1})
     db.session.commit()
@@ -135,11 +159,11 @@ def set_val_group_id():
 def set_val_usergroup_id():
     """Set value for the next usergroup_id after seeding database"""
 
-    # Get the Max user_id in the database
+    # Get the Max usergroup_id in the database
     result = db.session.query(func.max(UserGroup.usergroup_id)).one()
     max_id = int(result[0])
 
-    # Set the value for the next user_id to be max_id + 1
+    # Set the value for the next usergroup_id to be max_id + 1
     query = "SELECT setval('usergroups_usergroup_id_seq', :new_id)"
     db.session.execute(query, {'new_id': max_id + 1})
     db.session.commit()
@@ -151,8 +175,21 @@ def set_val_pattern_id():
     result = db.session.query(func.max(Pattern.pattern_id)).one()
     max_id = int(result[0])
 
-    # Set the value for the next user_id to be max_id + 1
+    # Set the value for the next pattern_id to be max_id + 1
     query = "SELECT setval('patterns_pattern_id_seq', :new_id)"
+    db.session.execute(query, {'new_id': max_id + 1})
+    db.session.commit()
+
+
+def set_val_invite_id():
+    """Set value for the next invite_id after seeding database"""
+
+    # Get the Max invite_id in the database
+    result = db.session.query(func.max(Invite.invite_id)).one()
+    max_id = int(result[0])
+
+    # Set the value for the next invite_id to be max_id + 1
+    query = "SELECT setval('invites_invite_id_seq', :new_id)"
     db.session.execute(query, {'new_id': max_id + 1})
     db.session.commit()
 
@@ -168,8 +205,10 @@ if __name__ == "__main__":
     load_groups()
     load_usergroups()
     load_patterns()
+    load_invites()
     
     set_val_user_id()
     set_val_group_id()
     set_val_usergroup_id()
     set_val_pattern_id()
+    set_val_invite_id()

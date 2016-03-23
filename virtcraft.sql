@@ -38,6 +38,7 @@ CREATE TABLE comments (
     comment_text character varying(255) NOT NULL,
     comment_image character varying(255),
     comment_timestamp timestamp without time zone NOT NULL,
+    youtube_id character varying(255),
     user_id integer NOT NULL,
     group_id integer NOT NULL
 );
@@ -311,66 +312,16 @@ ALTER TABLE ONLY users ALTER COLUMN user_id SET DEFAULT nextval('users_user_id_s
 -- Data for Name: comments; Type: TABLE DATA; Schema: public; Owner: ltaziri
 --
 
-COPY comments (comment_id, comment_text, comment_image, comment_timestamp, user_id, group_id) FROM stdin;
-1		static/images/balloonicorn_1_1_1_1_1_1_1_2.jpg	2016-02-25 22:01:01.837574	1	1
-2	still working?	\N	2016-02-27 09:55:48.948407	1	1
-3	test	\N	2016-02-27 10:12:47.91283	1	1
-4	test	\N	2016-02-27 10:13:00.077278	1	3
-5		static/images/balloonicorn_1_1_1_1_1_1_1_2_1.jpg	2016-02-27 10:13:16.977137	1	3
-6	test	\N	2016-02-27 10:19:03.08055	1	1
-7	retest	\N	2016-02-27 11:37:21.651195	1	3
-8	test	\N	2016-03-01 14:27:24.93971	1	9
-9	http://stackoverflow.com/	\N	2016-03-01 14:49:07.770261	1	9
-10	http://stackoverflow.com/	\N	2016-03-01 15:08:34.300031	1	9
-11	http://stackoverflow.com/	\N	2016-03-01 15:12:12.22949	1	9
-12	http://stackoverflow.com/	\N	2016-03-01 15:15:41.535915	1	9
-13	http://stackoverflow.com/	\N	2016-03-01 15:15:51.798894	1	9
-14	http://stackoverflow.com/NEW	\N	2016-03-01 15:16:06.134892	1	9
-15		static/images/tiger_1_1_1_1_1_1.jpeg	2016-03-01 15:16:52.467849	1	9
-16		static/images/balloonicorn_1_1_1_1_1_1_1_1_1_1.jpg	2016-03-01 15:18:19.499865	1	9
-17		\N	2016-03-01 15:18:25.014087	1	9
-18		\N	2016-03-01 15:21:48.574481	1	9
-19		\N	2016-03-01 15:24:23.812045	1	9
-20		\N	2016-03-01 15:25:39.905137	1	9
-21	Test	\N	2016-03-01 15:31:03.090411	1	9
-22	http://stackoverflow.com/	\N	2016-03-01 15:39:41.655984	1	2
-23	test	\N	2016-03-01 16:09:21.123686	1	9
-24		\N	2016-03-01 16:17:16.979305	1	9
-25		\N	2016-03-01 16:17:21.845913	1	9
-26	test	\N	2016-03-01 16:33:55.935663	1	9
-27		static/images/tiger_1_1_1_1_1_1_1.jpeg	2016-03-01 16:51:09.260917	1	1
-28		static/images/balloonicorn_1_1_1_1_1_1_1_1_1_1_1.jpg	2016-03-01 16:51:49.805445	1	1
-29		static/images/tiger_1_1_1_1_1_1_1_1.jpeg	2016-03-01 19:39:25.952676	1	1
-30		static/images/balloonicorn_1_1_1_1_1_1_1_1_1_1_2.jpg	2016-03-01 19:39:40.540812	1	1
-31		static/images/sewing_tweet_pic2.jpg	2016-03-01 22:41:35.839689	1	1
-32		static/images/sewing_tweet_pic2_1.jpg	2016-03-01 22:41:50.60214	1	1
-33		\N	2016-03-01 22:41:57.146912	1	1
-34		static/images/sewing_tweet_pic1.jpg	2016-03-01 22:42:05.91512	1	1
-35	test	\N	2016-03-02 17:11:51.670018	1	1
-36	http://www.w3schools.com/html/html_youtube.asp	\N	2016-03-02 17:14:16.664147	1	1
-37	http://www.w3schools.com/html/html_youtube.asp	\N	2016-03-02 17:14:35.741067	1	1
-38	test	\N	2016-03-02 17:14:58.798343	1	1
-39	test	\N	2016-03-02 17:16:03.670198	1	1
-40	http://www.w3schools.com/html/html_youtube.asp	\N	2016-03-02 17:16:16.1041	1	1
-41	www.test.com	\N	2016-03-02 18:09:05.342393	1	1
-42	I am testing a bunch of text with some links thrown in http://www.sometest.com	\N	2016-03-02 21:02:54.062843	1	1
-43	I am testing a bunch of text with some links thrown in http://www.sometest.com	\N	2016-03-02 21:04:09.748924	1	1
-44	Testing with a youtube link	\N	2016-03-02 21:07:12.060016	1	1
-45	Testing with a youtube https://www.youtube.com/watch?v=Exf8RbgKmhM link	\N	2016-03-02 21:07:42.469009	1	1
-46	Testing text with youtube https://www.youtube.com/watch?v=5yT2dQoCo4Y	\N	2016-03-02 21:58:30.788698	1	1
-47	testi without youtube	\N	2016-03-02 22:01:41.659522	1	1
-48	Testing text with youtube https://www.youtube.com/watch?v=5yT2dQoCo4Y	\N	2016-03-02 22:12:36.179643	1	1
-49	Testing text with youtube https://www.youtube.com/watch?v=5yT2dQoCo4Y	\N	2016-03-02 22:13:52.625416	1	1
-50	Testing text with youtube https://www.youtube.com/watch?v=5yT2dQoCo4Y	\N	2016-03-02 22:14:16.290236	1	1
-51	Testing text with youtube https://www.youtube.com/watch?v=5yT2dQoCo4Y	\N	2016-03-02 22:14:35.064289	1	1
-52	Testing text with youtube https://www.youtube.com/watch?v=5yT2dQoCo4Y	\N	2016-03-02 22:16:49.261428	1	1
-53	Testing text with youtube https://www.youtube.com/watch?v=5yT2dQoCo4Y	\N	2016-03-02 22:22:27.730078	1	1
-54	esting text with youtube https://www.youtube.com/watch?v=5yT2dQoCo4Y	\N	2016-03-02 22:23:30.326038	1	1
-55	esting text with youtube https://www.youtube.com/watch?v=5yT2dQoCo4Y	\N	2016-03-02 22:24:08.024979	1	1
-56	esting text with youtube https://www.youtube.com/watch?v=5yT2dQoCo4Y	\N	2016-03-02 22:25:00.548154	1	1
-57	esting text with youtube https://www.youtube.com/watch?v=5yT2dQoCo4Y	\N	2016-03-02 22:25:18.438419	1	1
-58	https://www.youtube.com/watch?v=bhDrDRVjCqg	\N	2016-03-02 22:26:25.427138	1	1
-59	https://www.youtube.com/watch?v=bhDrDRVjCqg	\N	2016-03-02 22:28:41.529983	1	1
+COPY comments (comment_id, comment_text, comment_image, comment_timestamp, youtube_id, user_id, group_id) FROM stdin;
+167	If you are struggling with the make one left/ make on right. Here is a video that might help! <a href='https://www.youtube.com/watch?v=nkOwLvcG7m8'>https://www.youtube.com/watch?v=nkOwLvcG7m8</a>	\N	2016-03-18 16:02:59.330561	nkOwLvcG7m8	1	1
+19	Can't wait to get started! Anyone want to go to Imagiknit this weekend?	\N	2016-03-03 13:20:39.920426	\N	5	1
+20	I am getting started today with some yarn I have in the stash! Testing the gauge as we speak:)	static/images/starting_1_1.jpg	2016-03-03 13:22:12.658793	\N	6	1
+21	I am partially through the first mitt. LOVING this Blue Sky cotton yarn	static/images/Killgore_1_1.jpg	2016-03-03 13:28:40.657715	\N	1	1
+22	Anyone else having problems with the make one left, make one right combo? I can't get it to look right:(	\N	2016-03-03 13:29:49.892303	\N	7	1
+23	@Erin I am having issues too! I feel like the combo should be reversed?	\N	2016-03-03 13:31:32.242097	\N	19	1
+25	I followed that make one video and it worked like a charm! Finished my first mitten!	static/images/killgore_2_1.jpg	2016-03-03 13:37:26.680141	\N	5	1
+26	OMG Terri your mitten looks great! Love the color!!	\N	2016-03-03 13:38:27.694905	\N	6	1
+27	BTW I finished both my mittens this weekend! Moving on to a second pair...	static/images/kilgore_3_2.jpg	2016-03-03 13:39:49.818031	\N	6	1
 \.
 
 
@@ -378,7 +329,7 @@ COPY comments (comment_id, comment_text, comment_image, comment_timestamp, user_
 -- Name: comments_comment_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ltaziri
 --
 
-SELECT pg_catalog.setval('comments_comment_id_seq', 59, true);
+SELECT pg_catalog.setval('comments_comment_id_seq', 170, true);
 
 
 --
@@ -386,19 +337,14 @@ SELECT pg_catalog.setval('comments_comment_id_seq', 59, true);
 --
 
 COPY groups (group_id, group_name, group_descrip, group_image, admin_id, vote_timestamp, vote_days, hashtag) FROM stdin;
-3	Cricut Crafters - Earrings		static/images/craft_group_default.jpg	1	\N	\N	#makealongcricutcraftersfeb
-2	Super Sewers		static/images/sewing_group_default.jpg	1	\N	\N	#makealongsupersewers
-8	testing	Lets try to add something to our test group	static/images/sewing_group_default.jpg	1	2016-02-27 17:54:47.022961	3	#makealongtestagain
-7	Testing 	test	static/images/tiger_1_1_1_1_1.jpeg	1	\N	\N	\N
-11	New Group	Tesst	static/images/knitting_group_default.jpg	1	\N	\N	#makealongtetakj
-12	test agaom	group without pattern pdf	static/images/craft_group_default.jpg	1	\N	\N	#makealong
-13	Test with Poll	trying our helper function with poll	static/images/balloonicorn_1_1_1_1_1_1_1_1_1.jpg	1	2016-02-29 15:36:17.434472	3	#makealong
-10	New Group	Tesst	static/images/knitting_group_default.jpg	1	2016-02-29 16:06:24.717987	5	#makealongtetakj
-14	Test		static/images/craft_group_default.jpg	1	2016-02-29 17:02:56.154132	2	#makealong
-16	test test test		static/images/knitting_group_default.jpg	1	2016-02-29 17:20:35.629755	2	#makealong
-15	NEED TO FIND THIS ONE TOO!		static/images/craft_group_default.jpg	1	2016-02-29 17:05:48.910569	2	#makealong
-1	Knitters to the rescue!	www.test.com	static/images/knitting_group_default.jpg	1	2016-03-02 00:00:00	7	#makealongknittersrescue
-9	testing 	Tesst	static/images/knitting_group_default.jpg	1	2016-02-29 17:37:41.092818	2	#makealongtetakj
+3	Crazy Cards - March		static/images/papercrafting_scaled_1_1.jpg	5	\N	\N	#makealongcricutcraftersfeb
+1	Knitters to the Rescue!	This month we are working on the Kilgore Mitts pattern.	static/images/knitting_group_default.jpg	1	2016-03-01 00:00:00	1	#makealongknittersrescue
+6	Eat. Sleep. Knit.	This is so fun	static/images/knit2_scaled_1.jpg	1	\N	\N	eatsleepknit
+7	Crochet All Night!	 	static/images/Crochet_1.jpg	1	\N	\N	#makealongcrochetallnight
+5	Women Who Build	Here are three awesome Ana White console wood working plans to choose from.	static/images/wood_1.jpg	1	2016-03-12 00:00:00	7	#makealongwomenwhobuild
+9	Crazy Cards - March 		static/images/papercrafting_scaled_1_1_1.jpg	5	\N	\N	\N
+10	Test	test	static/images/knitting_group_default.jpg	1	\N	\N	\N
+2	Super Sewers	Hey all! So excited to get this month's group going. I have picked three fun Jailie patterns for us to pick from this month!	static/images/sewing_group_default.jpg	1	2016-03-18 00:00:00	7	#makealongsupersewers
 \.
 
 
@@ -406,7 +352,7 @@ COPY groups (group_id, group_name, group_descrip, group_image, admin_id, vote_ti
 -- Name: groups_group_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ltaziri
 --
 
-SELECT pg_catalog.setval('groups_group_id_seq', 16, true);
+SELECT pg_catalog.setval('groups_group_id_seq', 11, true);
 
 
 --
@@ -414,8 +360,13 @@ SELECT pg_catalog.setval('groups_group_id_seq', 16, true);
 --
 
 COPY invites (invite_id, invite_email, invite_text, invite_timestamp, invite_confirm, group_id, user_id) FROM stdin;
-1	ltaziri@gmail.com	YO!	2016-03-02 16:17:13.177956	f	1	1
-2	ltaziri@gmail.com	YO!	2016-03-02 18:36:53.90941	f	1	1
+70	ltaziri@gmail.com	This is an awesome group! Would love for you to join!	2016-03-12 14:59:16.748542	f	1	1
+71	ltaziri@gmail.com	This is an awesome group! Would love for you to join!	2016-03-12 15:09:01.650971	f	1	1
+72	ltaziri@gmail.com	This is an awesome group! Would love for you to join!	2016-03-12 15:16:01.480411	f	1	1
+40	friend@gmail.com	This is an awesome group! Would love for you to join!	2016-03-07 17:08:01.368071	f	1	1
+73	ltaziri@gmail.com	This is an awesome group! Would love for you to join!	2016-03-12 15:21:39.507655	f	1	1
+74	ltaziri@gmail.com	This is an awesome group! Would love for you to join!	2016-03-16 20:40:17.02396	f	1	1
+3	leilani@hbmail.com	Please join our crafty craft group!	2016-03-03 13:20:39.920426	f	9	5
 \.
 
 
@@ -423,7 +374,7 @@ COPY invites (invite_id, invite_email, invite_text, invite_timestamp, invite_con
 -- Name: invites_invite_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ltaziri
 --
 
-SELECT pg_catalog.setval('invites_invite_id_seq', 2, true);
+SELECT pg_catalog.setval('invites_invite_id_seq', 74, true);
 
 
 --
@@ -431,29 +382,15 @@ SELECT pg_catalog.setval('invites_invite_id_seq', 2, true);
 --
 
 COPY patterns (pattern_id, pattern_name, pattern_link, pattern_pdf, chosen, group_id) FROM stdin;
-1	Killgore Mitts	https://www.fancytigercrafts.com/patterns/fancy-tiger-crafts/kilgore-mitts	static/pdfs/kilgore_mits.pdf	f	1
 2	Exeter	http://www.ravelry.com/patterns/library/exeter-2	static/pdfs/Exeter5.pdf	f	1
 3	I Heart Cables	http://www.ravelry.com/patterns/library/i-heart-cables	static/pdfs/I_Heart_Cables.pdf	f	1
-16	pattern2		static/pdfs/3245_instructions_1_4.pdf	f	8
-17	pattern3		\N	f	8
-18	New Pattern	http://www.sometest.com	\N	t	7
-15	pattern1		\N	t	8
-19	Test Pattern		static/pdfs/3245_instructions_1_3_1.pdf	t	11
-20	some pattern	http://www.amazon.com/Knitting-With-Dog-Hair-Sweater/dp/0312152906	\N	t	12
-21	Pattern 1		\N	t	13
-22			static/pdfs/3245_instructions_1_4_1.pdf	t	13
-23		http://test.pattern.com	\N	t	13
-24	First Pattern		\N	t	10
-25	Second Pattern		\N	t	10
-26	Third pattern		\N	t	10
-29	Test1		\N	t	16
-30	Test2		\N	t	16
-34	Test Pattern		\N	t	2
-31	Test1		\N	f	9
-33	Test 3		static/pdfs/3245_instructions_1_3_2.pdf	f	9
-32	Test2	http://www.test.com	\N	t	9
-27	Test1		\N	f	15
-28	Test2	http://www.test.com	\N	t	15
+1	Killgore Mitts	https://www.fancytigercrafts.com/patterns/fancy-tiger-crafts/kilgore-mitts	static/pdfs/kilgore_mits.pdf	t	1
+5	Scarf Pattern Top	https://jalie.com/jalie2921-scarf-collar-top-sewing-pattern-402	\N	f	2
+10	Breakfast Bar Console	http://www.ana-white.com/2016/02/free_plans/40-breakfast-bar-featuring-i-am-homemaker	\N	f	5
+9	Rustic X Console	http://www.ana-white.com/2012/05/plans/rustic-x-console	\N	f	5
+7	Basic Sweatshirt	https://jalie.com/jalie3355-sweatshirt-hoodie-sweat-pants-pattern	\N	f	2
+8	Apothecary Console With Storage	http://www.ana-white.com/2012/03/apothecary-console-storage-doors	static/pdfs/kilgore_mits.pdf	f	5
+6	Baseball Tunic Tank	https://jalie.com/jalie3245-raglan-tee-racerback-tank-tunic-pattern	static/pdfs/kilgore_mits.pdf	f	2
 \.
 
 
@@ -461,7 +398,7 @@ COPY patterns (pattern_id, pattern_name, pattern_link, pattern_pdf, chosen, grou
 -- Name: patterns_pattern_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ltaziri
 --
 
-SELECT pg_catalog.setval('patterns_pattern_id_seq', 34, true);
+SELECT pg_catalog.setval('patterns_pattern_id_seq', 11, true);
 
 
 --
@@ -471,7 +408,7 @@ SELECT pg_catalog.setval('patterns_pattern_id_seq', 34, true);
 COPY usergroups (usergroup_id, group_id, user_id) FROM stdin;
 1	1	1
 2	2	1
-3	3	1
+83	9	5
 4	2	5
 5	2	3
 6	2	7
@@ -479,26 +416,21 @@ COPY usergroups (usergroup_id, group_id, user_id) FROM stdin;
 8	2	19
 9	2	6
 10	2	8
-11	3	5
-12	3	3
-13	3	15
-14	3	11
-15	3	8
-16	3	9
-17	3	13
+84	9	3
+85	9	7
+86	9	12
+87	9	16
 18	1	5
 19	1	7
 20	1	19
 21	1	6
-25	7	1
-26	8	1
-27	9	1
-28	10	1
-29	11	1
-30	12	1
-31	13	1
-32	15	1
-33	16	1
+25	5	1
+26	5	2
+27	5	3
+28	5	4
+29	5	5
+43	6	1
+44	7	1
 \.
 
 
@@ -506,7 +438,7 @@ COPY usergroups (usergroup_id, group_id, user_id) FROM stdin;
 -- Name: usergroups_usergroup_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ltaziri
 --
 
-SELECT pg_catalog.setval('usergroups_usergroup_id_seq', 33, true);
+SELECT pg_catalog.setval('usergroups_usergroup_id_seq', 100, true);
 
 
 --
@@ -548,9 +480,7 @@ COPY users (user_id, email, password, first_name, last_name, user_photo, user_de
 33	allian@hbmail.com	test	Allian	Roman	static/images/sewing_machine.jpg	
 34	florence@hbmail.com	test	Florence	Loi	static/images/crafter.jpg	
 35	kristin@hbmail.com	test	Kristin	Parke	static/images/glue_gun.jpg	
-1	leilani@hbmail.com	test	Leilani	Taziri	static/images/profilepic_2_1.jpg	                
-37	new@hbmail.com	test	test	test	static/images/glue_gun.jpg	\N
-38	leilani	test	lt	taz	static/images/crafter.jpg	\N
+1	leilani@hbmail.com	test	Leilani	Taziri	static/images/profilepic_1_1.jpg	 
 \.
 
 
@@ -558,7 +488,7 @@ COPY users (user_id, email, password, first_name, last_name, user_photo, user_de
 -- Name: users_user_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ltaziri
 --
 
-SELECT pg_catalog.setval('users_user_id_seq', 38, true);
+SELECT pg_catalog.setval('users_user_id_seq', 36, true);
 
 
 --
@@ -567,9 +497,20 @@ SELECT pg_catalog.setval('users_user_id_seq', 38, true);
 
 COPY votes (group_id, user_id, pattern_id) FROM stdin;
 1	1	1
-8	1	16
-9	1	32
-15	1	28
+1	6	1
+1	5	3
+5	2	9
+5	3	10
+5	4	9
+5	5	8
+5	1	10
+2	5	6
+2	3	5
+2	7	5
+2	30	7
+2	19	6
+2	6	6
+2	8	7
 \.
 
 
