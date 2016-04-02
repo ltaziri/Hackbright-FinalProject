@@ -55,7 +55,7 @@ class FlaskTests(unittest.TestCase):
 
 
     def test_load_signup(self):
-        """Tests to see if the signup page comes up."""
+        """Test to see if the sign up page comes up."""
 
         result = self.client.get('/sign_up_form')
 
@@ -74,8 +74,13 @@ class FlaskTests(unittest.TestCase):
                                       'user_photo':'images/cat'},
                                 follow_redirects=True)
 
+        #sign in field on homepage
         self.assertIn('<h2>Please Sign In</h2>', result.data)
+
+        #make sure a new user wasn't created
         self.assertNotIn('<h3> Your craft groups:</h3>', result.data)
+
+        #flash message, on homepage
         self.assertIn('email already exists, please sign in', result.data)
 
 
@@ -90,7 +95,7 @@ class FlaskTests(unittest.TestCase):
                                       'last_name':'Doe',
                                       'user_photo':'images/dog'},
                                   follow_redirects=True)
-
+        #header on user homepage
         self.assertIn('<h3> Your craft groups:</h3>', result.data)
 
 
@@ -106,7 +111,10 @@ class FlaskTests(unittest.TestCase):
                                         'user_photo':'images/dog'},
                                   follow_redirects=True)
 
+        # make sure js validation did not allow form submit and still on sign up page
         self.assertIn('<h2>Sign Up!</h2>', result.data)
+
+        # make sure a user wasn't created and redirected to user homepage
         self.assertNotIn('<h3> Your craft groups:</h3>', result.data) 
 
 
@@ -122,7 +130,10 @@ class FlaskTests(unittest.TestCase):
                                         'user_photo':'images/dog'},
                                   follow_redirects=True)
 
+        # make sure js validation did not allow form submit and still on sign up page
         self.assertIn('<h2>Sign Up!</h2>', result.data)
+
+        # make sure a user wasn't created and redirected to user homepage
         self.assertNotIn('<h3> Your craft groups:</h3>', result.data) 
 
 
@@ -138,7 +149,10 @@ class FlaskTests(unittest.TestCase):
                                         'user_photo':'images/dog'},
                                   follow_redirects=True)
 
+        # make sure js validation did not allow form submit and still on sign up page
         self.assertIn('<h2>Sign Up!</h2>', result.data)
+
+        # make sure a user wasn't created and redirected to user homepage
         self.assertNotIn('<h3> Your craft groups:</h3>', result.data) 
 
 
@@ -154,7 +168,10 @@ class FlaskTests(unittest.TestCase):
                                   'user_photo':'images/dog'},
                                   follow_redirects=True)
 
+        # make sure js validation did not allow form submit and still on sign up page
         self.assertIn('<h2>Sign Up!</h2>', result.data)
+
+        # make sure a user wasn't created and redirected to user homepage
         self.assertNotIn('<h3> Your craft groups:</h3>', result.data) 
 
 
@@ -166,6 +183,7 @@ class FlaskTests(unittest.TestCase):
                                         'password':'test'},
                                   follow_redirects=True)
 
+       # make sure a user is redirected to user homepage 
         self.assertIn('<h3> Your craft groups:</h3>', result.data)
 
 
@@ -177,7 +195,11 @@ class FlaskTests(unittest.TestCase):
                                         'password':'wrong'},
                                   follow_redirects=True)
 
+        # make sure a user is redirected to homepage to try to sign in again
         self.assertIn('<h4>Sign in</h4>', result.data)
+
+        # make sure a user wasn't redirected to user homepage
+        self.assertNotIn('<h3> Your craft groups:</h3>', result.data
 
 
     def test_login_new_user(self):
@@ -188,14 +210,15 @@ class FlaskTests(unittest.TestCase):
                                         'password':'test'},
                                   follow_redirects=True)
 
+        # make sure a user is redirected to sign up page if they don't have an account
         self.assertIn('<h2>Sign Up!</h2>', result.data)
-
 
 
 class FlaskTestsSessions(unittest.TestCase):
     """Tests for MakeAlong app for functions that require session data."""
 
     def setUp(self):
+        """Do before every test"""
         # Get the Flask test client
         self.client = app.test_client()
 
@@ -214,7 +237,8 @@ class FlaskTestsSessions(unittest.TestCase):
         seed.load_usergroups()
         seed.load_patterns()
         seed.load_invites()
-        
+
+        # Reset auto incrementing primary keys to start after seed data
         seed.set_val_user_id()
         seed.set_val_group_id()
         seed.set_val_usergroup_id()
@@ -244,7 +268,7 @@ class FlaskTestsSessions(unittest.TestCase):
 
 
     def test_open_invite_msg(self):
-        """Test that open invite msgs are appearing on homepage"""
+        """Test that unconfirmed invite msgs are appearing on homepage"""
 
         result = self.client.get('/user', follow_redirects=True)
     
@@ -258,7 +282,9 @@ class FlaskTestsSessions(unittest.TestCase):
         return self.client.post('/invite_confirm.json', 
                                   data={'invite_id':1,},
                                   follow_redirects=True)
-  
+        
+        # Make sure a group div for the group the user just accepted the invite
+        # for is now showing up on the user page 
         self.assertIn('group_id:4', result.data)
 
 
@@ -287,6 +313,7 @@ class FlaskTestsSessions(unittest.TestCase):
 
         result = self.client.get('/group_home/1', follow_redirects=True)
         
+        #The logged in user is part of this group
         self.assertEqual(result.status_code, 200)
         self.assertIn('Welcome to Knitters to the rescue!', result.data)
 
@@ -296,6 +323,8 @@ class FlaskTestsSessions(unittest.TestCase):
 
         result = self.client.get('/group_home/4', follow_redirects=True)
         
+        #The logged in user is not part of this group, test that they are 
+        #redirected back to their user homepage
         self.assertEqual(result.status_code, 200)
         self.assertIn('<h3> Your craft groups:</h3>', result.data)
 
@@ -305,6 +334,8 @@ class FlaskTestsSessions(unittest.TestCase):
 
         result = self.client.get('/group_profile_form/4', follow_redirects=True)
         
+        #The logged in user is not part of this group, test that they are 
+        #redirected back to their user homepage
         self.assertEqual(result.status_code, 200)
         self.assertIn('Your craft groups:', result.data)
     
@@ -319,6 +350,8 @@ class FlaskTestsSessions(unittest.TestCase):
                                         'text': "Come join my group!"},
                                         follow_redirects=True)
 
+        # Flash message that appears after the invite has been added to the 
+        # database
         self.assertEqual(result.status_code, 200)
         self.assertIn('Invitation sent!', result.data)
 
@@ -328,12 +361,13 @@ class FlaskTestsSessions(unittest.TestCase):
 
         result = self.client.get('/log_out', follow_redirects=True)
         
+        # Logged out and returned to the homepage
         self.assertEqual(result.status_code, 200)
-        self.assertIn('<h4> Sign in </h4>', result.data)
+        self.assertIn('<h4>Sign in</h4>', result.data)
       
 
 class FlaskTestMakeGroupsUpdateGroups(unittest.TestCase):
-    """Tests for MakeAlong app for making groups or updating groups."""
+    """Tests for MakeAlong app for making groups or updating groups without polls."""
 
     def setUp(self):
         """Do at the beginning of every test"""
@@ -356,6 +390,7 @@ class FlaskTestMakeGroupsUpdateGroups(unittest.TestCase):
         seed.load_patterns()
         seed.load_invites()
         
+        # Reset auto incrementing primary keys to start after seed data
         seed.set_val_user_id()
         seed.set_val_group_id()
         seed.set_val_usergroup_id()
@@ -385,6 +420,7 @@ class FlaskTestMakeGroupsUpdateGroups(unittest.TestCase):
                                         'group_image':'static/images/craft_group_default.jpg'},
                                         follow_redirects=True)
 
+        #Group was created without a pattern and redirected to new group page
         self.assertEqual(result.status_code, 200)
         self.assertIn('New Group', result.data)
         self.assertIn('Fun Group', result.data)
@@ -401,6 +437,7 @@ class FlaskTestMakeGroupsUpdateGroups(unittest.TestCase):
                                         'pattern_name':'Chosen Pattern'},
                                         follow_redirects=True)
 
+        #Group was created with a set pattern and redirected to new group page
         self.assertEqual(result.status_code, 200)
         self.assertIn('Chosen Pattern', result.data)
 
@@ -410,6 +447,7 @@ class FlaskTestMakeGroupsUpdateGroups(unittest.TestCase):
 
         result = self.client.get('/group_profile_form/2', follow_redirects=True)
         
+        # Admin is logged in and should be able to get to this form page
         self.assertEqual(result.status_code, 200)
         self.assertIn('<p>Currently:<i> Super Sewers</i></p>', result.data)
 
@@ -419,8 +457,16 @@ class FlaskTestMakeGroupsUpdateGroups(unittest.TestCase):
 
         result = self.client.get('/group_profile_form/5', follow_redirects=True)
         
+        # Admin is not logged in and should not be able to get to the form page
+        # instead they should be redirected to the group page
+        
+        # Form page
+        self.assertNotIn('<p>Currently:<i> Modern Quilters</i></p>', result.data)
+
+        #Group page for correct redirect
         self.assertEqual(result.status_code, 200)
         self.assertIn('Welcome to Modern Quilters', result.data)
+
 
 
     def test_update_group_name(self):
@@ -434,7 +480,7 @@ class FlaskTestMakeGroupsUpdateGroups(unittest.TestCase):
                                         follow_redirects=True)
 
         self.assertEqual(result.status_code, 200)
-        self.assertIn('Wecome to New Group Name', result.data)
+        self.assertIn('Welcome to New Group Name', result.data)
 
 
     def test_update_group_description(self):
@@ -461,6 +507,7 @@ class FlaskTestMakeGroupsUpdateGroups(unittest.TestCase):
                                         'group_image':"",},
                                         follow_redirects=True)
 
+        #Server should add the #makealong prefix prior to storing in the database
         self.assertEqual(result.status_code, 200)
         self.assertIn('#makealongnewhashtag', result.data)
 
@@ -496,7 +543,7 @@ class FlaskTestMakeGroupsUpdateGroups(unittest.TestCase):
 
 
     def test_update_add_pattern_with_name(self):
-        """Test that a group pattern can be added to a group that didn't have one"""
+        """Test that a group pattern without a link can be added to a group that didn't have one"""
 
         return self.client.post('/group_profile_update/2', 
                                   data={'group_name':"",
@@ -511,7 +558,7 @@ class FlaskTestMakeGroupsUpdateGroups(unittest.TestCase):
 
 
     def test_update_add_pattern_with_link(self):
-        """Test that a group pattern can be added to a group that didn't have one"""
+        """Test that a group pattern with a link can be added to a group that didn't have one"""
 
         return self.client.post('/group_profile_update/2', 
                                   data={'group_name':"",
@@ -584,29 +631,34 @@ class FlaskTestGroupPoll(unittest.TestCase):
                                         'pattern_name_b':'Pattern B'},
                                         follow_redirects=True)
 
+        # Test that poll clock is showing up
         self.assertEqual(result.status_code, 200)
         self.assertIn('Days Left to Vote on a Pattern', result.data)
 
 
     def test_poll_votes(self):
-        """Test if correct poll count is being sent to template""" 
+        """Test if correct poll count is being sent to the client""" 
         
         return self.client.get('/poll.json/4', follow_redirects=True)
 
+        # Test that correct vote count is being returned and rendered by the client
         self.assertIn('Pattern A:0', result.data)
         self.assertIn('Pattern B:0', result.data)
 
 
     def test_add_vote(self):
-        """Test if poll vote is handled correctly""" 
+        """Test if admin final confirmation buttons are showing after all votes are in""" 
         
         return self.client.get('/update_poll.json',
                                 data={'group_id':4,
                                       'pattern_id':4},
                                       follow_redirects=True)
 
+        # Vote data
         self.assertIn('Pattern A:1', result.data)
         self.assertIn('Pattern B:0', result.data)
+
+        # Admin final confirmation buttons
         self.assertIn('<label><b>Pattern A</label></b>', result.data)
         self.assertIn('<label><b>Pattern B</label></b>', result.data)
 
@@ -618,6 +670,7 @@ class FlaskTestGroupPoll(unittest.TestCase):
                                 data={'final_vote_submit':"4"},
                                       follow_redirects=True)
 
+        # Test that poll in no longer showing after admin confirmation
         self.assertIn('This month we are working on Pattern A', result.data)
 
 
@@ -673,6 +726,7 @@ class FlaskTestComments(unittest.TestCase):
                                       'comment_text':"This is a new commment"},
                                       follow_redirects=True)
 
+        # Test that text comment is being rendered in browser after ajax call
         self.assertIn("<div class='comment_text'> This is a new comment</div>", result.data)
 
 
@@ -684,6 +738,8 @@ class FlaskTestComments(unittest.TestCase):
                                       'comment_text':"This comment has a link https://www.ravelry.com/"},
                                       follow_redirects=True)
 
+        # Test that link in text comment was correctly turned into a link by the
+        # server and is being rendered correctly in the browser after ajax call
         self.assertIn("<a href ='https://www.ravelry.com/'>", result.data)
 
 
@@ -695,6 +751,8 @@ class FlaskTestComments(unittest.TestCase):
                                       'comment_text':"This is a youtube link https://www.youtube.com/watch?v=IGITrkYdjJs"},
                                       follow_redirects=True)
 
+        # Test that youtube link in text comment was correctly turned into an 
+        # iframe preview window with the correct youtube id after ajax call
         self.assertIn("<iframe width='300' height='300' src='http://www.youtube.com/embed/IGITrkYdjJs?autoplay=0'>", result.data)
 
 
@@ -705,6 +763,8 @@ class FlaskTestComments(unittest.TestCase):
                                 data={'group_id':"1"},
                                       follow_redirects=True)
 
+        # Test that previously rendered, in browser comment, shows correctly 
+        # after refresh
         self.assertIn("<div class='comment_text'> This is a new comment</div>", result.data)
 
 
@@ -715,6 +775,8 @@ class FlaskTestComments(unittest.TestCase):
                                 data={'group_id':"1"},
                                       follow_redirects=True)
 
+        # Test that previously rendered, in browser comment, shows correctly 
+        # after refresh
         self.assertIn("<a href ='https://www.ravelry.com/'>", result.data)
 
 
@@ -724,7 +786,9 @@ class FlaskTestComments(unittest.TestCase):
         return self.client.get('/group_home/1',
                                 data={'group_id':"1"},
                                       follow_redirects=True)
-
+        
+        # Test that previously rendered, in browser comment, shows correctly 
+        # after refresh
         self.assertIn("<iframe width='300' height='300' src='http://www.youtube.com/embed/IGITrkYdjJs?autoplay=0'>", result.data)
 
 
