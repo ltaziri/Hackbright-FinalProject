@@ -521,7 +521,7 @@ def update_group_profile(group_id):
                 db.session.commit()
 
             if update_group_hashtag != "":
-                group.hashtag = update_group_hashtag
+                group.hashtag = '#makealong' + update_group_hashtag
                 db.session.commit()
 
             if "group_img" in request.files and request.files['group_img'].filename:
@@ -743,7 +743,7 @@ def add_comment():
 
 @app.route('/send_invite/<int:group_id>', methods=['POST'])
 def send_invitation(group_id):
-    """Send email invitation, store invite in databse"""
+    """Send email invitation, store invite in database"""
 
     # Get group and user information from database for the invite
 

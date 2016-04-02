@@ -23,33 +23,32 @@
 {% block body %}
 <!-- <body> -->
 {% endblock %}
-    <nav class="navbar navbar-default navbar-static-top overlay">
-    <hr class="divider">
-      <div class="container">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="logo_link" href="/">
-            <h1 id="logo"><span>M</span>ake<span>A</span>long</h1>
-          </a>
-        </div>
-        <div id="navbar" class="navbar-collapse collapse">
-          <a href="/log_out"><button id="logout" type="button" class="btn btn-default navbar-btn navbar-right">Log Out</button></a>
-        </div>
-      </div>
-    <hr class="divider">  
-    </nav>
-  <div class = "container">
-      <ul class="list-unstyled">
-        {% for message in get_flashed_messages() %}
-            <li style="color:green">{{ message }}</li>
-        {% endfor %}
-      </ul>  
-
+<nav class="navbar navbar-default navbar-static-top overlay">
+  <hr class="divider">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+      <span class="sr-only">Toggle navigation</span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      </button>
+      <a class="logo_link" href="/">
+        <h1 id="logo"><span>M</span>ake<span>A</span>long</h1>
+      </a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <a href="/log_out"><button id="logout" type="button" class="btn btn-default navbar-btn navbar-right">Log Out</button></a>
+    </div>
+  </div>
+  <hr class="divider">
+</nav>
+<div class = "container">
+  <ul class="list-unstyled">
+    {% for message in get_flashed_messages() %}
+      <li style="color:green">{{ message }}</li>
+    {% endfor %}
+  </ul>
       {% block content %}  
       
       {% endblock %}

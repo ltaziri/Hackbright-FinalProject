@@ -12,8 +12,7 @@ class MakeAlongBrowserTest(unittest.TestCase):
     def test_signup_form(self):
 
         browser= self.browser
-        browser.get('http://localhost:5000/sign_up_form')
-
+       
         assert browser.find_element_by_id('new_user_email')
 
 

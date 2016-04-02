@@ -6,7 +6,6 @@
 <div class="row">
     <div class="form_background overlay col-xs-12 col-sm-12 col-md-9 col-lg-10 column col-sm-offset-0 col-md-offset-1 col-lg-offset-1 ">
         <h2>Make updates to {{ group.group_name }}</h2>
-
         <form action="/group_profile_update/{{ group.group_id }}" id="update_group_submit" method="POST" enctype="multipart/form-data">
             
             <div class="row">
@@ -21,10 +20,10 @@
                 <div class ="col-xs-12 col-sm-12 col-md-9 form-group">
                     <h3>Group Description</h3>
                     {% if group.group_descrip %}
-                    <p>Currently: <i>{{ group.group_descrip }}</i></p>
+                        <p>Currently: <i>{{ group.group_descrip }}</i></p>
                     {% endif %}
-                    <label>Update:</label> 
-                     <textarea class="form-control" rows = 3 name="group_descrip" placeholder="group description"></textarea>
+                    <label>Update:</label>
+                    <textarea class="form-control" rows = 3 name="group_descrip" placeholder="group description"></textarea>
                 </div>
             </div>
             <div class="row">
@@ -43,79 +42,75 @@
                     <h3>Group Photo</h3>
                     <p>Currently: <br> <img src="/{{ group.group_image }}" width="200"></p>
                     <br>
-                    <label>Update:</label> 
+                    <label>Update:</label>
                     <input type="file" class="form-control" name="group_img" id="update_group_photo">
                     <br>
                 </div>
             </div>
             <h3>Pattern</h3>
-
             {% if patterns|length > 1 %}
-            <p> Pattern voting is in process. Return to the group page for more information </p> <br>
+                <p> Pattern voting is in process. Return to the group page for more information </p> <br>
             {% endif %}
-
             {% if patterns|length == 1 %}
                 <div class="row">
                     <div class ="col-xs-12 col-sm-12 col-md-6 form-group">
                         <h3>Pattern Name:</h3>
                         {% if patterns[0].pattern_name %}
-                        <p>Currently: <i>{{ patterns[0].pattern_name }}</i></p>
+                            <p>Currently: <i>{{ patterns[0].pattern_name }}</i></p>
                         {% endif %}
                         <label>Update:</label>
                         <input type="text" class="form-control" name="update_pattern_name" placeholder="pattern name">
                     </div>
                 </div>
                 <div class="row">
-                     <div class ="col-xs-12 col-sm-12 col-md-6 form-group">
+                    <div class ="col-xs-12 col-sm-12 col-md-6 form-group">
                         <h3>PDF Pattern: </h3>
                         {% if patterns[0].pattern_pdf %}
-                        <p>Currently: <a href="/{{ patterns[0].pattern_pdf }}" target="blank"> {{ patterns[0].pattern_pdf[12:] }} </a> </p>
+                            <p>Currently: <a href="/{{ patterns[0].pattern_pdf }}" target="blank"> {{ patterns[0].pattern_pdf[12:] }} </a> </p>
                         {% endif %}
                         <label>Update:</label><br>
-                         <input type="file" class="form-control" name="update_pattern_pdf">  
-                    </div>                    
+                        <input type="file" class="form-control" name="update_pattern_pdf">
+                    </div>
                 </div>
                 <div class="row">
-                     <div class ="col-xs-12 col-sm-12 col-md-6 form-group">
+                    <div class ="col-xs-12 col-sm-12 col-md-6 form-group">
                         <h3>Pattern Link:</h3>
                         {% if patterns[0].pattern_link %}
-                        <p>Currently: <a href="{{ patterns[0].pattern_link }}" target="blank"> {{ patterns[0].pattern_link }} </a> </p>
-                        <br>
+                            <p>Currently: <a href="{{ patterns[0].pattern_link }}" target="blank"> {{ patterns[0].pattern_link }} </a> </p>
+                            <br>
                         {% endif %}
                         <label>Update:</label>
                         <input type="url" class="form-control" name="update_pattern_link" placeholder="link to pattern">
                     </div>
                 </div>
             {% endif %}
-
             {% if patterns|length == 0 %}
                 <div id ="update_base_pattern">
-                <p>Currently: <i>None</i></p>
-                <div class="row">
-                    <div class ="col-xs-12 col-sm-12 col-md-6 form-group">
-                        <label>Pattern Name:</label>
-                        <input type="text" class="form-control pattern_name" name="new_pattern_name" placeholder="pattern name">
+                    <p>Currently: <i>None</i></p>
+                    <div class="row">
+                        <div class ="col-xs-12 col-sm-12 col-md-6 form-group">
+                            <label>Pattern Name:</label>
+                            <input type="text" class="form-control pattern_name" name="new_pattern_name" placeholder="pattern name">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class ="col-xs-12 col-sm-12 col-md-6 form-group">
+                            <label>PDF Pattern: </label>
+                            <input type="file" class="form-control pattern_pdf" name="new_pattern_pdf">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class ="col-xs-12 col-sm-12 col-md-6 form-group">
+                            <label>Pattern Link:</label>
+                            <input type="url" class="form-control pattern_link" name="new_pattern_link" placeholder="link to pattern">
+                        </div>
                     </div>
                 </div>
-                <div class="row">
-                     <div class ="col-xs-12 col-sm-12 col-md-6 form-group">
-                        <label>PDF Pattern: </label>
-                         <input type="file" class="form-control pattern_pdf" name="new_pattern_pdf">  
-                    </div>                    
-                </div>
-                <div class="row">
-                     <div class ="col-xs-12 col-sm-12 col-md-6 form-group">
-                        <label>Pattern Link:</label>
-                        <input type="url" class="form-control pattern_link" name="new_pattern_link" placeholder="link to pattern">
-                    </div>
-                </div>
-                </div>
-                <div class ="form-group">    
+                <div class ="form-group">
                     
                     <label>Want to create a poll instead?</label>
                     <input type="checkbox" id="update_pattern_poll" name="pattern_poll" value="pattern_poll">
                 </div>
-
                 <div class="update_poll_div">
                     <div class = "row">
                         <div class ="col-xs-12 col-sm-12 col-lg-10">
@@ -128,7 +123,7 @@
                     <div class = "row">
                         <div class ="col-xs-12 col-sm-12 col-lg-3 poll-setup">
                             <h4>Option 1</h4>
-                            <div class ="form-group"> 
+                            <div class ="form-group">
                                 <label>First Pattern's Name:</label><br>
                                 <input type="text" class="form-control pattern_name_a" name="pattern_name_a" maxlength="36" placeholder="pattern name">
                             </div>
@@ -143,7 +138,7 @@
                         </div>
                         <div class ="col-xs-12 col-sm-12 col-lg-3 poll-setup">
                             <h4>Option 2</h4>
-                            <div class ="form-group"> 
+                            <div class ="form-group">
                                 <label>Second Pattern's Name:</label><br>
                                 <input type="text" class="form-control pattern_name_b" name="pattern_name_b" maxlength="36" placeholder="pattern name">
                             </div>
@@ -158,7 +153,7 @@
                         </div>
                         <div class ="col-xs-12 col-sm-12 col-lg-3 poll-setup">
                             <h4>Option 3</h4>
-                             <div class ="form-group"> 
+                            <div class ="form-group">
                                 <label>Third Pattern's Name:</label><br>
                                 <input type="text" class="form-control pattern_name_c" name="pattern_name_c" maxlength="36"  placeholder="pattern name">
                             </div>
@@ -172,9 +167,9 @@
                             </div>
                         </div>
                     </div>
-                </div>       
-            {% endif %}          
-           <button class="btn btn-default" type="submit">"Update Your Profile"</button><a href="/group_home/{{group.group_id}}"> Cancel</a>
+                </div>
+            {% endif %}
+            <button class="btn btn-default" type="submit">"Update Your Profile"</button><a href="/group_home/{{group.group_id}}"> Cancel</a>
         </form>
     </div>
 </div>

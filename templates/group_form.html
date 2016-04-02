@@ -5,170 +5,142 @@
 {% block content %}
 
 <a href="/user"> <span class="glyphicon glyphicon-menu-left" aria-hidden="true"></span> Return to your homepage</a>
-    <div class="row">
+<div class="row">
     <div class="form_background col-xs-12 col-sm-12 col-md-9 col-lg-11  column col-sm-offset-0 col-md-offset-1 col-lg-offset-1 overlay">
-
         <form action="/create_group" id="new_group_form" enctype="multipart/form-data" method="POST">
             <h2>Create a Group!</h2>
             <h3> Group Information</h3>
-
             <div class="row">
                 <div class ="col-xs-12 col-sm-12 col-md-6 form-group">
                     <label>Group Name:</label></br>
                     <input type="text" class="form-control" id ="new_group_name" name="group_name" placeholder="group name" required>
                 </div>
-            </div>    
-
-           <div class="row">
-               <div class ="col-xs-12 col-sm-12 col-md-9 form-group">
+            </div>
+            <div class="row">
+                <div class ="col-xs-12 col-sm-12 col-md-9 form-group">
                     <label>Group Description (optional):</label><br>
                     <textarea class="form-control" rows = 3 name="group_descrip" placeholder="group description"></textarea>
-                </div> 
-            </div> 
-
+                </div>
+            </div>
             <div class="row">
-               <div class ="col-xs-12 col-sm-12 col-md-4 form-group">
+                <div class ="col-xs-12 col-sm-12 col-md-4 form-group">
                     <label>Group Hashtag(optional):</label><br>
                     <div class ="input-group">
                         <div class="input-group-addon">#makealong</div>
                         <input type="text" class="form-control" name="hashtag" placeholder="hashtag">
                     </div>
-                </div> 
-            </div>   
-
-            <br>
-
-            <h3> What Pattern Will Your Group be Working on?</h3>
-                <div id="base_pattern">
-
-                    <div class="row">
-                        <div class ="col-xs-12 col-sm-12 col-md-9 form-group">
-                            <label>Pattern Name:</label><br>
-                            <input type="text" class="form-control" name="pattern_name" id="pattern_name" placeholder="pattern name">
-                        </div>
-                    </div>
-
-                     <div class="row">
-                        <div class ="col-xs-12 col-sm-12 col-md-9 form-group">
-                            <label>Upload a PDF Pattern (optional):</label><br>
-                            <input type="file" class="form-control" name="pattern_pdf" id="pattern_pdf">
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class ="col-xs-12 col-sm-12 col-md-9 form-group">
-                            <label>Link to Pattern(optional):</label><br>
-                            <input type="url" class="form-control" name="pattern_link" id="pattern_link" placeholder="link to pattern"><br>
-                        </div>
-                    </div>
-
-                </div>
-
-                <div class ="form-group">    
-                    <h4>Have some options and want the group to help you decide? <br>
-                        We can create poll for you and your friends can help you decide!</h4>
-                    <br>
-                    <label>Create a poll</label>
-                    <input type="checkbox" id="pattern_poll" name="pattern_poll" value="pattern_poll">
-                </div>
-
-                <div id="poll_div">
-
-                    <div class = "row">
-                        <div class ="col-xs-12 col-sm-12 col-lg-10">
-                            <div class ="form-group form-inline">
-                                <label>How many days to you want to give friend's to vote?</label>
-                                <input type="number" class="form-control input-small" name="vote_days" id="num_days" min="1" placeholder="days">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class = "row">
-                        <div class ="col-xs-12 col-sm-12 col-lg-3 poll-setup">
-                            <h4>Option 1</h4>
-                            <div class ="form-group"> 
-                                <label>First Pattern's Name:</label><br>
-                                <input type="text" class="form-control" name="pattern_name_a" id="pattern_name_a" maxlength="36" placeholder="pattern name">
-                            </div>
-
-                            <div class ="form-group">
-                                <label>Upload a PDF Pattern(optional):</label> <br>
-                                <input type="file" class="form-control" id="pattern_pdf_a" name="pattern_pdf_a">
-                            </div>
-
-                            <div class ="form-group">
-                                <label>Link to Pattern(optional):</label><br>
-                                <input type="url" class="form-control" name="pattern_link_a" id="pattern_link_a" placeholder="link to pattern">
-                            </div>
-                        </div>
-
-                        <div class ="col-xs-12 col-sm-12 col-lg-3 poll-setup">
-                            <h4>Option 2</h4>
-                            <div class ="form-group"> 
-                                <label>Second Pattern's Name:</label><br>
-                                <input type="text" class="form-control" name="pattern_name_b" id="pattern_name_b" maxlength="36" placeholder="pattern name">
-                            </div>
-
-                            <div class ="form-group">
-                                <label>Upload a PDF Pattern(optional):</label> <br>
-                                <input type="file" class="form-control" id="pattern_pdf_b" name="pattern_pdf_b">
-                            </div>
-
-                            <div class ="form-group">
-                                <label>Link to Pattern(optional):</label><br>
-                                <input type="url" class="form-control" name="pattern_link_b" id="pattern_link_b" placeholder="link to pattern">
-                            </div>
-                        </div>
-
-                        <div class ="col-xs-12 col-sm-12 col-lg-3 poll-setup">
-                            <h4>Option 3</h4>
-                             <div class ="form-group"> 
-                                <label>Third Pattern's Name:</label><br>
-                                <input type="text" class="form-control" name="pattern_name_c" id="pattern_name_c" maxlength="36" placeholder="pattern name">
-                            </div>
-
-                            <div class ="form-group">
-                                <label>Upload a PDF Pattern(optional):</label> <br>
-                                <input type="file" class="form-control" id="pattern_pdf_c" name="pattern_pdf_c">
-                            </div>
-
-                            <div class ="form-group">
-                                <label>Link to Pattern(optional):</label><br>
-                                <input type="url" class="form-control" name="pattern_link_c" id="pattern_link_c" placeholder="link to pattern">
-                            </div>
-                        </div>
-
-                    </div> <!-- end of poll div -->
-                </div>    
-
-            <h3>Select an image for your group or upload your own:</h3>
-            <div class = "row">
-
-                 <div class ="form-group col-xs-12 col-sm-12 col-md-6 col-lg-3">
-                    <input class="image_radio" type='radio' name="group_image" value="static/images/knitting_group_default.jpg">
-                    <img src="static/images/knitting_group_default.jpg" width="200">
-                </div>
-
-                <div class ="form-group col-xs-12 col-sm-12 col-md-6 col-lg-3">
-                    <input class="image_radio" type='radio' name="group_image" value="static/images/sewing_group_default.jpg">
-                    <img src="static/images/sewing_group_default.jpg" width="200">
-                </div>
-
-<!--                 <div class="clearfix visible-md-block"></div>
- -->                <div class ="form-group col-xs-12 col-sm-12 col-md-6 col-lg-3 ">
-                    <input class="image_radio" type='radio' name="group_image" value="static/images/craft_group_default.jpg">
-                    <img src="static/images/craft_group_default.jpg" width="200">
-                </div>
-
-                <div class ="form-group col-xs-12 col-sm-5 col-md-5 col-lg-3">
-                    <input type='radio' name="group_image" value=" " id="group_radio">
-                    <label for="grown_img_upload"> Select your own photo:</label>
-                    <input id="group_img_upload" class="form-control" type="file" name="photo"><br>
                 </div>
             </div>
-            <button class="btn btn-default" type="submit">Create Your Group</button><a href="/user"> Cancel</a>
-        </form>
-        
+            <br>
+            <h3> What Pattern Will Your Group be Working on?</h3>
+            <div id="base_pattern">
+                <div class="row">
+                    <div class ="col-xs-12 col-sm-12 col-md-9 form-group">
+                        <label>Pattern Name:</label><br>
+                        <input type="text" class="form-control" name="pattern_name" id="pattern_name" placeholder="pattern name">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class ="col-xs-12 col-sm-12 col-md-9 form-group">
+                        <label>Upload a PDF Pattern (optional):</label><br>
+                        <input type="file" class="form-control" name="pattern_pdf" id="pattern_pdf">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class ="col-xs-12 col-sm-12 col-md-9 form-group">
+                        <label>Link to Pattern(optional):</label><br>
+                        <input type="url" class="form-control" name="pattern_link" id="pattern_link" placeholder="link to pattern"><br>
+                    </div>
+                </div>
+            </div>
+            <div class ="form-group">
+                <h4>Have some options and want the group to help you decide? <br>
+                We can create poll for you and your friends can help you decide!</h4>
+                <br>
+                <label>Create a poll</label>
+                <input type="checkbox" id="pattern_poll" name="pattern_poll" value="pattern_poll">
+            </div>
+            <div id="poll_div">
+                <div class = "row">
+                    <div class ="col-xs-12 col-sm-12 col-lg-10">
+                        <div class ="form-group form-inline">
+                            <label>How many days to you want to give friend's to vote?</label>
+                            <input type="number" class="form-control input-small" name="vote_days" id="num_days" min="1" placeholder="days">
+                        </div>
+                    </div>
+                </div>
+                <div class = "row">
+                    <div class ="col-xs-12 col-sm-12 col-lg-3 poll-setup">
+                        <h4>Option 1</h4>
+                        <div class ="form-group">
+                            <label>First Pattern's Name:</label><br>
+                            <input type="text" class="form-control" name="pattern_name_a" id="pattern_name_a" maxlength="36" placeholder="pattern name">
+                        </div>
+                        <div class ="form-group">
+                            <label>Upload a PDF Pattern(optional):</label> <br>
+                            <input type="file" class="form-control" id="pattern_pdf_a" name="pattern_pdf_a">
+                        </div>
+                        <div class ="form-group">
+                            <label>Link to Pattern(optional):</label><br>
+                            <input type="url" class="form-control" name="pattern_link_a" id="pattern_link_a" placeholder="link to pattern">
+                        </div>
+                    </div>
+                    <div class ="col-xs-12 col-sm-12 col-lg-3 poll-setup">
+                        <h4>Option 2</h4>
+                        <div class ="form-group">
+                            <label>Second Pattern's Name:</label><br>
+                            <input type="text" class="form-control" name="pattern_name_b" id="pattern_name_b" maxlength="36" placeholder="pattern name">
+                        </div>
+                        <div class ="form-group">
+                            <label>Upload a PDF Pattern(optional):</label> <br>
+                            <input type="file" class="form-control" id="pattern_pdf_b" name="pattern_pdf_b">
+                        </div>
+                        <div class ="form-group">
+                            <label>Link to Pattern(optional):</label><br>
+                            <input type="url" class="form-control" name="pattern_link_b" id="pattern_link_b" placeholder="link to pattern">
+                        </div>
+                    </div>
+                    <div class ="col-xs-12 col-sm-12 col-lg-3 poll-setup">
+                        <h4>Option 3</h4>
+                        <div class ="form-group">
+                            <label>Third Pattern's Name:</label><br>
+                            <input type="text" class="form-control" name="pattern_name_c" id="pattern_name_c" maxlength="36" placeholder="pattern name">
+                        </div>
+                        <div class ="form-group">
+                            <label>Upload a PDF Pattern(optional):</label> <br>
+                            <input type="file" class="form-control" id="pattern_pdf_c" name="pattern_pdf_c">
+                        </div>
+                        <div class ="form-group">
+                            <label>Link to Pattern(optional):</label><br>
+                            <input type="url" class="form-control" name="pattern_link_c" id="pattern_link_c" placeholder="link to pattern">
+                        </div>
+                    </div>
+                    </div> <!-- end of poll div -->
+                </div>
+                <h3>Select an image for your group or upload your own:</h3>
+                <div class = "row">
+                    <div class ="form-group col-xs-12 col-sm-12 col-md-6 col-lg-3">
+                        <input class="image_radio" type='radio' name="group_image" value="static/images/knitting_group_default.jpg">
+                        <img src="static/images/knitting_group_default.jpg" width="200">
+                    </div>
+                    <div class ="form-group col-xs-12 col-sm-12 col-md-6 col-lg-3">
+                        <input class="image_radio" type='radio' name="group_image" value="static/images/sewing_group_default.jpg">
+                        <img src="static/images/sewing_group_default.jpg" width="200">
+                    </div>
+                    <!--                 <div class="clearfix visible-md-block"></div>
+                    -->                <div class ="form-group col-xs-12 col-sm-12 col-md-6 col-lg-3 ">
+                        <input class="image_radio" type='radio' name="group_image" value="static/images/craft_group_default.jpg">
+                        <img src="static/images/craft_group_default.jpg" width="200">
+                    </div>
+                    <div class ="form-group col-xs-12 col-sm-5 col-md-5 col-lg-3">
+                        <input type='radio' name="group_image" value=" " id="group_radio">
+                        <label for="grown_img_upload"> Select your own photo:</label>
+                        <input id="group_img_upload" class="form-control" type="file" name="photo"><br>
+                    </div>
+                </div>
+                <button class="btn btn-default" type="submit">Create Your Group</button><a href="/user"> Cancel</a>
+            </form>
+            
         </div>
     </div>
 <!-- </div> -->

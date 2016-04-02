@@ -282,6 +282,99 @@ class FlaskTestsSessions(unittest.TestCase):
         self.assertIn('Your profile has been updated!', result.data)
 
 
+    def test_group_correct_user(self):
+        """Test if user can go to group page based on session user data"""
+
+        result = self.client.get('/group_home/1', follow_redirects=True)
+        
+        self.assertEqual(result.status_code, 200)
+        self.assertIn('Welcome to Knitters to the rescue!', result.data)
+
+
+    def test_group_incorrect_user(self):
+        """Test that user can't go to group page based on session user data"""
+
+        result = self.client.get('/group_home/4', follow_redirects=True)
+        
+        self.assertEqual(result.status_code, 200)
+        self.assertIn('<h3> Your craft groups:</h3>', result.data)
+
+
+    def test_show_group_profile_form_non_group_member(self):
+        """Test if group profile form shows non group member"""
+
+        result = self.client.get('/group_profile_form/4', follow_redirects=True)
+        
+        self.assertEqual(result.status_code, 200)
+        self.assertIn('Your craft groups:', result.data)
+    
+
+    def test_send_invite(self):
+        """Test if email invite is added to the database"""
+
+        result = self.client.post('/send_invite/1',
+
+                                  data={'name' : "Leilani",
+                                        'email':"test@hbmail.com",
+                                        'text': "Come join my group!"},
+                                        follow_redirects=True)
+
+        self.assertEqual(result.status_code, 200)
+        self.assertIn('Invitation sent!', result.data)
+
+
+    def test_logout(self):
+        """Test if user can logout"""
+
+        result = self.client.get('/log_out', follow_redirects=True)
+        
+        self.assertEqual(result.status_code, 200)
+        self.assertIn('<h4> Sign in </h4>', result.data)
+      
+
+class FlaskTestMakeGroupsUpdateGroups(unittest.TestCase):
+    """Tests for MakeAlong app for making groups or updating groups."""
+
+    def setUp(self):
+        """Do at the beginning of every test"""
+        # Get the Flask test client
+        self.client = app.test_client()
+
+        # Show Flask errors that happen during tests
+        app.config['TESTING'] = True
+
+        # Connect to test database
+        connect_to_db(app, "postgresql:///testdb")
+
+        # Create tables from model
+        db.create_all()
+
+        # Import different types of data from seed file
+        seed.load_users()
+        seed.load_groups()
+        seed.load_usergroups()
+        seed.load_patterns()
+        seed.load_invites()
+        
+        seed.set_val_user_id()
+        seed.set_val_group_id()
+        seed.set_val_usergroup_id()
+        seed.set_val_pattern_id()
+        seed.set_val_invite_id()
+
+        with self.client as c:
+                with c.session_transaction() as sess:
+                    sess['user_id'] = 1
+                c.set_cookie('localhost', 'MYCOOKIE', 'cookie_value')
+
+
+    def tearDown(self):
+        """Do at end of every test."""
+
+        db.session.close()
+        db.drop_all()
+   
+
     def test_create_group_no_pattern(self):
         """Test that a group can be created with no pattern"""
 
@@ -312,41 +405,6 @@ class FlaskTestsSessions(unittest.TestCase):
         self.assertIn('Chosen Pattern', result.data)
 
 
-    def test_create_group_with_poll(self):
-        """Test that a group with a poll can be created"""
-
-        return self.client.post('/create_group', 
-                                  data={'group_name':"New Group",
-                                        'group_descrip':"Fun Group",
-                                        'hashtag':"",
-                                        'group_image':'static/images/craft_group_default.jpg',
-                                        'vote_days':5,
-                                        'pattern_name_a':'Pattern A',
-                                        'pattern_name_b':'Pattern B'},
-                                        follow_redirects=True)
-
-        self.assertEqual(result.status_code, 200)
-        self.assertIn('Days Left to Vote on a Pattern', result.data)
-
-
-    def test_group_correct_user(self):
-        """Test if user can go to group page based on session user data"""
-
-        result = self.client.get('/group_home/1', follow_redirects=True)
-        
-        self.assertEqual(result.status_code, 200)
-        self.assertIn('Welcome to Knitters to the rescue!', result.data)
-
-
-    def test_group_incorrect_user(self):
-        """Test that user can't go to group page based on session user data"""
-
-        result = self.client.get('/group_home/4', follow_redirects=True)
-        
-        self.assertEqual(result.status_code, 200)
-        self.assertIn('<h3> Your craft groups:</h3>', result.data)
-
-
     def test_show_group_profile_form_group_admin(self):
         """Test if group profile form shows for admin"""
 
@@ -365,32 +423,310 @@ class FlaskTestsSessions(unittest.TestCase):
         self.assertIn('Welcome to Modern Quilters', result.data)
 
 
-    def test_show_group_profile_form_non_group_member(self):
-        """Test if group profile form shows non group member"""
+    def test_update_group_name(self):
+        """Test that a group name can be updated"""
 
-        result = self.client.get('/group_profile_form/4', follow_redirects=True)
-        
+        return self.client.post('/group_profile_update/1', 
+                                  data={'group_name':"New Group Name",
+                                        'group_descrip':"",
+                                        'hashtag':"",
+                                        'group_image':"",},
+                                        follow_redirects=True)
+
         self.assertEqual(result.status_code, 200)
-        self.assertIn('Your craft groups:', result.data)
+        self.assertIn('Wecome to New Group Name', result.data)
 
 
-    # group update tests will go here
+    def test_update_group_description(self):
+        """Test that a group description can be updated"""
+
+        return self.client.post('/group_profile_update/1', 
+                                  data={'group_name':"",
+                                        'group_descrip':"New description!",
+                                        'hashtag':"",
+                                        'group_image':"",},
+                                        follow_redirects=True)
+
+        self.assertEqual(result.status_code, 200)
+        self.assertIn('New description!', result.data)
+
+
+    def test_update_group_hashtag(self):
+        """Test that a group hashtag can be updated"""
+
+        return self.client.post('/group_profile_update/1', 
+                                  data={'group_name':"",
+                                        'group_descrip':"",
+                                        'hashtag':"newhashtag",
+                                        'group_image':"",},
+                                        follow_redirects=True)
+
+        self.assertEqual(result.status_code, 200)
+        self.assertIn('#makealongnewhashtag', result.data)
+
+
+    def test_update_pattern_name(self):
+        """Test that a group pattern name can be updated"""
+
+        return self.client.post('/group_profile_update/1', 
+                                  data={'group_name':"",
+                                        'group_descrip':"",
+                                        'hashtag':"",
+                                        'group_image':"",
+                                        'update_pattern_name':"New Pattern Name"},
+                                        follow_redirects=True)
+
+        self.assertEqual(result.status_code, 200)
+        self.assertIn('New Pattern Name', result.data)
+
+
+    def test_update_pattern_link(self):
+        """Test that a group pattern link can be updated"""
+
+        return self.client.post('/group_profile_update/2', 
+                                  data={'group_name':"",
+                                        'group_descrip':"",
+                                        'hashtag':"",
+                                        'group_image':"",
+                                        'update_pattern_link':"https://www.ravelry.com/"},
+                                        follow_redirects=True)
+
+        self.assertEqual(result.status_code, 200)
+        self.assertIn('<a href="https://www.ravelry.com/" target="blank">', result.data)
+
+
+    def test_update_add_pattern_with_name(self):
+        """Test that a group pattern can be added to a group that didn't have one"""
+
+        return self.client.post('/group_profile_update/2', 
+                                  data={'group_name':"",
+                                        'group_descrip':"",
+                                        'hashtag':"",
+                                        'group_image':"",
+                                        'new_pattern_name':"New Pattern"},
+                                        follow_redirects=True)
+
+        self.assertEqual(result.status_code, 200)
+        self.assertIn('This month we are working on New Pattern', result.data)
+
+
+    def test_update_add_pattern_with_link(self):
+        """Test that a group pattern can be added to a group that didn't have one"""
+
+        return self.client.post('/group_profile_update/2', 
+                                  data={'group_name':"",
+                                        'group_descrip':"",
+                                        'hashtag':"",
+                                        'group_image':"",
+                                        'new_pattern_name':"New Pattern",
+                                        'new_pattern_link':"https://www.ravelry.com/"},
+                                        follow_redirects=True)
+
+        self.assertEqual(result.status_code, 200)
+        self.assertIn('<a href="https://www.ravelry.com/" target="blank">', result.data)
+
+
+class FlaskTestGroupPoll(unittest.TestCase):
+    """Tests for MakeAlong group poll created at group creation."""
+
+    @classmethod
+    def setUp(cls):
+        """Do once before all tests in this class"""
+        # Get the Flask test client
+        cls.client = app.test_client()
+
+        # Show Flask errors that happen during tests
+        app.config['TESTING'] = True
+
+        # Connect to test database
+        connect_to_db(app, "postgresql:///testdb")
+
+        # Create tables from model
+        db.create_all()
+
+        # Import different types of data from seed file
+        seed.load_users()
+        seed.load_groups()
+        seed.load_usergroups()
+        seed.load_patterns()
+        seed.load_invites()
+        
+        seed.set_val_user_id()
+        seed.set_val_group_id()
+        seed.set_val_usergroup_id()
+        seed.set_val_pattern_id()
+        seed.set_val_invite_id()
+
+        with cls.client as c:
+                with c.session_transaction() as sess:
+                    sess['user_id'] = 1
+                c.set_cookie('localhost', 'MYCOOKIE', 'cookie_value')
+
+    @classmethod
+    def tearDown(cls):
+        """Do after all tests have run."""
+
+        db.session.close()
+        db.drop_all()
+
+
+
+    def test_create_group_with_poll(self):
+        """Test that a group with a poll can be created"""
+
+        return self.client.post('/create_group', 
+                                  data={'group_name':"New Group",
+                                        'group_descrip':"Fun Group",
+                                        'hashtag':"",
+                                        'group_image':'static/images/craft_group_default.jpg',
+                                        'vote_days':5,
+                                        'pattern_name_a':'Pattern A',
+                                        'pattern_name_b':'Pattern B'},
+                                        follow_redirects=True)
+
+        self.assertEqual(result.status_code, 200)
+        self.assertIn('Days Left to Vote on a Pattern', result.data)
+
 
     def test_poll_votes(self):
         """Test if correct poll count is being sent to template""" 
-        pass
         
+        return self.client.get('/poll.json/4', follow_redirects=True)
 
-    def test_logout(self):
-        """Test if user can logout"""
+        self.assertIn('Pattern A:0', result.data)
+        self.assertIn('Pattern B:0', result.data)
 
-        result = self.client.get('/log_out', follow_redirects=True)
+
+    def test_add_vote(self):
+        """Test if poll vote is handled correctly""" 
         
-        self.assertEqual(result.status_code, 200)
-        self.assertIn('<h4> Sign in </h4>', result.data)
-      
+        return self.client.get('/update_poll.json',
+                                data={'group_id':4,
+                                      'pattern_id':4},
+                                      follow_redirects=True)
 
-   
+        self.assertIn('Pattern A:1', result.data)
+        self.assertIn('Pattern B:0', result.data)
+        self.assertIn('<label><b>Pattern A</label></b>', result.data)
+        self.assertIn('<label><b>Pattern B</label></b>', result.data)
+
+
+    def test_final_vote(self):
+        """Test final vote from admin and finalization of poll"""
+
+        return self.client.get('/final_vote/4',
+                                data={'final_vote_submit':"4"},
+                                      follow_redirects=True)
+
+        self.assertIn('This month we are working on Pattern A', result.data)
+
+
+class FlaskTestComments(unittest.TestCase):
+    """Tests for MakeAlong group comments."""
+
+    @classmethod
+    def setUp(cls):
+        """Do once before all tests in this class"""
+        # Get the Flask test client
+        cls.client = app.test_client()
+
+        # Show Flask errors that happen during tests
+        app.config['TESTING'] = True
+
+        # Connect to test database
+        connect_to_db(app, "postgresql:///testdb")
+
+        # Create tables from model
+        db.create_all()
+
+        # Import different types of data from seed file
+        seed.load_users()
+        seed.load_groups()
+        seed.load_usergroups()
+        seed.load_patterns()
+        seed.load_invites()
+        
+        seed.set_val_user_id()
+        seed.set_val_group_id()
+        seed.set_val_usergroup_id()
+        seed.set_val_pattern_id()
+        seed.set_val_invite_id()
+
+        with cls.client as c:
+                with c.session_transaction() as sess:
+                    sess['user_id'] = 1
+                c.set_cookie('localhost', 'MYCOOKIE', 'cookie_value')
+
+    @classmethod
+    def tearDown(cls):
+        """Do after all tests have run."""
+
+        db.session.close()
+        db.drop_all()
+
+
+    def test_comment_ajax_text(self):
+        """Test ajax handling of comment containing text"""
+
+        return self.client.get('/comment_add.json',
+                                data={'group_id':"1",
+                                      'comment_text':"This is a new commment"},
+                                      follow_redirects=True)
+
+        self.assertIn("<div class='comment_text'> This is a new comment</div>", result.data)
+
+
+    def test_comment_ajax_link(self):
+        """Test ajax handling of comment containing text"""
+
+        return self.client.get('/comment_add.json',
+                                data={'group_id':"1",
+                                      'comment_text':"This comment has a link https://www.ravelry.com/"},
+                                      follow_redirects=True)
+
+        self.assertIn("<a href ='https://www.ravelry.com/'>", result.data)
+
+
+    def test_comment_ajax_youtube(self):
+        """Test ajax handling of comment containing text"""
+
+        return self.client.get('/comment_add.json',
+                                data={'group_id':"1",
+                                      'comment_text':"This is a youtube link https://www.youtube.com/watch?v=IGITrkYdjJs"},
+                                      follow_redirects=True)
+
+        self.assertIn("<iframe width='300' height='300' src='http://www.youtube.com/embed/IGITrkYdjJs?autoplay=0'>", result.data)
+
+
+    def test_comment_text_server(self):
+        """Test text comment is rendering correctly from server"""
+
+        return self.client.get('/group_home/1',
+                                data={'group_id':"1"},
+                                      follow_redirects=True)
+
+        self.assertIn("<div class='comment_text'> This is a new comment</div>", result.data)
+
+
+    def test_comment_link_server(self):
+        """Test ajax handling of comment containing text"""
+
+        return self.client.get('/group_home/1',
+                                data={'group_id':"1"},
+                                      follow_redirects=True)
+
+        self.assertIn("<a href ='https://www.ravelry.com/'>", result.data)
+
+
+    def test_comment_ajax_youtube(self):
+        """Test ajax handling of comment containing text"""
+
+        return self.client.get('/group_home/1',
+                                data={'group_id':"1"},
+                                      follow_redirects=True)
+
+        self.assertIn("<iframe width='300' height='300' src='http://www.youtube.com/embed/IGITrkYdjJs?autoplay=0'>", result.data)
+
 
 if __name__ == '__main__':
     import unittest

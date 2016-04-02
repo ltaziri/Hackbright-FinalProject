@@ -164,9 +164,9 @@ class Vote(db.Model):
 ##############################################################################
 # Helper functions
 
-# def connect_to_db(app, db_uri="postgresql:///virtcraft"):
+def connect_to_db(app, db_uri="postgresql:///virtcraft"):
 
-def connect_to_db(app, db_uri="postgresql:///testdb"):
+# def connect_to_db(app, db_uri="postgresql:///testdb"):
     """Connect the database to our Flask app."""
 
     # Configure to use our PstgreSQL database
