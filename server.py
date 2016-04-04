@@ -7,7 +7,7 @@ from flask.ext.uploads import UploadSet, configure_uploads, IMAGES, patch_reques
 from model import User, Group, UserGroup, Comment, Invite, Pattern, Vote, connect_to_db, db
 from datetime import datetime, timedelta
 import sendgrid
-from email_test import send_email
+from sg_email import send_email
 import sendgrid
 import os
 import sys

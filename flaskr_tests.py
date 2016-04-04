@@ -41,8 +41,7 @@ class FlaskTests(unittest.TestCase):
 
     def tearDown(self):
         """Do at end of every test."""
-
-        db.session.close()
+        
         db.drop_all()
 
 
@@ -199,7 +198,7 @@ class FlaskTests(unittest.TestCase):
         self.assertIn('<h4>Sign in</h4>', result.data)
 
         # make sure a user wasn't redirected to user homepage
-        self.assertNotIn('<h3> Your craft groups:</h3>', result.data
+        self.assertNotIn('<h3> Your craft groups:</h3>', result.data)
 
 
     def test_login_new_user(self):
@@ -363,7 +362,7 @@ class FlaskTestsSessions(unittest.TestCase):
         
         # Logged out and returned to the homepage
         self.assertEqual(result.status_code, 200)
-        self.assertIn('<h4>Sign in</h4>', result.data)
+        self.assertIn('Sign in', result.data)
       
 
 class FlaskTestMakeGroupsUpdateGroups(unittest.TestCase):
@@ -792,7 +791,5 @@ class FlaskTestComments(unittest.TestCase):
         self.assertIn("<iframe width='300' height='300' src='http://www.youtube.com/embed/IGITrkYdjJs?autoplay=0'>", result.data)
 
 
-if __name__ == '__main__':
-    import unittest
-
+if __name__ == "__main__":
     unittest.main()

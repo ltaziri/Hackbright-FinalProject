@@ -2,3 +2,16 @@
 env
 .DS_Store
 secrets.sh
+static/images
+static/pdfs
+chromedriver
+chart.py
+archived/
+screenshots/
+static/Fonts/
+static/bootstrap-3.3.6/
+SendGrid Python Library Example
+FlipClock-master
+design.txt
+flipclock.min.js
+Knit_photos
