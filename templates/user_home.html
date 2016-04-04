@@ -3,148 +3,157 @@
 <body id="user_page" class="overlay">
 {% endblock %}
 {% block content %}
-<!-- <div class="container-fluid" id="user_page"> -->
 
 <section>
   <h1>Welcome {{ user.first_name }} </h1>
   <a data-toggle="modal" data-target="#user_profile">Update/View Your profile</a>
 
-    <div class="modal fade" id="user_profile" tabindex="-1" role="dialog" aria-labelledby="user_label">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
+  <!-- modal window, will show user info on initial click -->
+  <div class="modal fade" id="user_profile" tabindex="-1" role="dialog" aria-labelledby="user_label">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header overlay">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h3 class="modal-title" id="user_label">{{ user.first_name }} {{ user.last_name }}</h3>
+        </div>
+        <div class="modal-body overlay">
+          <div class="exisiting_profile">
+            <div class= "row">
+              <div class ="col-xs-12 col-sm-12 col-md-8">
+                {% if user.user_descrip %}
+                  <h3> About me:</h3><h4>{{ user.user_descrip }}</h4></br>
+                {% endif %}
+                <div class ="user_snapshot">
+                  <img class="img-rounded" src="/{{ user.user_photo }}" width="100%"><br>
+                </div>
+                <br>
+                <button class="btn btn-default" id="show_user_form">
+                <span class="glyphicon glyphicon-picture" aria-hidden="true"></span> Update your profile
+                </button>
+              </div> <!-- column -->
+            </div> <!-- row -->
+          </div> <!-- exsisting profile -->
 
-          <div class="modal-header overlay">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <h3 class="modal-title" id="user_label">{{ user.first_name }} {{ user.last_name }}</h3>
-          </div>
-
-          <div class="modal-body overlay">
-
-            <div class="exisiting_profile">
-              <div class= "row">
-                  <div class ="col-xs-12 col-sm-12 col-md-8">
-                      {% if user.user_descrip %}
-                      <h3> About me:</h3><h4>{{ user.user_descrip }}</h4></br>
-                      {% endif %}
-                      <div class ="user_snapshot">
-                        <img class="img-rounded" src="/{{ user.user_photo }}" width="100%"><br>
-                      </div>
-                      <br>
-                      <button class="btn btn-default" id="show_user_form">
-                      <span class="glyphicon glyphicon-picture" aria-hidden="true"></span> Update your profile
-                      </button>
-                  </div> <!-- column -->
-                </div> <!-- row -->
-              </div> <!-- exsisting profile -->
-
-              <div class="update_profile">
+          <!-- Hide user info, show user update form -->
+            <div class="update_profile">
+              
+              <form action="/user_profile_update" method="POST" id="update_user_submit"enctype="multipart/form-data">
                 
-                  <form action="/user_profile_update" method="POST" id="update_user_submit"enctype="multipart/form-data">
-                    <div class="row">
-                      <div class="col-xs-12 col-sm-12 col-md-10 form-group">
-                          <h3>Update your photo</h3>
-                          <p><b>Currently:</b></p>
-                          <div class ="user_snapshot">
-                            <img class="img-rounded" src="/{{ user.user_photo }}" width="100%"><br>
-                          </div>
-                          <br>
-                          <label>Update:</label>
-                          <input class="form-control" type="file" name="user_photo" id="update_user_photo">   
+                <div class="row">
+                  <div class="col-xs-12 col-sm-12 col-md-10 form-group">
+                    <h3>Update your photo</h3>
+
+                    <p><b>Currently:</b></p>
+                    <div class ="user_snapshot">
+                      <img class="img-rounded" src="/{{ user.user_photo }}" width="100%"><br>
+                    </div>
+                    <br>
+
+                    <label>Update:</label>
+                    <input class="form-control" type="file" name="user_photo" id="update_user_photo">
                     
-                          <h3>Tell us about yourself</h3>
-                          <p><b>Currently:</b></p><i>{{ user.user_descrip }}</i>
-                          <br>
-                          <label>Update:</label> 
-                          <textarea class="form-control" rows = 6 name="user_descrip" placeholder="description"></textarea>
-                          <br>
-                          <button class="btn btn-default profile_submit" type="submit">Update Your Profile</button>
-                          <a data-dismiss="modal" aria-label="Close" class="invite_cancel">Cancel</a>
-                      </div> <!-- form group -->
-                    </div><!--   row  -->           
-                  </form> 
+                    <h3>Tell us about yourself</h3>
 
-              </div> <!-- update profile  -->         
-            </div> <!-- modal-body  -->
+                    <p><b>Currently:</b></p><i>{{ user.user_descrip }}</i>
+                    <br>
 
+                    <label>Update:</label>
+                    <textarea class="form-control" rows = 6 name="user_descrip" placeholder="description"></textarea>
+                    <br>
+                    <button class="btn btn-default profile_submit" type="submit">Update Your Profile</button>
+                    <a data-dismiss="modal" aria-label="Close" class="invite_cancel">Cancel</a>
+                  </div> <!-- form group -->
+                </div><!--   row  -->
+              </form>
+            </div> <!-- update profile  -->
+          </div> <!-- modal-body  -->
         </div><!--  modal content -->
       </div> <!-- modal dialog -->
     </div>  <!-- end of modal -->
-</section>
 
-<hr class="divider">
+    </section>
+    <hr class="divider">
+    <section>
 
-<section>
-  <h3> Your craft groups:</h3>
-        <div class="row">
-          <div class ="col-xs-12 col-sm-12 col-md-8 col-lg-10">
-          {% for group in groups %}
-              <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
-                <div class="snapshot">
-                  <a href="/group_home/{{ group.group_id }}">
-                  <img src="{{ group.group_image }}" width = "250">
-                  <h3>{{ group.group_name }}</h3><br>
-                  </a>
-                </div>
-              </div>
-          {% endfor %}
-          <div id="group_add"></div>
-          <div class="row">
-            <div class="col-xs-12 col-sm-12 col-md-12">
-                <br>
-                 <a href="/group_form"> <button class="btn btn-default new_group">Create a new group</button></a><br>
+    <h3> Your craft groups:</h3>
+
+    <div class="row">
+      <div class ="col-xs-12 col-sm-12 col-md-8 col-lg-10">
+
+        {% for group in groups %}
+          <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
+            <div class="snapshot">
+              <a href="/group_home/{{ group.group_id }}">
+                <img src="{{ group.group_image }}" width = "250">
+                <h3>{{ group.group_name }}</h3><br>
+              </a>
             </div>
           </div>
-        </div>    
-          <div class ="col-xs-10 col-sm-10 col-md-4 col-lg-2">
-            <div class="user_message">
-              <span class="circle">
-              <span class="glyphicon glyphicon-envelope icon" aria-hidden="true"></span></span>
-              <h3 class='sidebar_header'> Messages: </h2>
-              <hr>
-              <ul id="message">
-              {% if open_invites %}
-              {% for invite in open_invites %}
-                <li class="invite_msg"> {{ invite.user.first_name}} has invited you to join:<br> <span>{{invite.group.group_name}}</span>.
-                      <form class = "invite_confirm" method="POST">
-                        <input type="hidden" name="invite_id" class="invite_id" value="{{invite.invite_id}}">
-                        <button type="submit" class = "btn btn-default">Join now</button><hr>
-                      </form>
-                </li>
-                
-              {% endfor %}
-              {% endif %}
-              {% for groups, values in group_vote_messages.items() %} 
-                 {% if values['admin'] == user.user_id %} 
-                    {% if values['pattern_chosen'] == False %}
-                      {% if values['remaining_time'] != False %}
-                        {% if values['remaining_time'] < 1 %} 
-                          <li> Voting time for <span>{{ groups }}</span> has run out!.
-                              Please confirm the winning pattern!
-                              <a href="/group_home/{{ values['group_id'] }}">
-                              <button class="btn btn-default"> Confirm now </button><hr></a>
+        {% endfor %}
 
-                          </li>
-                        {% endif %}                   
-                        {% if values['vote_count'] == values['user_count'] %}
-                          <li> Everyone in <span>{{ groups }}</span> has voted.
-                              Please confirm the winning pattern!<br>
-                              <a href="/group_home/{{ values['group_id'] }}">
-                              <button class="btn btn-default"> Confirm now </button><hr></a>
-                          </li>
-                        {% endif %}
-                      {% endif %}        
-                  {% endif %}
-                {% endif %}
-              {% endfor %} 
-              </ul>
-             </div> <!-- messages div  -->
+        <div id="group_add"></div>
+
+        <div class="row">
+          <div class="col-xs-12 col-sm-12 col-md-12">
+            <br>
+            <a href="/group_form"> <button class="btn btn-default new_group">Create a new group</button></a><br>
           </div>
         </div>
+      </div>
 
-</section>
-<hr class="divider">
-</div>
+      <!-- message area -->
+      <div class ="col-xs-10 col-sm-10 col-md-4 col-lg-2">
+        <div class="user_message">
+          <span class="circle">
+            <span class="glyphicon glyphicon-envelope icon" aria-hidden="true"></span></span>
+            <h3 class='sidebar_header'> Messages: </h2>
+            <hr>
+            <ul id="message">
+
+              {% if open_invites %}
+                {% for invite in open_invites %}
+                  <li class="invite_msg"> {{ invite.user.first_name}} has invited you to join:<br> <span>{{invite.group.group_name}}</span>.
+                    <form class = "invite_confirm" method="POST">
+                      <input type="hidden" name="invite_id" class="invite_id" value="{{invite.invite_id}}">
+                      <button type="submit" class = "btn btn-default">Join now</button><hr>
+                    </form>
+                  </li>
+                {% endfor %}
+              {% endif %}   
+
+              <!-- Using group message dictionary from the server -->
+              {% for groups, values in group_vote_messages.items() %}
+                {% if values['admin'] == user.user_id %}
+                  {% if values['pattern_chosen'] == False %}
+                    {% if values['remaining_time'] != False %}
+                      {% if values['remaining_time'] < 1 %}
+                        <li> Voting time for <span>{{ groups }}</span> has run out!.
+                        Please confirm the winning pattern!
+                        <a href="/group_home/{{ values['group_id'] }}">
+                        <button class="btn btn-default"> Confirm now </button><hr></a>
+                      </li>
+                      {% endif %}
+                      {% if values['vote_count'] == values['user_count'] %}
+                        <li> Everyone in <span>{{ groups }}</span> has voted.
+                        Please confirm the winning pattern!<br>
+                        <a href="/group_home/{{ values['group_id'] }}">
+                        <button class="btn btn-default"> Confirm now </button><hr></a>
+                        </li>
+                      {% endif %}
+                    {% endif %}
+                  {% endif %}
+                {% endif %}
+              {% endfor %}
+            </ul>
+        </div> <!-- messages div  -->
+      </div>
+    </div>
+    </section>
+              <hr class="divider">
+            </div>
 <script>
+// show hide for modal window, hide user info/show user profile update form and 
+//  vice versa
 $(document).ready(function(){
         $('div.update_profile').hide();
 
@@ -159,6 +168,8 @@ $(document).ready(function(){
           });
       });      
 
+// Ajax after user accepts a group invite via the join button in the user 
+// message area. New group is rendered in the browser and updated on the server.
 function addGroup(evt) {
   evt.preventDefault();
 

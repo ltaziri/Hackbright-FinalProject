@@ -1,47 +1,52 @@
 <!doctype html>
 <html>
-<head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <link rel="stylesheet" href="/static/bootstrap-3.3.6/dist/css/bootstrap.css">
-  <link href='https://fonts.googleapis.com/css?family=Roboto+Slab:300,400,700' rel='stylesheet' type='text/css'>
-  <link href="/static/main.css" rel="stylesheet">
-  <script src="http://code.jquery.com/jquery.js"></script>
-  <script src="/static/bootstrap-3.3.6/dist/js/bootstrap.min.js"></script>
-  
-  <title>MakeAlong - Bringing the World Together, One Project at a Time</title>
-</head>
+    <link rel="stylesheet" href="/static/bootstrap-3.3.6/dist/css/bootstrap.css">
+    <link href='https://fonts.googleapis.com/css?family=Roboto+Slab:300,400,700' rel='stylesheet' type='text/css'>
+    <link href="/static/main.css" rel="stylesheet">
+    
+    <script src="http://code.jquery.com/jquery.js"></script>
+    <script src="/static/bootstrap-3.3.6/dist/js/bootstrap.min.js"></script>
+    
+    <title>MakeAlong - Bringing the World Together, One Project at a Time</title>
+  </head>
 
-<body id ='homepage'>
-<div class = "container-fluid">  
+  <body id ='homepage'>
 
-    <div class="row">
-      <div class=col-xs-12 col-sm-12 col-md-5>
-        <h1 class="retro-borders"><span style="font-size: 125%">M</span>ake<span style="font-size: 125%">A</span>long</h1>
+    <div class = "container-fluid">
+
+      <div class="row">
+        <div class=col-xs-12 col-sm-12 col-md-5>
+          <h1 class="retro-borders"><span style="font-size: 125%">M</span>ake<span style="font-size: 125%">A</span>long</h1>
+        </div>
       </div>
-    </div>
 
-    <div class ="row">
-      <div class="col-xs-12 col-sm-12 col-md-9 col-lg-8">
+      <div class ="row">
+        <div class="col-xs-12 col-sm-12 col-md-9 col-lg-8">
           <h3>Bringing the world together, <br>one project at a time</h3>
+        </div>
       </div>
-    </div>
 
-    <div class ="row">
-      <div class = "col-xs-9 col-sm-5 col-md-3 col-lg-3">
-        <h4> Sign in </h4>
-        <form action="/sign_in" method="POST">
-            <div class ="form-group"> 
+      <div class ="row">
+        <div class = "col-xs-9 col-sm-5 col-md-3 col-lg-3">
+          <h4> Sign in </h4>
+
+          <form action="/sign_in" method="POST">
+            <div class ="form-group">
               <input class="form-control" type="email" name="email" placeholder="email"><br>
               <input class="form-control" type="password" name="password" placeholder="password"><br>
               <button type="submit" class="btn btn-default">LOGIN</button><br>
-        </form>
-        <br><h4>Don't Have an Account? <br><a href="/sign_up_form">Sign Up Today!</a></h4>
+            </form>
+
+            <br><h4>Don't Have an Account? <br><a href="/sign_up_form">Sign Up Today!</a></h4>
+          </div>
+        </div>
       </div>
-      </div>
-    </div>  
-</div>
-</body>
+
+    </div>
+  </body>
 </html>

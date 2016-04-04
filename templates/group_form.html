@@ -146,12 +146,12 @@
 <!-- </div> -->
 <script>
 
-
+// If file upload button is clicked, select the associated radio button
 $("#group_img_upload").click(function(){
     $("#group_radio").prop("checked", true);
 });
 
-
+// show/hide functionality of poll vs non poll sections of form
 $(document).ready(function(){
         $('div#poll_div').hide();
         $('#pattern_poll').click( function() {
@@ -169,6 +169,7 @@ $(document).ready(function(){
           });
       });      
 
+// Form validation for poll inputs. 
 $("#new_group_form").on('submit', function(evt){
     var patternCount = 0
     if (!$('#pattern_poll').is(":checked")) {

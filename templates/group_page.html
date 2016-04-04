@@ -5,7 +5,10 @@
 {% block content %}
 
 
-<a href="/user"> <span class="glyphicon glyphicon-menu-left" aria-hidden="true"></span> Return to your homepage</a>
+<a href="/user"> 
+  <span class="glyphicon glyphicon-menu-left" aria-hidden="true"></span> 
+  Return to your homepage
+</a>
 <div class = "row"> <!-- main page row -->
   
     <div class = "col-xs-12 col-sm-12 col-md-9"> <!-- Left side main body column -->
@@ -306,6 +309,7 @@
 
       </section>
       <hr>
+      <!-- Twitter Feed -->
       <section>
           <span class="circle">
           <img class="twitter_icon" src="../static/images/twitter-solid.png"></span>
@@ -315,8 +319,8 @@
           {% endif %}         
           <div id="twitter"></div>
       </section>
-      
       <hr>
+      <!-- Photo gallery -->
       <section class='gallery'>
         <span class="circle">
         <span class="glyphicon glyphicon-picture icon" aria-hidden="true"></span>
@@ -379,12 +383,13 @@
       </section>
 </div> <!-- main row -->
 
-
-
-{% block javascript %}
 <script src="../static/group_page.js"></script>
 <script src="../static/flipclock.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.js"></script>
+
+{% block javascript %}
+<!-- This needs to stay on html page because it is using Jinja-->
+
 <script type="text/javascript">
 var patternPoll
 var voteConfirmation = "<h4 class='text-success' style='margin-left:15px;' >Thanks for voting! Your vote has been recorded</h4>"
@@ -407,7 +412,7 @@ $(document).ready(function(){
         $("#twitter").append(twitter_div);
         }
     })
-  
+// chart.js set up
   var options = { 
                 responsive: true, 
                 scaleShowGridLines : false,
@@ -421,7 +426,7 @@ $(document).ready(function(){
     console.log(data);
     patternPoll = new Chart(ctx_bar).Bar(data, options);
   });
-  
+// Clock set up
   $.get('/flip_clock.json/{{ group.group_id}}', function(data) {
   seconds_left = data.seconds;
   
@@ -464,6 +469,10 @@ for(var i=0;i<{{votes}}.length;i++) {
 
 })
 
+// Ajax call to server to record vote and render it in the chart
+// If everyone has voted and the user is the admin, show final vote confirmation
+// buttons
+
 function handleVote(evt) {
   evt.preventDefault();
 
@@ -498,8 +507,5 @@ $('#vote_form').on('submit', handleVote)
 </script>
 
 {% endblock %}
-
-
-
 
 {% endblock %}

@@ -7,7 +7,6 @@
     <div class="form_background overlay col-xs-12 col-sm-12 col-md-9 col-lg-10 column col-sm-offset-0 col-md-offset-1 col-lg-offset-1 ">
         <h2>Make updates to {{ group.group_name }}</h2>
         <form action="/group_profile_update/{{ group.group_id }}" id="update_group_submit" method="POST" enctype="multipart/form-data">
-            
             <div class="row">
                 <div class ="col-xs-12 col-sm-12 col-md-6 form-group">
                     <h3>Group Name</h3>
@@ -16,6 +15,7 @@
                     <input type="text" class="form-control" name="group_name" placeholder="group name">
                 </div>
             </div>
+
             <div class="row ">
                 <div class ="col-xs-12 col-sm-12 col-md-9 form-group">
                     <h3>Group Description</h3>
@@ -26,6 +26,7 @@
                     <textarea class="form-control" rows = 3 name="group_descrip" placeholder="group description"></textarea>
                 </div>
             </div>
+
             <div class="row">
                 <div class ="col-xs-12 col-sm-12 col-md-4 form-group">
                     <h3>Group Hashtag</h3>
@@ -36,6 +37,7 @@
                     </div>
                 </div>
             </div>
+
             <div class="clearfix visible-lg-block"></div>
             <div class="row">
                 <div class ="col-xs-12 col-sm-12 col-md-4 form-group">
@@ -47,10 +49,13 @@
                     <br>
                 </div>
             </div>
+
             <h3>Pattern</h3>
-            {% if patterns|length > 1 %}
+            <!-- if a pattern poll is in process you can't update the pattern -->
+            {% if patterns|length > 1 %} 
                 <p> Pattern voting is in process. Return to the group page for more information </p> <br>
             {% endif %}
+            <!-- If one pattern has been selected you can update it -->
             {% if patterns|length == 1 %}
                 <div class="row">
                     <div class ="col-xs-12 col-sm-12 col-md-6 form-group">
@@ -62,6 +67,7 @@
                         <input type="text" class="form-control" name="update_pattern_name" placeholder="pattern name">
                     </div>
                 </div>
+
                 <div class="row">
                     <div class ="col-xs-12 col-sm-12 col-md-6 form-group">
                         <h3>PDF Pattern: </h3>
@@ -72,6 +78,7 @@
                         <input type="file" class="form-control" name="update_pattern_pdf">
                     </div>
                 </div>
+
                 <div class="row">
                     <div class ="col-xs-12 col-sm-12 col-md-6 form-group">
                         <h3>Pattern Link:</h3>
@@ -83,7 +90,11 @@
                         <input type="url" class="form-control" name="update_pattern_link" placeholder="link to pattern">
                     </div>
                 </div>
+
             {% endif %}
+
+            <!-- If no pattern was selected and no poll was set up, the admin can 
+            choose a pattern or set up a poll -->
             {% if patterns|length == 0 %}
                 <div id ="update_base_pattern">
                     <p>Currently: <i>None</i></p>
@@ -93,12 +104,14 @@
                             <input type="text" class="form-control pattern_name" name="new_pattern_name" placeholder="pattern name">
                         </div>
                     </div>
+
                     <div class="row">
                         <div class ="col-xs-12 col-sm-12 col-md-6 form-group">
                             <label>PDF Pattern: </label>
                             <input type="file" class="form-control pattern_pdf" name="new_pattern_pdf">
                         </div>
                     </div>
+
                     <div class="row">
                         <div class ="col-xs-12 col-sm-12 col-md-6 form-group">
                             <label>Pattern Link:</label>
@@ -106,12 +119,14 @@
                         </div>
                     </div>
                 </div>
+
                 <div class ="form-group">
-                    
                     <label>Want to create a poll instead?</label>
                     <input type="checkbox" id="update_pattern_poll" name="pattern_poll" value="pattern_poll">
                 </div>
+                <!-- Pattern poll section -->
                 <div class="update_poll_div">
+
                     <div class = "row">
                         <div class ="col-xs-12 col-sm-12 col-lg-10">
                             <div class ="form-group form-inline">
@@ -120,52 +135,65 @@
                             </div>
                         </div>
                     </div>
+
                     <div class = "row">
                         <div class ="col-xs-12 col-sm-12 col-lg-3 poll-setup">
                             <h4>Option 1</h4>
+
                             <div class ="form-group">
                                 <label>First Pattern's Name:</label><br>
                                 <input type="text" class="form-control pattern_name_a" name="pattern_name_a" maxlength="36" placeholder="pattern name">
                             </div>
+
                             <div class ="form-group">
                                 <label>Upload a PDF Pattern(optional):</label> <br>
                                 <input type="file" class="form-control pattern_pdf_a" name="pattern_pdf_a">
                             </div>
+
                             <div class ="form-group">
                                 <label>Link to Pattern(optional):</label><br>
                                 <input type="url" class="form-control pattern_link_a" name="pattern_link_a" placeholder="link to pattern">
                             </div>
                         </div>
+
                         <div class ="col-xs-12 col-sm-12 col-lg-3 poll-setup">
                             <h4>Option 2</h4>
+
                             <div class ="form-group">
                                 <label>Second Pattern's Name:</label><br>
                                 <input type="text" class="form-control pattern_name_b" name="pattern_name_b" maxlength="36" placeholder="pattern name">
                             </div>
+
                             <div class ="form-group">
                                 <label>Upload a PDF Pattern(optional):</label> <br>
                                 <input type="file" class="form-control pattern_pdf_b" name="pattern_pdf_b">
                             </div>
+
                             <div class ="form-group">
                                 <label>Link to Pattern(optional):</label><br>
                                 <input type="url" class="form-control pattern_link_b" name="pattern_link_b" placeholder="link to pattern">
                             </div>
                         </div>
+
                         <div class ="col-xs-12 col-sm-12 col-lg-3 poll-setup">
                             <h4>Option 3</h4>
+
                             <div class ="form-group">
                                 <label>Third Pattern's Name:</label><br>
                                 <input type="text" class="form-control pattern_name_c" name="pattern_name_c" maxlength="36"  placeholder="pattern name">
                             </div>
+
                             <div class ="form-group">
                                 <label>Upload a PDF Pattern(optional):</label> <br>
                                 <input type="file" class="form-control pattern_pdf_c" name="pattern_pdf_c">
                             </div>
+
                             <div class ="form-group">
                                 <label>Link to Pattern(optional):</label><br>
                                 <input type="url" class="form-control pattern_link_c" name="pattern_link_c" placeholder="link to pattern">
                             </div>
                         </div>
+
                     </div>
                 </div>
             {% endif %}
@@ -176,6 +204,7 @@
 <script>    
     
 $(document).ready(function(){
+    // Show hide functionality for group poll
         $('div.update_poll_div').hide();
         $('#update_pattern_poll').click( function() {
             if($('#update_pattern_poll').is(":checked")){
@@ -191,7 +220,7 @@ $(document).ready(function(){
             }
           });
       });      
-
+// Form validation for poll set up before form submit
 $("#update_group_submit").on('submit', function(evt){
     var updatePatternCount = 0
     if (!$('#update_pattern_poll').is(":checked")) {
@@ -238,6 +267,5 @@ $("#update_group_submit").on('submit', function(evt){
         evt.preventDefault();
     }
 })
-
 </script>
 {% endblock %}
