@@ -10,7 +10,7 @@ import sendgrid
 from sg_email import send_email
 import os
 import sys
-from chart import chart_data
+# from chart import chart_data
 from delorean import Delorean
 import twitter
 import requests
