@@ -8,7 +8,6 @@ from model import User, Group, UserGroup, Comment, Invite, Pattern, Vote, connec
 from datetime import datetime, timedelta
 import sendgrid
 from sg_email import send_email
-import sendgrid
 import os
 import sys
 from chart import chart_data
@@ -103,7 +102,7 @@ def log_out():
 
     # demo reset
     del session["group_timestamps"]
-    
+
     if session.get('chosen_pattern'):
         del session['chosen_pattern']
 
@@ -841,7 +840,7 @@ def send_invitation(group_id):
 if __name__ == "__main__":
     # debug=True here, since it has to be True at the point
     # that the DebugToolbarExtension is invoked
-    app.debug = True
+    # app.debug = True
 
     connect_to_db(app)
 

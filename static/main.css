@@ -57,12 +57,13 @@
 
 /*BasePage styling*/
 
-.navbar-default {
+.navbar-default, .footer {
     background-color: #FCFAF7;
 }
 .navbar {
   margin-bottom: 5px;
 }
+
 
 hr.divider{
     margin: 10px 0 10px 0;
@@ -406,6 +407,11 @@ div.poll_div, div#final_vote_confirm {
         height: 300px;
 }
 
+/*make invite button responsive*/
+#invite_btn {
+    white-space: normal;
+}
+
 /*twitter feed on group page*/
 div#twitter {
         height: 300px;
@@ -554,3 +560,13 @@ transform: scale(.75);
   }
 }
 
+/* Footer*/
+#footer {
+  margin-top: 15px;
+  padding: 5px;
+}
+
+#footer h4{
+  display: inline;
+  margin:0;
+}
