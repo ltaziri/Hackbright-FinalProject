@@ -22,7 +22,8 @@ import re
 app = Flask(__name__)
 
 # Required to use Flask sessions and the debug toolbar
-app.secret_key = "ABC"
+app.secret_key = os.environ.get("FLASK_SECRET_KEY","ABC")
+
 
 app.jinja_env.undefined = StrictUndefined
 
@@ -846,5 +847,7 @@ if __name__ == "__main__":
 
     # Use the DebugToolbar
     # DebugToolbarExtension(app)
+    DEBUG = "NO_DEBUG" not in os.environ
 
-    app.run()
+    PORT = int(os.environ.get("PORT", 5000))
+    app.run(debug=DEBUG, host="0.0.0.0", port=PORT)
