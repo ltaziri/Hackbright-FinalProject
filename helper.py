@@ -2,7 +2,7 @@
 from delorean import Delorean
 from datetime import datetime, timedelta
 from model import User, Group, UserGroup, Comment, Invite, Pattern, Vote, connect_to_db, db
-from flask import request
+from flask import request, session
 # from server import photos, manuals
 from flask.ext.uploads import UploadSet, configure_uploads, IMAGES, patch_request_class
 import re
@@ -54,7 +54,11 @@ def create_group_messages(group):
     
     for pattern in patterns_for_group:
         if pattern.chosen == True:
-            message_dict['pattern_chosen'] = True  
+            message_dict['pattern_chosen'] = True
+
+    if session.get('chosen_pattern'):
+        if session['chosen_pattern'][0] == group.group_id:
+            message_dict['pattern_chosen'] = True   
 
     patternless = message_dict.get('pattern_chosen', False)
     if not patternless:
@@ -85,9 +89,9 @@ def add_chosen_pattern(name, link, pdf, group_id):
                       pattern_pdf = pattern_pdf,
                       chosen = True,
                       group_id = group_id)
-
-    db.session.add(pattern)
-    db.session.commit()
+    # disabled for demo
+    # db.session.add(pattern)
+    # db.session.commit()
 
 
 def add_poll_pattern(name, link, pdf, group_id):
@@ -107,9 +111,9 @@ def add_poll_pattern(name, link, pdf, group_id):
                       pattern_pdf = pattern_pdf,
                       chosen = False,
                       group_id = group_id)
-
-    db.session.add(pattern)
-    db.session.commit()
+    # disabled for demo
+    # db.session.add(pattern)
+    # db.session.commit()
 
 
 def create_patterns_for_poll(group_id):
@@ -150,19 +154,24 @@ def find_comment_url(comment_text):
 
     if url:
         video_id = find_youtube(url)
-        position = comment_text.index(url[0])
-        link_length = len(url[0])
-        new_comment = (comment_text[0:position]+"<a href='" + url[0] + "'>" 
-                      + comment_text[position:position+link_length] + "</a>" 
-                      + comment_text[position+link_length:]) 
-
+        allowed = find_allowed_url(url[0])
+        if allowed:
+            position = comment_text.index(url[0])
+            link_length = len(url[0])
+            new_comment = (comment_text[0:position]+"<a href='" + url[0] + "'>" 
+                          + comment_text[position:position+link_length] + "</a>" 
+                          + comment_text[position+link_length:]) 
+        else:
+            new_comment = comment_text
         if len(url) > 1:
             for u in url[1:]:
-                position = new_comment.index(u)
-                link_length = len(u)
-                new_comment = (new_comment[0:position]+"<a href='" + u + "'>" 
-                               + new_comment[position:position+link_length] 
-                               + "</a>" + new_comment[position+link_length:]) 
+                allowed = find_allowed_url(u)
+                if allowed:
+                    position = new_comment.index(u)
+                    link_length = len(u)
+                    new_comment = (new_comment[0:position]+"<a href='" + u + "'>" 
+                                   + new_comment[position:position+link_length] 
+                                   + "</a>" + new_comment[position+link_length:]) 
     else:
         new_comment = comment_text
         video_id = None
@@ -205,6 +214,24 @@ def find_youtube(url_list):
                 video_id = None
 
     return video_id
+
+def find_allowed_url(url):
+    """Identify accepted urls"""
+
+    # Using python url parser to check if any link source is from an accepted website. 
+    whitelist = ['www.raverly.com',
+                 'www.youtube.com', 
+                 'www.etsy.com', 
+                 'www.fabric.com', 
+                 'www.pinterest.com']
+
+    
+    parsed_url = urlparse(url)
+    if parsed_url.netloc in whitelist:
+        return True
+    else:
+        return False
+    
 
 
 

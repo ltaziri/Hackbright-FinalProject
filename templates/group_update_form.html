@@ -197,13 +197,18 @@
                     </div>
                 </div>
             {% endif %}
-            <button class="btn btn-default" type="submit">"Update Your Profile"</button><a href="/group_home/{{group.group_id}}"> Cancel</a>
+            <button id="group_update_btn" class="btn btn-default" type="submit">"Update Your Profile"</button><a href="/group_home/{{group.group_id}}"> Cancel</a>
+            <br>
+            <em>* disabled for demo purposes
         </form>
     </div>
 </div>
 <script>    
     
 $(document).ready(function(){
+    // added for demo purposes only, disabled on the server as well
+    $('#group_update_btn').prop('disabled', true);
+
     // Show hide functionality for group poll
         $('div.update_poll_div').hide();
         $('#update_pattern_poll').click( function() {

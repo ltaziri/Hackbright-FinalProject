@@ -68,7 +68,9 @@
 
             <div class = "row">
                 <div class ="col-xs-12">
-                    <button class="btn btn-default" type="submit">Sign Up</button><a href="/"> Cancel</a>
+                    <button id="sign_up_btn" class="btn btn-default" type="submit">Sign Up</button><a href="/"> Cancel</a>
+                    <br>
+                    * disabled for demo purposes
                 </div>
             </div>
 
@@ -77,6 +79,10 @@
     </div>
 </div>
 <script>
+// added for demo purposes only, disable form submit. Also disabled on server
+$(document).ready(function(){
+    $('#sign_up_btn').prop("disabled",true);
+});
 
 // if a user clicks on the upload a file button the assoicated radio button is 
 // is selected

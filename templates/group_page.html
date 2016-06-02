@@ -98,10 +98,12 @@
                         <hr class="inline_hr">
 
                         {% if pattern.pattern_pdf %}
-                          <a href="/{{ pattern.pattern_pdf }}" target="blank">
+                          <!-- disabled for demo -->
+                          <!-- <a href="/{{ pattern.pattern_pdf }}" target="blank"> -->
+                          <a href="" target="blank">
                           <span class="poll_circle">
                           <span class="glyphicon glyphicon-open-file icon" aria-hidden="true"></span></span> 
-                          View the pdf pattern.</a> <br>
+                          View the pdf pattern.*</a> <br>
                         {% endif %}
 
                         {% if pattern.pattern_link %}
@@ -115,9 +117,8 @@
                           <input type="radio" class ="pattern_select" name="pattern_select" value="{{ pattern.pattern_id }}">
                           <label for="pattern_select" class="pattern_input_label">Choose this pattern</label>
                         </div>
-
                       </div>
-                  </div>  
+                  </div> 
                   {% endfor %}
                   </div>
 
@@ -130,7 +131,10 @@
               </form>
           </div>  
         </section>
-
+        <!-- for demo purposed only -->
+             
+         <em>* pdf links disabled for demo</em>
+       
       {% endif %}
 
 <!-- End of pattern poll -->
@@ -144,17 +148,23 @@
                 <h3 class="section_header"> This month we are working on {{ patterns[0].pattern_name }}</h3>
                 
                   {% if patterns[0].pattern_pdf %}
-                  <a href="/{{ patterns[0].pattern_pdf }}" target="blank"><span class="inline_circle">
+                  <!-- disabled for demo -->
+                  <!-- <a href="/{{ patterns[0].pattern_pdf }}" target="blank"> -->
+                  <a href="" target="blank"><span class="inline_circle">
                   <span class="glyphicon glyphicon-open-file icon" aria-hidden="true"></span></span> 
-                  <h4>Download the pattern pdf.</h4> </a>
+                  <h4>Download the pattern pdf.* </h4> </a>
                   {% endif %}
                   {% if patterns[0].pattern_link %}
                   <a href="{{ patterns[0].pattern_link }}" target="blank">
                   <span class="inline_circle">
                   <span class="glyphicon glyphicon-log-in icon" aria-hidden="true"></span></span> 
                   <h4> Go to the pattern source.</h4></a>
-                  {% endif %} 
-                
+                  {% endif %}
+                  <!-- for demo purposed only -->
+                  {% if patterns[0].pattern_pdf %} 
+                  <br>
+                  <em>* pdf links disabled for demo</em>
+                  {% endif %}
               </div>   
             </section>
           {% endif %}  
@@ -170,16 +180,19 @@
                       <span class="glyphicon glyphicon-comment icon" aria-hidden="true"></span></span> 
                       <h4 style=" display: inline">Add a comment: </h4></label>
                       <label for="comment_image" class="upload_label btn btn-default"> <span class="glyphicon glyphicon-camera" aria-hidden="true"></span>
-                      Include a picture</label>
+                      Include a picture*</label>
                       <input type="file" id="comment_image" name="comment_image"/>   
                     <input type="hidden" name="group_id" id="group_id" value="{{group.group_id}}">
-                    <textarea class="form-control" row=1 name="comment_text" id="comment_text" placeholder="comment"></textarea>
+                    <textarea class="form-control" row=1 name="comment_text" id="comment_text" placeholder="comment**"></textarea>
                     <br>
                     <button class="btn btn-default" id="comment_submit" type="submit">Add your comment</button>
                   </div>
                 </div>  
               </form>
             </div>
+            <em>* image upload disabled for demo purposes</em><br>
+            <em>** hint: only urls from the following will become links: http://www.raverly.com, http://www.youtube.com, http://www.etsy.com, http://www.fabric.com, http://www.pinterest.com </em>
+
         </section>  
 
         <section>
@@ -282,23 +295,24 @@
                                     <div class="row">
                                        <div class ="col-xs-12 col-sm-12 col-md-6 form-group">
                                             <label>Your friend's email:</label>
-                                            <input type="email" class="form-control" name="email" value="ltaziri@gmail.com"placeholder="email">
+                                            <input type="email" class="form-control" name="email" placeholder="email">
                                         </div>
                                     </div>
 
                                     <div class="row">
                                        <div class ="col-xs-12 col-sm-12 col-md-6 form-group">
                                             <label>Friend's name:</label>
-                                            <input type="text" class="form-control"  name="name" value="Leilani Taziri" placeholder="name">
+                                            <input type="text" class="form-control"  name="name" placeholder="name">
                                         </div>
                                     </div>
 
                                     <label>Include a note(optional):</label>
-                                        <textarea class="form-control" rows=3 name="text" placeholder="Write your friend a note!">This is an awesome group! Would love for you to join!</textarea>
+                                        <textarea class="form-control" rows=3 name="text" placeholder="Write your friend a note!"></textarea>
                                         <br>
-                                    <button class="btn btn-default" type="submit">Send Invite</button>
+                                    <button id="invite_submit_btn" class="btn btn-default" type="submit">Send Invite</button>
                                     <a data-dismiss="modal" aria-label="Close" class="invite_cancel">Cancel</a>
-
+                                    <br>
+                                    <em>* disabled for demo purposes</em>
                                 </form>
                             </div> <!-- form group -->
                         </div> <!-- row -->
@@ -318,6 +332,7 @@
             <p>{{ group.hashtag}}</p> 
           {% endif %}         
           <div id="twitter"></div>
+          <em>(hint: this is a live feed. If you tweet using the group hashtag it will show here)<em>
       </section>
       <hr>
       <!-- Photo gallery -->
@@ -395,7 +410,9 @@ var patternPoll
 var voteConfirmation = "<h4 class='text-success' style='margin-left:15px;' >Thanks for voting! Your vote has been recorded</h4>"
 
 $(document).ready(function(){
-
+//added for demo purposes only, also disabled on server
+$('#invite_submit_btn').prop("disabled", true);
+$('#comment_image').prop("disabled", true);
 
 // twitter ajax call to get feed information
    $.get('/group_twitter.json/{{ group.group_id }}', function(results) {

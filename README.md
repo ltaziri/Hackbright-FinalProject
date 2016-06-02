@@ -1,26 +1,23 @@
 ![MakeAlong](https://raw.githubusercontent.com/ltaziri/Hackbright-FinalProject/master/static/README_Images/Homepage.png)
 
-# MakeAlong
+# Mini-Golf Enthustasts
 
-#### Bringing the world together one project at a time. 
-MakeAlong is a python web app created by Leilani Taziri as her Hackbright Academy capstone project. In the MakeAlong online community, crafters can create a group for a craft project and invite their friends to work through the project with them.       
+#### Because regular golf is too hard.       
 
 ## Table of Contents
 ---
 * [Technologies Used](#technologiesused)
-* [User Homepage](#user)
-* [Group Homepage](#group)
-* [Creating a Pattern Poll](#patternpoll)
-* [Sending an Invite](#invite)
-* [Improving User Experience](#userexperience)
-* [Version 2.0](#v2)
+* [Blog](#blog)
+* [Play a Game](#group)
+* [User Authentication](#authentication)
+* [Further Study](#study)
 * [Author](#author)
 
 ### <a name="technologiesused"></a>Technologies Used 
 ---
-Python, Flask, Jinja, SQLAlchemy, PostgresSQL, Javascript, JQuery, AJAX, Bootstrap, Delorean, Selenium, Twitter API, SendGrid API, Flask-Uploads, Chart.js, Flipchart.js
+Ruby, Rails, Jinja, SQLite, Bootstrap, JQuery
 
-(Dependencies are listed in requirements.txt)
+Basic blog app was built using the tutorial at http://guides.rubyonrails.org/getting_started.html. Customizations include styling and the mini-golf game portion of the app.
 
 ### <a name="user"></a>User Homepage
 ---

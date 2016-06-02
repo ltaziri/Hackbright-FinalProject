@@ -76,9 +76,14 @@ def handle_sign_in_form():
     # If email is database, check if the password entered matches.
     # If email is not in database, redirect to the sign up page.
 
+    
     if existing_user:
         if password == existing_user.password:
             session["user_id"] = existing_user.user_id
+
+            # vote time reset added for demo, pull from session
+            session["group_timestamps"] = [(2,datetime.now()), (5, datetime.now())]
+               
             return redirect("/user")
         else:
             flash("Invalid password.")
@@ -95,6 +100,12 @@ def log_out():
     # Delete user_id in the session, redirect to homepage
 
     del session['user_id']
+
+    # demo reset
+    del session["group_timestamps"]
+    
+    if session.get('chosen_pattern'):
+        del session['chosen_pattern']
 
     return redirect("/")
 
@@ -142,8 +153,8 @@ def new_user_sign_up():
                     first_name=first_name, 
                     last_name=last_name, 
                     user_photo=user_photo)
-        db.session.add(user)
-        db.session.commit()
+        # db.session.add(user)
+        # db.session.commit()
 
         # Store new user_id in session, let them know sign up was successfull
         # and send user to their user homepage
@@ -202,15 +213,16 @@ def add_group_to_user():
     # Get the invite object from the database, mark the confirm field to true.
 
     invite = Invite.query.get(invite_id)
-    invite.invite_confirm = True
+    # disabled for demo
+    # invite.invite_confirm = True
 
     # Instantiate a new UserGroup object and save it to usergroups which is an 
     # association table for groups and users.
-
-    user_group = UserGroup(group_id=invite.group_id,
-                           user_id=user)
-    db.session.add(user_group)
-    db.session.commit()
+    # disabled for demo
+    # user_group = UserGroup(group_id=invite.group_id,
+    #                        user_id=user)
+    # db.session.add(user_group)
+    # db.session.commit()
 
     # Create dictionary to send back to AJAX call as a JSON.
 
@@ -248,7 +260,9 @@ def user_profile_update():
 
     if new_user_descrip != "":
         user.user_descrip = new_user_descrip
-        db.session.commit()
+        
+        # disabled for demo
+        # db.session.commit()
 
     # Flash profile update success and redirect to user homepage.
 
@@ -307,9 +321,9 @@ def create_group():
                       vote_days=vote_days,
                       vote_timestamp=vote_timestamp,
                       hashtag=hashtag)
-
-        db.session.add(group)
-        db.session.commit()
+        # disabled for demo
+        # db.session.add(group)
+        # db.session.commit()
 
         helper.create_patterns_for_poll(group.group_id)
     
@@ -320,9 +334,9 @@ def create_group():
                       group_image=group_image,  
                       admin_id=session["user_id"],
                       hashtag=hashtag)
-
-        db.session.add(group)
-        db.session.commit()
+        # disabled for demo
+        # db.session.add(group)
+        # db.session.commit()
 
         # If pattern name was entered in form, call helper function to instantiate
         # pattern in database.
@@ -335,8 +349,9 @@ def create_group():
 
     user_group= UserGroup(group_id=group.group_id,
                           user_id=session["user_id"])
-    db.session.add(user_group)
-    db.session.commit()
+    # disabled for demo
+    # db.session.add(user_group)
+    # db.session.commit()
     
     return redirect("/group_home/%d" % (group.group_id))
 
@@ -384,6 +399,13 @@ def show_group_page(group_id):
 
         patterns = Pattern.query.filter_by(group_id=group_id).order_by(Pattern.pattern_name).all()
         chosen_pattern = Pattern.query.filter(Pattern.group_id == group_id, Pattern.chosen == True).all()
+
+        # also check session for chosen pattern. This is for the demo only
+        if not chosen_pattern:
+            if session.get('chosen_pattern') and session['chosen_pattern'][0] == group_id:
+                pattern_id = session['chosen_pattern'][1]
+                chosen_pattern = Pattern.query.filter(Pattern.pattern_id == pattern_id).all()
+       
 
         if chosen_pattern:
             return render_template("group_page.html", 
@@ -514,36 +536,36 @@ def update_group_profile(group_id):
         #Handle basic user name, description, hashtag and image updates from inputs
             if update_group_name != "":
                 group.group_name = update_group_name
-                db.session.commit()
+                # db.session.commit()
 
             if update_group_descrip != "":
                 group.group_descrip = update_group_descrip
-                db.session.commit()
+                # db.session.commit()
 
             if update_group_hashtag != "":
                 group.hashtag = '#makealong' + update_group_hashtag
-                db.session.commit()
+                # db.session.commit()
 
             if "group_img" in request.files and request.files['group_img'].filename:
                 group_photo_filename = photos.save(request.files["group_img"])
                 update_group_image = str(photos.path(group_photo_filename))
                 group.group_image = update_group_image
-                db.session.commit()
+                # db.session.commit()
 
         #Update if group had a pattern, and is just changing info about it.
             if update_group_pattern_name != "":
                 chosen_pattern.pattern_name = update_group_pattern_name
-                db.session.commit()
+                # db.session.commit()
 
             if update_group_pattern_link != "":
                 chosen_pattern.pattern_link = update_group_pattern_link
-                db.session.commit()
+                # db.session.commit()
 
             if "update_pattern_pdf" in request.files and request.files['update_pattern_pdf'].filename:
                 pattern_pdf_filename = manuals.save(request.files['update_pattern_pdf'])
                 new_group_pattern_pdf = str(manuals.path(pattern_pdf_filename))
                 chosen_pattern.pattern_pdf = new_group_pattern_pdf
-                db.session.commit()
+                # db.session.commit()
 
         # Add a pattern to database using helper function if a pattern was inputed
         # on the form and a poll was not created.
@@ -578,11 +600,18 @@ def update_clock(group_id):
     # Get group from server, call helper function to calculate time left to vote.
 
     group = Group.query.get(group_id)
-
+    for entry in session["group_timestamps"]:
+        if entry[0] == group_id:
+            timestamp = entry[1]
     clock_time = {}
+    # for demo, use session instead of db
     clock_time['seconds'] = helper.calculate_vote_time_left(
-                                                            group.vote_timestamp,
+                                                            timestamp,
                                                             group.vote_days)
+
+    # clock_time['seconds'] = helper.calculate_vote_time_left(
+    #                                                         group.vote_timestamp,
+    #                                                         group.vote_days)
     
     # Send seconds left JSON to clock AJAX call on group page
     return jsonify(clock_time)
@@ -650,25 +679,38 @@ def update_vote():
     group_id = request.form.get("group_id")
     pattern_id = request.form.get("pattern_id")
 
-    vote = Vote(group_id = group_id,
-                user_id = session["user_id"],
-                pattern_id = pattern_id)
+    # disabled for demo
+    # vote = Vote(group_id = group_id,
+    #             user_id = session["user_id"],
+    #             pattern_id = pattern_id)
 
-    db.session.add(vote)
-    db.session.commit()
+    # db.session.add(vote)
+    # db.session.commit()
+
 
     # Create dictionary with new vote info and existing votes in database.
 
+    # vote_update = {}
+    # vote_update['label'] = vote.pattern.pattern_name
+    # vote_update['data'] = 0
+
+    # current_votes = Vote.query.filter(Vote.group_id == group_id).all()
+
+    # for current_vote in current_votes:
+    #     if current_vote.pattern_id == vote.pattern_id:
+    #         vote_update['data'] +=1
+
+    # for demo purposes only
+    pattern = Pattern.query.filter(Pattern.pattern_id == pattern_id).one()
     vote_update = {}
-    vote_update['label'] = vote.pattern.pattern_name
-    vote_update['data'] = 0
+    vote_update['label'] = pattern.pattern_name
+    vote_update['data'] = 1
 
     current_votes = Vote.query.filter(Vote.group_id == group_id).all()
 
     for current_vote in current_votes:
-        if current_vote.pattern_id == vote.pattern_id:
+        if current_vote.pattern_id == pattern.pattern_id:
             vote_update['data'] +=1
-
     # Send dictionary JSON to AJAX call that updates poll graph
     return jsonify(vote_update)
 
@@ -684,10 +726,13 @@ def handle_final_vote_submit(group_id):
     vote = int(vote)
 
     # Get pattern by id, mark it confirmed and redirect to the group page.
-
+    # disabled for demo
     pattern = Pattern.query.filter_by(pattern_id = vote).one()
-    pattern.chosen = True
-    db.session.commit()
+    # pattern.chosen = True
+    # db.session.commit()
+
+    # for demo, adding chosen pattern info to session instead of db
+    session['chosen_pattern'] = (pattern.group_id, pattern.pattern_id)
 
     return redirect('/group_home/%d' % group_id)
 
@@ -709,33 +754,50 @@ def add_comment():
     
     # Check if comment photo exists in form object.
 
-    if 'comment_image' in request.files and request.files['comment_image'].filename:
-        comment_img_filename = photos.save(request.files['comment_image'])
-        comment_image = str(photos.path(comment_img_filename))
-    else:
-        comment_image = None
+    # if 'comment_image' in request.files and request.files['comment_image'].filename:
+    #     comment_img_filename = photos.save(request.files['comment_image'])
+    #     comment_image = str(photos.path(comment_img_filename))
+    # else:
+    #     comment_image = None
+
+    # Disable photo upload for demo
+    comment_image = None
     
     # Instantiate Comment object in database.
 
-    comment = Comment(comment_text=comment_text, 
-                      comment_image=comment_image, 
-                      comment_timestamp=datetime.now(),
-                      youtube_id=youtube_id,
-                      user_id=session["user_id"],
-                      group_id=group_id)
+    # comment = Comment(comment_text=comment_text, 
+    #                   comment_image=comment_image, 
+    #                   comment_timestamp=datetime.now(),
+    #                   youtube_id=youtube_id,
+    #                   user_id=session["user_id"],
+    #                   group_id=group_id)
 
-    db.session.add(comment)
-    db.session.commit()    
+    # db.session.add(comment)
+    # db.session.commit()    
 
     # Create dictionary to send as JSON back to comment AJAX call.
 
-    format_timestamp = comment.comment_timestamp.strftime('%m/%d/%y %X')
+    # format_timestamp = comment.comment_timestamp.strftime('%m/%d/%y %X')
 
-    comment_dict = {'comment_user_photo': comment.user.user_photo,
-                    'comment_user_name': comment.user.first_name,
+    # comment_dict = {'comment_user_photo': comment.user.user_photo,
+    #                 'comment_user_name': comment.user.first_name,
+    #                 'comment_timestamp':format_timestamp,
+    #                 'comment_text': comment.comment_text,
+    #                 'comment_image': comment.comment_image,
+    #                 'youtube_id': youtube_id }
+
+
+    # temp comment dictionary created for demo only. Comments will not be
+    # added to the database but will still appear on group page
+    user = User.query.get(session["user_id"])
+    comment_timestamp = datetime.now()
+    format_timestamp = comment_timestamp.strftime('%m/%d/%y %X')
+
+    comment_dict = {'comment_user_photo': user.user_photo,
+                    'comment_user_name': user.first_name,
                     'comment_timestamp':format_timestamp,
-                    'comment_text': comment.comment_text,
-                    'comment_image': comment.comment_image,
+                    'comment_text': comment_text,
+                    'comment_image': comment_image,
                     'youtube_id': youtube_id }
 
     return jsonify(comment_dict)
@@ -761,14 +823,15 @@ def send_invitation(group_id):
                     invite_timestamp=datetime.now(),
                     group_id=group_id,
                     user_id=session["user_id"])
-
-    db.session.add(invite)
-    db.session.commit()
+    # disabled for demo
+    # db.session.add(invite)
+    # db.session.commit()
 
     # Send email invite using SendGrid API and email.py file, show confirmation
     # flash message and redirect to homepage.
 
-    send_email(invite_email, invite_name, user.first_name, group.group_name, invite_text)
+     # disabled for demo
+    # send_email(invite_email, invite_name, user.first_name, group.group_name, invite_text)
 
     flash("Invitation sent!")
 

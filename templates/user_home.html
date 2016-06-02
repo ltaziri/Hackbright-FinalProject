@@ -62,6 +62,8 @@
                     <br>
                     <button class="btn btn-default profile_submit" type="submit">Update Your Profile</button>
                     <a data-dismiss="modal" aria-label="Close" class="invite_cancel">Cancel</a>
+                    <br>
+                    * disabled for demo purposes
                   </div> <!-- form group -->
                 </div><!--   row  -->
               </form>
@@ -155,6 +157,9 @@
 // show hide for modal window, hide user info/show user profile update form and 
 //  vice versa
 $(document).ready(function(){
+        // added for demo purposes only, also disabled on server
+        $('.profile_submit').prop("disabled",true);
+
         $('div.update_profile').hide();
 
         $('#user_profile').on('hidden.bs.modal', function(){
