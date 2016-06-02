@@ -2,7 +2,6 @@
 env
 .DS_Store
 secrets.sh
-static/images
 static/pdfs
 chromedriver
 chart.py
