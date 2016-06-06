@@ -570,3 +570,12 @@ transform: scale(.75);
   display: inline;
   margin:0;
 }
+
+/*demo css*/
+#home_demo {
+  margin-top: 20px;
+}
+
+#home_demo a{
+  color: #E0E0E0;
+}

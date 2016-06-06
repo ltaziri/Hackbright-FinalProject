@@ -47,16 +47,32 @@
 
           <form action="/sign_in" method="POST">
             <div class ="form-group">
-              <input class="form-control" type="email" name="email" placeholder="email"><br>
-              <input class="form-control" type="password" name="password" placeholder="password"><br>
-              <button type="submit" class="btn btn-default">LOGIN</button><br>
+              <input id="email_sign" class="form-control" type="email" name="email" placeholder="email"><br>
+              <input id ="password_sign" class="form-control" type="password" name="password" placeholder="password"><br>
+              <button id="login_btn" type="submit" class="btn btn-default">LOGIN</button><br>
             </form>
 
             <br><h4>Don't Have an Account? <br><a href="/sign_up_form">Sign Up Today!</a></h4>
+
+            <div id="home_demo">
+              <button class="btn btn-info" id="demo_btn">TRY A DEMO</button><br>
+              <a href="https://github.com/ltaziri/Hackbright-FinalProject"><em>* See GitHub README for limitations of demo</em></a>
+            </div>
           </div>
         </div>
       </div>
 
     </div>
+    <!-- added for demo, can remove real version is deployed. Ids added to form
+    inputs for demo purposes as well.-->
+  <script type="text/javascript">
+    $('#demo_btn').click(function(event) {
+      event.preventDefault();
+      $('#email_sign').attr('value', 'demo@makealong.com');
+      $('#password_sign').attr('value', 'trydemo');
+      $('#login_btn').removeClass('btn-default');
+      $('#login_btn').addClass('btn-success');
+    })
+  </script>  
   </body>
 </html>
