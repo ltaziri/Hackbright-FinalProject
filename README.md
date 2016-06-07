@@ -86,5 +86,7 @@ Leilani Taziri is a Software Engineer in the San Francisco Bay Area and a recent
 Hiring? 
 Connect with Leilani:
 **[GitHub - github.com/ltaziri](http://github.com/ltaziri)**
+
 **[Linkedin - linkedin.com/in/leilanitaziri](https://www.linkedin.com/in/leilanitaziri)** 
+
 **[Twitter - @leilani_taziri](https://twitter.com/leilani_taziri)** 
