@@ -128,6 +128,7 @@
                 {% if values['admin'] == user.user_id %}
                   {% if values['pattern_chosen'] == False %}
                     {% if values['remaining_time'] != False %}
+                      <!-- Disabled for demo only -->
                       <!-- {% if values['remaining_time'] < 1 %}
                         <li> Voting time for <span>{{ groups }}</span> has run out!.
                         Please confirm the winning pattern!
