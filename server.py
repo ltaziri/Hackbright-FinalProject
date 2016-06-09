@@ -191,7 +191,7 @@ def show_user_home():
     group_vote_messages = {}
     for group in groups:
         group_vote_messages[group.group_name] = helper.create_group_messages(group)
-
+    
     # Render user homepage template with group, invite and message info.
 
     return render_template("user_home.html", 

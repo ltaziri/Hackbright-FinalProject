@@ -128,13 +128,13 @@
                 {% if values['admin'] == user.user_id %}
                   {% if values['pattern_chosen'] == False %}
                     {% if values['remaining_time'] != False %}
-                      {% if values['remaining_time'] < 1 %}
+                      <!-- {% if values['remaining_time'] < 1 %}
                         <li> Voting time for <span>{{ groups }}</span> has run out!.
                         Please confirm the winning pattern!
                         <a href="/group_home/{{ values['group_id'] }}">
                         <button class="btn btn-default"> Confirm now </button><hr></a>
                       </li>
-                      {% endif %}
+                      {% endif %} -->
                       {% if values['vote_count'] == values['user_count'] %}
                         <li> Everyone in <span>{{ groups }}</span> has voted.
                         Please confirm the winning pattern!<br>
