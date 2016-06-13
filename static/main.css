@@ -181,7 +181,9 @@ h3.section_header {
   border: 5px solid #FCFAF7;
   background-color: #FCFAF7;
   border-radius: 3px;
-  max-width: 300px;
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 

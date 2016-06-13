@@ -80,31 +80,8 @@
     <h3> Your craft groups:</h3>
 
     <div class="row">
-      <div class ="col-xs-12 col-sm-12 col-md-8 col-lg-10">
-
-        {% for group in groups %}
-          <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
-            <div class="snapshot">
-              <a href="/group_home/{{ group.group_id }}">
-                <img src="{{ group.group_image }}" width = "250">
-                <h3>{{ group.group_name }}</h3><br>
-              </a>
-            </div>
-          </div>
-        {% endfor %}
-
-        <div id="group_add"></div>
-
-        <div class="row">
-          <div class="col-xs-12 col-sm-12 col-md-12">
-            <br>
-            <a href="/group_form"> <button class="btn btn-default new_group">Create a new group</button></a><br>
-          </div>
-        </div>
-      </div>
-
-      <!-- message area -->
-      <div class ="col-xs-10 col-sm-10 col-md-4 col-lg-2">
+        <!-- message area -->
+      <div class ="col-xs-12 col-sm-12 col-md-4 col-lg-2 col-md-push-8 col-lg-push-10">
         <div class="user_message">
           <span class="circle">
             <span class="glyphicon glyphicon-envelope icon" aria-hidden="true"></span></span>
@@ -150,6 +127,31 @@
             </ul>
         </div> <!-- messages div  -->
       </div>
+
+      <div class ="col-xs-12 col-sm-12 col-md-8 col-lg-10 col-md-pull-4 col-lg-pull-2">
+
+        {% for group in groups %}
+          <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
+            <div class="snapshot">
+              <a href="/group_home/{{ group.group_id }}">
+                <img src="{{ group.group_image }}" width = "250">
+                <h3>{{ group.group_name }}</h3><br>
+              </a>
+            </div>
+          </div>
+        {% endfor %}
+
+        <div id="group_add"></div>
+
+        <div class="row">
+          <div class="col-xs-12 col-sm-12 col-md-12">
+            <br>
+            <a href="/group_form"> <button class="btn btn-default new_group">Create a new group</button></a><br>
+          </div>
+        </div>
+      </div>
+
+    
     </div>
     </section>
               <!-- <hr class="divider"> -->
@@ -172,6 +174,7 @@ $(document).ready(function(){
             $('div.exisiting_profile').hide(800);
             $('div.update_profile').show(800);
           });
+
       });      
 
 // Ajax after user accepts a group invite via the join button in the user 
