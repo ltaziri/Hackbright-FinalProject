@@ -313,7 +313,6 @@ ALTER TABLE ONLY users ALTER COLUMN user_id SET DEFAULT nextval('users_user_id_s
 --
 
 COPY comments (comment_id, comment_text, comment_image, comment_timestamp, youtube_id, user_id, group_id) FROM stdin;
-167	If you are struggling with the make one left/ make on right. Here is a video that might help! <a href='https://www.youtube.com/watch?v=nkOwLvcG7m8'>https://www.youtube.com/watch?v=nkOwLvcG7m8</a>	\N	2016-03-18 16:02:59.330561	nkOwLvcG7m8	1	1
 19	Can't wait to get started! Anyone want to go to Imagiknit this weekend?	\N	2016-03-03 13:20:39.920426	\N	5	1
 20	I am getting started today with some yarn I have in the stash! Testing the gauge as we speak:)	static/images/starting_1_1.jpg	2016-03-03 13:22:12.658793	\N	6	1
 21	I am partially through the first mitt. LOVING this Blue Sky cotton yarn	static/images/Killgore_1_1.jpg	2016-03-03 13:28:40.657715	\N	1	1
@@ -322,6 +321,7 @@ COPY comments (comment_id, comment_text, comment_image, comment_timestamp, youtu
 25	I followed that make one video and it worked like a charm! Finished my first mitten!	static/images/killgore_2_1.jpg	2016-03-03 13:37:26.680141	\N	5	1
 26	OMG Terri your mitten looks great! Love the color!!	\N	2016-03-03 13:38:27.694905	\N	6	1
 27	BTW I finished both my mittens this weekend! Moving on to a second pair...	static/images/kilgore_3_2.jpg	2016-03-03 13:39:49.818031	\N	6	1
+187	If you are struggling with the make one left/make one right. Here is a video that might help! <a href='https://www.youtube.com/watch?v=nkOwLvcG7m8'>https://www.youtube.com/watch?v=nkOwLvcG7m8</a>	\N	2016-06-01 15:09:25.876682	nkOwLvcG7m8	37	1
 \.
 
 
@@ -329,7 +329,7 @@ COPY comments (comment_id, comment_text, comment_image, comment_timestamp, youtu
 -- Name: comments_comment_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ltaziri
 --
 
-SELECT pg_catalog.setval('comments_comment_id_seq', 170, true);
+SELECT pg_catalog.setval('comments_comment_id_seq', 187, true);
 
 
 --
@@ -337,14 +337,14 @@ SELECT pg_catalog.setval('comments_comment_id_seq', 170, true);
 --
 
 COPY groups (group_id, group_name, group_descrip, group_image, admin_id, vote_timestamp, vote_days, hashtag) FROM stdin;
+2	Super Sewers	Hey all! So excited to get this month's group going. I have picked three fun Jailie patterns for us to pick from this month!	static/images/sewing_group_default.jpg	37	2016-06-01 15:03:07.973596	7	#makealongsupersewers
+5	Women Who Build	Here are three awesome Ana White console wood working plans to choose from.	static/images/wood_1.jpg	1	2016-06-01 15:03:07.982495	7	#makealongwomenwhobuild
 3	Crazy Cards - March		static/images/papercrafting_scaled_1_1.jpg	5	\N	\N	#makealongcricutcraftersfeb
 1	Knitters to the Rescue!	This month we are working on the Kilgore Mitts pattern.	static/images/knitting_group_default.jpg	1	2016-03-01 00:00:00	1	#makealongknittersrescue
 6	Eat. Sleep. Knit.	This is so fun	static/images/knit2_scaled_1.jpg	1	\N	\N	eatsleepknit
 7	Crochet All Night!	 	static/images/Crochet_1.jpg	1	\N	\N	#makealongcrochetallnight
-5	Women Who Build	Here are three awesome Ana White console wood working plans to choose from.	static/images/wood_1.jpg	1	2016-03-12 00:00:00	7	#makealongwomenwhobuild
-9	Crazy Cards - March 		static/images/papercrafting_scaled_1_1_1.jpg	5	\N	\N	\N
 10	Test	test	static/images/knitting_group_default.jpg	1	\N	\N	\N
-2	Super Sewers	Hey all! So excited to get this month's group going. I have picked three fun Jailie patterns for us to pick from this month!	static/images/sewing_group_default.jpg	1	2016-03-18 00:00:00	7	#makealongsupersewers
+9	Crazy Cards		static/images/papercrafting_scaled_1_1_1.jpg	5	\N	\N	\N
 \.
 
 
@@ -367,6 +367,8 @@ COPY invites (invite_id, invite_email, invite_text, invite_timestamp, invite_con
 73	ltaziri@gmail.com	This is an awesome group! Would love for you to join!	2016-03-12 15:21:39.507655	f	1	1
 74	ltaziri@gmail.com	This is an awesome group! Would love for you to join!	2016-03-16 20:40:17.02396	f	1	1
 3	leilani@hbmail.com	Please join our crafty craft group!	2016-03-03 13:20:39.920426	f	9	5
+75	ltaziri@gmail.com	This is an awesome group! Would love for you to join!	2016-04-03 22:25:43.628448	f	1	1
+76	demo@makealong.com	This is an awesome group! Would love for you to join!	2016-03-12 14:59:16.748542	f	9	1
 \.
 
 
@@ -374,7 +376,7 @@ COPY invites (invite_id, invite_email, invite_text, invite_timestamp, invite_con
 -- Name: invites_invite_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ltaziri
 --
 
-SELECT pg_catalog.setval('invites_invite_id_seq', 74, true);
+SELECT pg_catalog.setval('invites_invite_id_seq', 76, true);
 
 
 --
@@ -429,8 +431,13 @@ COPY usergroups (usergroup_id, group_id, user_id) FROM stdin;
 27	5	3
 28	5	4
 29	5	5
+102	1	37
+103	2	37
+104	5	37
+105	6	37
 43	6	1
 44	7	1
+106	7	37
 \.
 
 
@@ -438,7 +445,7 @@ COPY usergroups (usergroup_id, group_id, user_id) FROM stdin;
 -- Name: usergroups_usergroup_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ltaziri
 --
 
-SELECT pg_catalog.setval('usergroups_usergroup_id_seq', 100, true);
+SELECT pg_catalog.setval('usergroups_usergroup_id_seq', 107, true);
 
 
 --
@@ -481,6 +488,7 @@ COPY users (user_id, email, password, first_name, last_name, user_photo, user_de
 34	florence@hbmail.com	test	Florence	Loi	static/images/crafter.jpg	
 35	kristin@hbmail.com	test	Kristin	Parke	static/images/glue_gun.jpg	
 1	leilani@hbmail.com	test	Leilani	Taziri	static/images/profilepic_1_1.jpg	 
+37	demo@makealong.com	trydemo	Maddy	Maker	static/images/glue_gun.jpg	Maker of anything and everything!
 \.
 
 
@@ -488,7 +496,7 @@ COPY users (user_id, email, password, first_name, last_name, user_photo, user_de
 -- Name: users_user_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ltaziri
 --
 
-SELECT pg_catalog.setval('users_user_id_seq', 36, true);
+SELECT pg_catalog.setval('users_user_id_seq', 37, true);
 
 
 --
@@ -503,7 +511,7 @@ COPY votes (group_id, user_id, pattern_id) FROM stdin;
 5	3	10
 5	4	9
 5	5	8
-5	1	10
+2	1	7
 2	5	6
 2	3	5
 2	7	5
@@ -511,6 +519,7 @@ COPY votes (group_id, user_id, pattern_id) FROM stdin;
 2	19	6
 2	6	6
 2	8	7
+2	37	7
 \.
 
 
